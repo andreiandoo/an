@@ -3,26 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Aplicații web și MVP-uri la preț fix — Andrei Năstase</title>
-  <meta name="description" content="Construiesc aplicația ta web de la prima schiță la lansare, cu preț fix știut înainte de orice linie de cod. Laravel, Filament, Tailwind. Codul și datele rămân ale tale.">
+  <title>Aplicații web și mobile la preț fix — Andrei Năstase</title>
+  <meta name="description" content="Aplicații web de la 3.000 €, aplicații mobile de la 5.000 €. Strategie, product design, cod, mobil, animație și marketing, de la o singură persoană. Preț fix știut înainte de orice linie de cod.">
   <link rel="canonical" href="https://andreinastase.ro/servicii.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
+<div class="progress" aria-hidden="true"><span></span></div>
 
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="index.html">Andrei Năstase</a>
+    <a class="brand" href="index.html"><i></i>Andrei Năstase</a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Meniu</button>
     <nav class="nav" id="nav">
-      <a href="index.html#proiecte">Proiecte</a>
+      <a href="index.html#proiecte">Produse</a>
+      <a href="index.html#capabilitati">Ce fac</a>
       <a href="cofondator.html">Cofondator</a>
       <a href="servicii.html" aria-current="page">Servicii</a>
       <a href="index.html#despre">Despre</a>
-      <a href="index.html#contact">Contact</a>
+      <a class="btn" href="#cerere">Cere o ofertă</a>
     </nav>
   </div>
 </header>
@@ -30,50 +32,27 @@
 <main>
 
   <section class="hero">
-    <div class="wrap hero-grid">
-      <div>
-        <h1>Ai nevoie de o aplicație? Îți spun sincer dacă merită construită.</h1>
-        <p class="lead">Construiesc aplicații web și MVP-uri de la prima schiță la lansare, cu preț fix știut înainte de orice linie de cod. Primul apel, de 30 de minute, e gratuit.</p>
-        <div class="btn-row">
-          <a class="btn btn-primary" href="https://cal.com/andreinastase" target="_blank" rel="noopener">Programează apelul gratuit</a>
-          <a class="btn" href="#cerere">Scrie-mi ce vrei să rezolvi</a>
-        </div>
-      </div>
-      <ul class="proof">
-        <li><strong>15 ani</strong> de software, Laravel și PHP în principal</li>
-        <li><strong>9 produse</strong> duse în producție, cu plăți, conturi și date reale</li>
-        <li>Prețul exact îl știi <strong>înainte de cod</strong>, plătești pe etape</li>
-        <li>Codul, datele și conturile <strong>rămân ale firmei tale</strong></li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="section">
+    <div class="hero-bg" aria-hidden="true"><div class="grid"></div><div class="orb"></div></div>
     <div class="wrap">
-      <div class="section-head">
-        <h2>Nu orice problemă cere o aplicație</h2>
-        <p>Multe firme simt că au nevoie de o aplicație. Uneori un formular bun, o integrare între două unelte sau un instrument care există deja rezolvă aceeași problemă mai repede și mai ieftin. Dacă așa e, îți spun din primul apel.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>Cu ce te pot ajuta</h2>
-      </div>
-      <div class="cols-3">
-        <div class="block">
-          <h3>MVP de la zero</h3>
-          <p>Ai o idee validată și vrei prima versiune în mâinile clienților. O construiesc în câteva săptămâni, cu doar ce e nevoie ca primii clienți să o folosească și să plătească.</p>
+      <div class="hero-top fade"><span class="status">Primul apel, de 30 de minute, e gratuit</span><span>Răspuns în cel mult o zi lucrătoare</span></div>
+      <h1>
+        <span class="line"><span>Aplicația ta,</span></span>
+        <span class="line"><span>de la strategie la lansare,</span></span>
+        <span class="line"><span><span class="em">la preț fix.</span></span></span>
+      </h1>
+      <div class="hero-lower fade">
+        <div>
+          <p class="lead">Lucrez cu companii mari și cu firme care cresc. Strategie, product design, frontend, backend, aplicații mobile, animație și marketing, de la o singură persoană de contact. Prețul exact îl știi înainte de orice linie de cod.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary btn-lg" href="https://cal.com/andreinastase" target="_blank" rel="noopener">Programează apelul gratuit<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="btn btn-lg" href="#cerere">Scrie-mi ce vrei să rezolvi</a>
+          </div>
         </div>
-        <div class="block">
-          <h3>Aplicații web pentru firma ta</h3>
-          <p>Panouri de administrare, portaluri pentru clienți, sisteme de rezervări sau bilete, integrări cu plăți, facturare și email. Web, merge pe orice telefon, fără descărcare.</p>
-        </div>
-        <div class="block">
-          <h3>Ai deja un prototip făcut cu AI?</h3>
-          <p>Ai construit ceva cu Lovable, Bolt, Cursor sau ChatGPT și s-a blocat? Îl transform într-o aplicație care ține cu toată echipa pe ea: date sigure, conturi, plăți, fără să o iei de la zero.</p>
+        <div class="hero-meta">
+          <div><strong>3.000 €</strong><span>aplicații web, de la</span></div>
+          <div><strong>5.000 €</strong><span>aplicații mobile, de la</span></div>
+          <div><strong class="num">17</strong><span>ani de senior full-stack</span></div>
+          <div><strong class="num">9</strong><span>produse proprii în producție</span></div>
         </div>
       </div>
     </div>
@@ -81,77 +60,119 @@
 
   <section class="section">
     <div class="wrap">
-      <div class="section-head">
-        <h2>Cum lucrez</h2>
+      <div class="section-head reveal">
+        <div><span class="kicker">Servicii</span><h2>Cu ce te pot ajuta.</h2></div>
+        <p>Nu orice problemă cere o aplicație. Uneori un formular bun, o integrare între două unelte sau un instrument care există deja rezolvă aceeași problemă mai repede și mai ieftin. Dacă așa e, îți spun din primul apel.</p>
+      </div>
+      <div class="offers">
+        <div class="offer is-primary reveal">
+          <span class="kicker">Web</span>
+          <h3>Aplicație web</h3>
+          <div class="price">de la 3.000 €<small>merge pe orice telefon, fără descărcare</small></div>
+          <ul class="check-list">
+            <li>Portaluri pentru clienți, panouri de administrare, sisteme de rezervări sau bilete, platforme interne.</li>
+            <li>Plăți, facturare, email, integrări cu ce folosești deja.</li>
+            <li>Design, cod, lansare și instrucțiuni, de la aceeași persoană.</li>
+          </ul>
+        </div>
+        <div class="offer reveal" data-delay="1">
+          <span class="kicker">Mobil</span>
+          <h3>Aplicație mobilă</h3>
+          <div class="price">de la 5.000 €<small>în App Store și Google Play</small></div>
+          <ul class="check-list">
+            <li>iOS și Android, pe același backend ca aplicația web.</li>
+            <li>Notificări, plăți în aplicație, mod offline, autentificare.</li>
+            <li>Animație și micro-interacțiuni incluse, nu „la pachet separat”.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="caps reveal" style="margin-top:1.5rem">
+        <div class="cap"><h3>MVP de la zero</h3><p>Ai o idee validată și vrei prima versiune în mâinile clienților în săptămâni. Construiesc doar ce e nevoie ca primii clienți să o folosească și să plătească.</p></div>
+        <div class="cap"><h3>Prototip AI dus în producție</h3><p>Ai construit ceva cu Lovable, Bolt, Cursor sau ChatGPT și s-a blocat? Îl transform într-o aplicație care ține cu toată echipa pe ea: date sigure, conturi, plăți, fără să o iei de la zero. Auditul e gratuit.</p></div>
+        <div class="cap"><h3>Strategie, design, marketing</h3><p>Poziționare, product design, sistem de design, landing pages, SEO și analytics. Pot fi și doar partea de gândire, înainte ca echipa ta să scrie cod.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div><span class="kicker">Cum lucrez</span><h2>Preț fix, livrare pe etape, fără surprize.</h2></div>
       </div>
       <ol class="steps">
-        <li>
-          <div><h3>Apel gratuit</h3><span class="time">30 de minute</span></div>
-          <p>Îmi spui ce vrei să rezolvi. Îți spun dacă te pot ajuta și cum.</p>
-        </li>
-        <li>
-          <div><h3>Analiză</h3><span class="time">2–5 zile</span></div>
-          <p>Mă uit la cum lucrezi azi și stabilim ce merită făcut, cu un preț fix înainte de orice cod. Dacă nu îți convine ce propun, te oprești aici.</p>
-        </li>
-        <li>
-          <div><h3>Construim</h3><span class="time">3–6 săptămâni</span></div>
-          <p>Livrez pe etape și vezi fiecare pas. La final primești tot: aplicația, codul și instrucțiunile.</p>
-        </li>
-        <li>
-          <div><h3>După lansare</h3><span class="time">opțional</span></div>
-          <p>Modificări plătite separat, sau un abonament lunar cu modificările mici incluse, pe care îl oprești oricând. Aplicația rulează pe conturile firmei tale, plătite direct furnizorilor, fără adaos.</p>
-        </li>
+        <li class="reveal"><h3>Apel gratuit</h3><span class="time">30 de minute</span><p>Îmi spui ce vrei să rezolvi. Îți spun dacă te pot ajuta și cum.</p></li>
+        <li class="reveal" data-delay="1"><h3>Analiză</h3><span class="time">2–5 zile</span><p>Mă uit la cum lucrezi azi și stabilim ce merită făcut, cu un preț fix înainte de orice cod. Dacă nu îți convine ce propun, te oprești aici.</p></li>
+        <li class="reveal" data-delay="2"><h3>Construim</h3><span class="time">3–8 săptămâni</span><p>Livrez pe etape și vezi fiecare pas. La final primești tot: aplicația, codul, conturile și instrucțiunile.</p></li>
+        <li class="reveal" data-delay="3"><h3>După lansare</h3><span class="time">opțional</span><p>Modificări plătite separat, sau un abonament lunar cu modificările mici incluse, pe care îl oprești oricând. Aplicația rulează pe conturile firmei tale, plătite direct furnizorilor.</p></li>
       </ol>
     </div>
   </section>
 
   <section class="section">
-    <div class="wrap cols-2">
-      <div class="block">
-        <h2 style="margin-bottom:1rem">Cum e corect pentru tine</h2>
-        <ul class="check-list">
+    <div class="wrap split">
+      <div class="reveal">
+        <span class="kicker">Cum e corect pentru tine</span>
+        <ul class="check-list" style="margin-top:0.5rem">
           <li>Prețul exact, fix, îl știi înainte de orice linie de cod.</li>
           <li>Plătești pe etape; primul pas e analiza, cu preț fix.</li>
           <li>Fără comision pe rezervare sau pe utilizator.</li>
           <li>Codul, datele și conturile sunt pe numele firmei tale. Dacă eu nu mai sunt disponibil, alt programator poate continua.</li>
+          <li>Pot semna un NDA înainte de primul apel.</li>
         </ul>
       </div>
-      <div class="block">
-        <h2 style="margin-bottom:1rem">Vrei un partener, nu un furnizor?</h2>
-        <p>Dacă ai o idee de produs și oameni care o așteaptă, pot intra ca și cofondator tehnic: construiesc pe costul meu pentru o parte din firmă, sau la preț redus și o parte mai mică.</p>
-        <p style="margin-top:1rem"><a href="cofondator.html">Cum lucrăm ca și cofondatori</a></p>
+      <div class="reveal" data-delay="1">
+        <span class="kicker">Vrei un partener, nu un furnizor?</span>
+        <p class="lead">Dacă ai o idee de produs și oameni care o așteaptă, pot intra ca și cofondator tehnic: construiesc pe costul meu pentru o parte din firmă, sau la preț redus și o parte mai mică.</p>
+        <p style="margin-top:1.2rem"><a class="link" href="cofondator.html">Cum lucrăm ca și cofondatori</a></p>
       </div>
     </div>
   </section>
 
   <section class="section" id="cerere">
-    <div class="wrap contact-grid">
-      <div>
-        <h2>Scrie-mi ce vrei să rezolvi</h2>
-        <p class="muted" style="margin-top:1rem">Îți răspund în cel mult o zi lucrătoare. Sau alegi direct o oră în calendar: <a href="https://cal.com/andreinastase" target="_blank" rel="noopener">cal.com/andreinastase</a>.</p>
+    <div class="wrap contact">
+      <div class="reveal">
+        <span class="kicker">Cere o ofertă</span>
+        <h2>Scrie-mi ce vrei să rezolvi.</h2>
+        <p class="lead" style="margin-top:1.4rem">Îți răspund în cel mult o zi lucrătoare, cu ce cred, ce întrebări am și o estimare sinceră.</p>
+        <ul class="contact-list">
+          <li><span>Sau alegi direct o oră</span><a href="https://cal.com/andreinastase" target="_blank" rel="noopener">Programează apelul gratuit</a></li>
+          <li><span>Email</span><a href="mailto:contact@andreinastase.ro">contact@andreinastase.ro</a></li>
+        </ul>
       </div>
-      <form class="form" data-mail="contact@andreinastase.ro" data-subject="Cerere aplicație">
-        <label class="hp">Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-        <div class="form-row">
-          <label>Nume <input type="text" name="nume" id="s-nume" required></label>
-          <label>Email <input type="email" name="email" id="s-email" required></label>
-        </div>
-        <div class="form-row">
-          <label>Firma (opțional) <input type="text" name="firma" id="s-firma"></label>
-          <label>Ce te interesează
-            <select name="interes" id="s-interes">
-              <option>Un MVP de la zero</option>
-              <option>O aplicație pentru firmă</option>
-              <option>Un prototip AI de dus în producție</option>
-              <option>Nu știu încă</option>
-            </select>
-          </label>
-        </div>
-        <label>Ce vrei să rezolvi? <textarea name="problema" id="s-problema" required></textarea></label>
-        <div class="form-done" hidden>Mulțumesc. Îți răspund în cel mult o zi lucrătoare.</div>
-        <div class="btn-row"><button class="btn btn-primary" type="submit">Trimite</button></div>
-        <p class="form-note">Lucrez din Ploiești, în UE, conform GDPR. Facturez prin TIXELLO SRL. Folosesc datele doar ca să te contactez despre această cerere.</p>
-      </form>
+      <div class="form-panel reveal" data-delay="1">
+        <h3>Despre proiectul tău</h3>
+        <p class="intro">Nu trebuie să ai un caiet de sarcini. Descrie cum lucrați azi și ce vă încurcă.</p>
+        <form class="form" data-mail="contact@andreinastase.ro" data-subject="Cerere de ofertă">
+          <label class="hp">Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          <div class="form-row">
+            <label class="field"><span>Nume</span><input type="text" name="nume" id="s-nume" placeholder="ex: Elena Radu" autocomplete="name" required></label>
+            <label class="field"><span>Email de firmă</span><input type="email" name="email" id="s-email" placeholder="ex: elena@companie.ro" autocomplete="email" required></label>
+          </div>
+          <div class="form-row">
+            <label class="field"><span>Firma și rolul tău</span><input type="text" name="firma" id="s-firma" placeholder="ex: Logistics SA, director operațiuni" autocomplete="organization"></label>
+            <label class="field"><span>Ce te interesează</span>
+              <select name="interes" id="s-interes">
+                <option>O aplicație web (de la 3.000 €)</option>
+                <option>O aplicație mobilă (de la 5.000 €)</option>
+                <option>Un MVP de la zero</option>
+                <option>Un prototip AI dus în producție</option>
+                <option>Strategie, design sau marketing</option>
+                <option>Nu știu încă, vreau un sfat</option>
+              </select>
+            </label>
+          </div>
+          <label class="field"><span>Ce vrei să rezolvi?</span><textarea name="problema" id="s-problema" placeholder="ex: Avem 12 depozite și comenzile vin pe email și telefon. Le introducem manual în ERP. Vrem ca clienții să comande singuri și comanda să ajungă direct în ERP." required></textarea><span class="hint">Cum lucrați azi, câți oameni sunt implicați, ce ia cel mai mult timp.</span></label>
+          <div class="form-row">
+            <label class="field"><span>Buget orientativ (opțional)</span>
+              <select name="buget" id="s-buget"><option>Încă nu știu</option><option>3.000 – 10.000 €</option><option>10.000 – 30.000 €</option><option>peste 30.000 €</option></select>
+            </label>
+            <label class="field"><span>Când ai vrea să fie gata?</span><input type="text" name="termen" id="s-termen" placeholder="ex: trimestrul 1, sau „nu avem termen fix”"></label>
+          </div>
+          <div class="form-done" hidden>Mulțumesc. Îți răspund în cel mult o zi lucrătoare.</div>
+          <button class="btn btn-primary btn-lg" type="submit">Trimite cererea<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <p class="form-note">Lucrez din Ploiești, în UE, conform GDPR. Facturez prin TIXELLO SRL. Folosesc datele doar ca să te contactez despre această cerere.</p>
+        </form>
+      </div>
     </div>
   </section>
 
@@ -159,8 +180,14 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <span>© <span data-year>2026</span> Andrei Năstase · TIXELLO SRL</span>
-    <span><a href="mailto:contact@andreinastase.ro">contact@andreinastase.ro</a> · <a href="https://linkedin.com/in/andreinastase" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/andreiandoo" target="_blank" rel="noopener">GitHub</a></span>
+    <span>© <span data-year>2026</span> Andrei Năstase · TIXELLO SRL · Ploiești</span>
+    <nav>
+      <a href="index.html#proiecte">Produse</a>
+      <a href="cofondator.html">Cofondator</a>
+      <a href="servicii.html">Servicii</a>
+      <a href="https://linkedin.com/in/andreinastase" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/andreiandoo" target="_blank" rel="noopener">GitHub</a>
+    </nav>
   </div>
 </footer>
 
