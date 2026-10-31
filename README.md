@@ -1,33 +1,28 @@
 # andreinastase.ro
 
-Site personal: produsele construite + oferta de cofondator tehnic. Static, fără build.
+Site personal, static (HTML + CSS + JS, fără build). Trei pagini: home (produse, servicii, prețuri, contact), `servicii.html`, `cofondator.html`.
 
-## Structură
+## Capturi de ecran pentru produse
 
-- `index.html` — home: hero, lista de produse („ledger”), rezumat cofondator, despre, contact
-- `cofondator.html` — oferta completă de cofondator tehnic (cine, cum, FAQ, formular)
-- `servicii.html` — aplicații la preț fix
-- `assets/site.css` — tokenii de design și tot CSS-ul (light + dark)
-- `assets/site.js` — meniu mobil, formulare, an în footer
+Pune fișierele în `assets/screens/`, la 1440×900 (sau orice 16:10), JPG:
+
+```
+tixello.jpg  ambilet.jpg  bilete-online.jpg  viaqui.jpg  tics.jpg
+e-test.jpg   dreamsatlas.jpg  dubidu.jpg  emud.jpg
+```
+
+Până apar, cardurile afișează un placeholder cu numele fișierului. Fotografia ta: `assets/andrei.jpg` (vezi comentariul din `index.html`, secțiunea „Cine sunt”).
+
+## Formulare
+
+Site-ul fiind static, formularele deschid clientul de email precompletat. Ca să trimită prin POST, pune `data-endpoint="https://…"` pe `<form>` (Formspree, un endpoint Laravel etc.).
 
 ## Rulare locală
 
-Orice server static merge:
-
 ```bash
 php -S localhost:8080
-# sau
-npx serve .
 ```
 
 ## Publicare
 
-Fiind HTML static, se poate publica pe GitHub Pages, Netlify, Vercel sau orice hosting.
-Pentru GitHub Pages: Settings → Pages → Deploy from branch → `main` / root.
-
-## De completat
-
-- `assets/andrei.jpg` — fotografia din secțiunea „Cine sunt” (placeholder-ul din `index.html` se înlocuiește cu `<img>`)
-- Formularele deschid clientul de email (`mailto:`). Pentru trimitere directă, pune `data-endpoint="https://..."` pe `<form>` (Formspree, un endpoint Laravel etc.)
-- Linkul de calendar: `https://cal.com/andreinastase`
-- Rolurile din lista de produse (Fondator / Cofondator) sunt presupuneri — ajustează în `index.html`
+GitHub Pages: Settings → Pages → Deploy from branch → `main` / root. Sau orice hosting static.
