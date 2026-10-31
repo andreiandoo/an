@@ -1,0 +1,10 @@
+config.php
+node_modules/
+dist/
+.astro/
+.env*
+*.log
+tmp/
+design/shots/
+/.astro
+legacy/

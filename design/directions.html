@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trei direcții</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{-webkit-font-smoothing:antialiased;overflow-x:hidden;font-family:"Geist",system-ui,sans-serif}
+section{min-height:100vh;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.tag{position:absolute;right:16px;bottom:14px;font:400 11px/1 "Geist Mono",monospace;letter-spacing:.08em;opacity:.55}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px clamp(16px,2.6vw,36px);font-size:14px}
+nav div{display:flex;gap:26px;align-items:center}
+nav a{color:inherit;text-decoration:none}
+.strip{display:flex;gap:14px;margin-top:auto}
+.c{flex:0 0 auto;aspect-ratio:9/16;border-radius:10px;display:flex;align-items:flex-end;padding:14px;font-weight:500;font-size:15px}
+
+/* A: monocrom */
+.a{background:#ececec;color:#0b0b0b}
+.a nav .cta{background:#0b0b0b;color:#fff;padding:10px 16px;border-radius:999px}
+.a .h{padding:clamp(28px,6vh,72px) clamp(16px,2.6vw,36px) 0}
+.a h1{font-weight:500;font-size:clamp(52px,10.6vw,176px);line-height:1.04;letter-spacing:-.065em}
+.a p{font-size:clamp(17px,1.5vw,22px);line-height:1.35;letter-spacing:-.02em;max-width:34ch;margin-top:32px;color:#0b0b0b}
+.a .strip{padding:0 clamp(16px,2.6vw,36px);transform:translateY(34%)}
+.a .c{width:clamp(130px,13vw,190px);background:#0b0b0b;color:#fff}
+.a .c:nth-child(even){background:#c9c9c9;color:#0b0b0b}
+
+/* B: noapte */
+.b{background:#0c0b0a;color:#f4efe6;font-family:"Archivo",sans-serif}
+.b nav{font-family:"Geist",sans-serif;color:#a9a39a}
+.b nav b{color:#f4efe6;font-weight:500}
+.b nav .cta{background:#ff5a1f;color:#0c0b0a;padding:10px 16px;border-radius:999px;font-weight:600}
+.b .h{padding:clamp(24px,5vh,60px) clamp(16px,2.6vw,36px) 0;text-align:center}
+.b h1{font-weight:800;font-stretch:125%;text-transform:uppercase;font-size:clamp(34px,6.5vw,112px);line-height:1.08;letter-spacing:-.025em}
+.b h1 span{color:#ff5a1f}
+.b p{font-family:"Geist",sans-serif;font-weight:400;font-size:17px;line-height:1.5;color:#a9a39a;max-width:50ch;margin:26px auto 0}
+.b .strip{justify-content:center;gap:12px;perspective:1500px;padding-top:44px;transform:translateY(16%)}
+.b .c{width:clamp(120px,12.5vw,180px);background:#26221e;color:#f4efe6;font-family:"Geist",sans-serif;transform:translateY(calc(var(--d)*var(--d)*8px)) rotateZ(calc(var(--d)*2deg))}
+.b .c.on{background:#ff5a1f;color:#0c0b0a}
+
+/* C: grid */
+.c-dir{background:#fff;color:#111;font-family:"Instrument Sans",sans-serif}
+.c-dir nav{border-bottom:1px solid #111;font-family:"Geist Mono",monospace;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);flex:1}
+.grid>*{border-right:1px solid #111}
+.g-a{grid-column:span 9;padding:clamp(24px,4vh,44px) clamp(16px,2.6vw,36px);display:flex;flex-direction:column}
+.g-b{grid-column:span 3;border-right:0;display:flex;flex-direction:column}
+.c-dir h1{font-weight:600;font-stretch:80%;font-size:clamp(46px,7.6vw,128px);line-height:1.08;letter-spacing:-.04em}
+.c-dir h1 mark{background:none;color:#1f4dff}
+.c-dir p{margin-top:auto;font-size:18px;line-height:1.4;max-width:46ch;padding-top:28px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:13px 16px;border-bottom:1px solid #111;font-size:15px}
+.row span{font:400 11px/1.6 "Geist Mono",monospace;color:#666}
+.btn{margin-top:auto;background:#1f4dff;color:#fff;padding:20px 16px;font-weight:600;text-decoration:none;display:block}
+@media(max-width:800px){.g-a,.g-b{grid-column:span 12;border-right:0}.btn{margin-top:0}nav div a:not(.cta){display:none}}
+</style>
+</head>
+<body>
+
+<section class="a">
+  <nav><b>Andrei Năstase</b><div><a href="#">Ce am construit</a><a href="#">Servicii</a><a href="#">Cofondator</a><a class="cta" href="#">Apel gratuit</a></div></nav>
+  <div class="h">
+    <h1>Aveți nevoie<br>de o aplicație?</h1>
+    <p>Sau de cineva care să o construiască alături de voi. Vă spun sincer ce merită făcut.</p>
+  </div>
+  <div class="strip"><div class="c">Tixello</div><div class="c">AmBilet</div><div class="c">bilete.online</div><div class="c">Viaqui</div><div class="c">TICS Radar</div><div class="c">e-test.ro</div><div class="c">Dreams Atlas</div><div class="c">dubidu</div></div>
+  <span class="tag">A / MONOCROM</span>
+</section>
+
+<section class="b">
+  <nav><b>Andrei Năstase</b><div><a href="#">Ce am construit</a><a href="#">Servicii</a><a href="#">Cofondator</a><a class="cta" href="#">Apel gratuit</a></div></nav>
+  <div class="h">
+    <h1>Aveți nevoie de o aplicație? <span>Sau de un cofondator?</span></h1>
+    <p>Vă spun sincer ce merită construit: o aplicație web sau mobilă, un MVP, sau nimic nou.</p>
+  </div>
+  <div class="strip"><div class="c" style="--d:-3">Viaqui</div><div class="c" style="--d:-2">AmBilet</div><div class="c" style="--d:-1">TICS Radar</div><div class="c on" style="--d:0">Tixello</div><div class="c" style="--d:1">Dreams Atlas</div><div class="c" style="--d:2">e-test.ro</div><div class="c" style="--d:3">dubidu</div></div>
+  <span class="tag">B / NOAPTE</span>
+</section>
+
+<section class="c-dir">
+  <nav><b>Andrei Năstase</b><div><a href="#">Ce am construit</a><a href="#">Servicii</a><a href="#">Cofondator</a><a href="#">Contact</a></div></nav>
+  <div class="grid">
+    <div class="g-a">
+      <h1>Aveți nevoie de o <mark>aplicație</mark>? Sau de cineva care să o construiască alături de voi?</h1>
+      <p>Vă spun sincer ce merită construit: o aplicație web sau mobilă, un MVP, sau nimic nou. Primul apel, de 30 de minute, e gratuit.</p>
+    </div>
+    <div class="g-b">
+      <div class="row">Tixello<span>01 SaaS</span></div>
+      <div class="row">AmBilet<span>02 Bilete</span></div>
+      <div class="row">bilete.online<span>03 Atracții</span></div>
+      <div class="row">Viaqui<span>04 Turism</span></div>
+      <div class="row">TICS Radar<span>05 Prețuri</span></div>
+      <div class="row">e-test.ro<span>06 Educație</span></div>
+      <div class="row">Dreams Atlas<span>07 AI</span></div>
+      <div class="row">dubidu<span>08 Extensie</span></div>
+      <div class="row">eMUD<span>09 Magazin</span></div>
+      <a class="btn" href="#">Programați apelul gratuit →</a>
+    </div>
+  </div>
+  <span class="tag">C / GRID</span>
+</section>
+
+</body>
+</html>

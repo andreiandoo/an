@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototip arc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f4f3; --ink:#111; --muted:#6b6b6b; --line:#d9d9d7;
+  --night:#0d0d0d; --night-ink:#f2f2f2; --night-muted:#858585; --night-line:#2b2b2b;
+  --accent:#ff4a1c;
+  --sans:"Geist",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace;
+  --gutter:clamp(16px,3vw,40px);
+}
+*{box-sizing:border-box;margin:0}
+html{background:var(--paper)}
+body{background:var(--paper);color:var(--ink);font:400 16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:20px var(--gutter);font-size:14px}
+.bar b{font-weight:500}
+.bar nav{display:flex;gap:26px;align-items:center}
+.bar .cta{border:1px solid var(--ink);padding:8px 14px;border-radius:999px}
+.hero{padding:clamp(56px,13vh,132px) var(--gutter) clamp(56px,10vh,96px);display:grid;gap:28px;grid-template-columns:minmax(0,740px)}
+h1{font-weight:400;font-size:clamp(28px,3.6vw,50px);line-height:1.14;letter-spacing:-.032em}
+.lead{color:var(--muted);max-width:52ch}
+.go{display:inline-flex;align-items:center;gap:10px;font-weight:500}
+.go i{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.go span{border-bottom:1px solid currentColor}
+
+.work{background:var(--night);color:var(--night-ink);padding:clamp(56px,9vh,88px) 0 clamp(40px,7vh,64px);overflow:hidden}
+.head{display:flex;justify-content:space-between;align-items:end;gap:24px;padding:0 var(--gutter)}
+h2{font-weight:400;font-size:clamp(22px,2.4vw,32px);letter-spacing:-.025em}
+.ctrl{display:flex;gap:8px}
+.ctrl button{width:40px;height:40px;border-radius:50%;border:1px solid var(--night-line);background:none;color:inherit;cursor:pointer;display:grid;place-items:center}
+.ctrl button:hover{border-color:var(--night-ink)}
+.ctrl svg{width:16px;height:16px}
+.stage{position:relative;height:calc(var(--card-h) + 130px);margin-top:44px;touch-action:pan-y;user-select:none;cursor:grab;--card-w:clamp(170px,15.5vw,236px);--card-h:calc(var(--card-w)*844/390)}
+.stage.is-drag{cursor:grabbing}
+.item{position:absolute;left:50%;top:0;width:var(--card-w);margin-left:calc(var(--card-w)/-2);will-change:transform;display:block}
+.frame{display:block;position:relative;aspect-ratio:390/844;border-radius:16px;overflow:hidden;background:#1b1b1b}
+.frame img{position:absolute;left:0;top:0;width:100%;height:auto;display:block;filter:grayscale(1) contrast(1.02);transition:filter .5s ease-out;will-change:transform;pointer-events:none}
+.item.is-on .frame img{filter:none}
+.cap{display:block;margin-top:12px;text-align:center;font:400 11px/1.5 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--night-muted);transition:color .4s}
+.cap span{display:block}
+.cap span+span{opacity:.6}
+.item.is-on .cap{color:var(--night-ink)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:640px){.bar nav a:not(.cta){display:none}.stage{--card-w:190px}}
+</style>
+</head>
+<body>
+<header class="bar"><b>Andrei Năstase</b><nav><a href="#work">Ce am construit</a><a href="#">Servicii</a><a href="#">Cofondator</a><a class="cta" href="#">Apel gratuit</a></nav></header>
+
+<section class="hero">
+  <h1>Aveți nevoie de o aplicație? Sau de cineva care să o construiască alături de voi?</h1>
+  <p class="lead">Vă spun sincer ce merită construit: o aplicație web sau mobilă, un MVP, sau nimic nou. Primul apel, de 30 de minute, e gratuit.</p>
+  <a class="go" href="#"><i></i><span>Programați apelul gratuit</span></a>
+</section>
+
+<section class="work" id="work" aria-labelledby="work-title">
+  <div class="head">
+    <h2 id="work-title">Ce am construit</h2>
+    <div class="ctrl">
+      <button id="prev" aria-label="Proiectul anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button id="toggle" aria-label="Oprește mișcarea" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor"><path id="toggle-path" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+      <button id="next" aria-label="Proiectul următor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+  <div class="stage" id="stage"></div>
+</section>
+
+<script>
+const PROJECTS = [
+  ['Tixello', 'tixello', 'SaaS ticketing', 'https://tixello.com'],
+  ['AmBilet', 'ambilet', 'Bilete', 'https://ambilet.ro'],
+  ['bilete.online', 'bilete-online', 'Atracții', 'https://bilete.online'],
+  ['Viaqui', 'viaqui', 'Turism', 'https://viaqui.com'],
+  ['TICS Radar', 'tics', 'Comparator', 'https://tics.ro'],
+  ['e-test.ro', 'e-test', 'Educație', 'https://e-test.ro'],
+  ['Dreams Atlas', 'dreamsatlas', 'AI', 'https://dreamsatlas.com'],
+  ['dubidu', 'dubidu', '1 dec.', 'https://dubidu.net'],
+  ['eMUD', 'emud', 'De vânzare', 'https://a-n.ro'],
+];
+const COPIES = 2, DRIFT = 34, PAN_SPEED = 90, DRAG_THRESHOLD = 6;
+const stage = document.getElementById('stage');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const touch = matchMedia('(hover: none)').matches;
+
+const items = [];
+for (let c = 0; c < COPIES; c++) PROJECTS.forEach(([name, file, tag, url], i) => {
+  const a = document.createElement('a');
+  a.className = 'item'; a.draggable = false; a.href = url; a.target = '_blank'; a.rel = 'noopener';
+  if (c) { a.tabIndex = -1; a.setAttribute('aria-hidden', 'true'); }
+  a.innerHTML = `<span class="frame"><img src="shots/${file}.jpg" alt="" loading="eager" draggable="false"></span>
+    <span class="cap"><span>${name}</span><span>${tag}</span></span>`;
+  stage.append(a);
+  items.push({ el: a, img: a.querySelector('img'), index: items.length, range: 0, pan: 0, dir: 1, hot: false, on: false });
+});
+
+let gap = 0, total = 0, radius = 0, cardH = 0;
+function measure() {
+  const frame = items[0].el.querySelector('.frame');
+  gap = frame.offsetWidth + Math.max(16, frame.offsetWidth * .1);
+  cardH = frame.offsetHeight;
+  total = gap * items.length;
+  radius = Math.max(1300, innerWidth * 2.3);
+  items.forEach(it => { it.range = Math.max(0, it.img.offsetHeight - cardH); });
+}
+items.forEach(it => it.img.addEventListener('load', measure));
+addEventListener('resize', measure);
+
+let t = 0, target = null, running = !reduced, visible = true, hover = false, last = 0;
+const mod = (n, m) => ((n % m) + m) % m;
+
+function draw(dt) {
+  items.forEach(it => {
+    const x = mod(it.index * gap - t + total / 2, total) - total / 2;
+    const a = x / radius;
+    const px = radius * Math.sin(a), py = radius * (1 - Math.cos(a));
+    it.el.style.transform = `translate3d(${px.toFixed(1)}px,${py.toFixed(1)}px,0) rotate(${a.toFixed(4)}rad)`;
+    const active = touch ? Math.abs(x) < gap / 2 : it.hot;
+    if (active !== it.on) { it.on = active; it.el.classList.toggle('is-on', active); }
+    if (reduced || !it.range) return;
+    if (active) {
+      it.pan += it.dir * PAN_SPEED * dt / 1000;
+      if (it.pan >= it.range) { it.pan = it.range; it.dir = -1; }
+      if (it.pan <= 0) { it.pan = 0; it.dir = 1; }
+    } else if (it.pan > 0) {
+      it.pan *= Math.max(0, 1 - dt / 160);
+      it.dir = 1;
+      if (it.pan < 1) it.pan = 0;
+    } else return;
+    it.img.style.transform = `translate3d(0,${(-it.pan).toFixed(1)}px,0)`;
+  });
+}
+
+function tick(now) {
+  const dt = Math.min(now - last, 50); last = now;
+  if (visible) {
+    if (target !== null) {
+      const d = target - t; t += d * Math.min(1, dt / 140);
+      if (Math.abs(d) < .5) { t = target; target = null; }
+    } else if (running && !hover && !dragging) t += DRIFT * dt / 1000;
+    draw(dt);
+  }
+  requestAnimationFrame(tick);
+}
+
+const step = dir => { target = (Math.round((target ?? t) / gap) + dir) * gap; };
+document.getElementById('prev').onclick = () => step(-1);
+document.getElementById('next').onclick = () => step(1);
+const toggle = document.getElementById('toggle'), path = document.getElementById('toggle-path');
+function setRunning(v) {
+  running = v;
+  path.setAttribute('d', v ? 'M7 5h4v14H7zM13 5h4v14h-4z' : 'M8 5l11 7-11 7z');
+  toggle.setAttribute('aria-label', v ? 'Oprește mișcarea' : 'Pornește mișcarea');
+  toggle.setAttribute('aria-pressed', String(!v));
+}
+toggle.onclick = () => setRunning(!running);
+setRunning(running);
+
+items.forEach(it => {
+  it.el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { it.hot = hover = true; } });
+  it.el.addEventListener('pointerleave', () => { it.hot = hover = false; });
+  it.el.addEventListener('blur', () => { it.hot = false; });
+});
+
+let dragging = false, moved = 0, startX = 0, startT = 0;
+stage.addEventListener('pointerdown', e => {
+  dragging = true; moved = 0; startX = e.clientX; startT = t; target = null;
+  stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  moved = Math.max(moved, Math.abs(e.clientX - startX));
+  t = startT - (e.clientX - startX);
+  if (moved > DRAG_THRESHOLD) stage.classList.add('is-drag');
+});
+function endDrag(e) {
+  if (!dragging) return;
+  dragging = false; stage.classList.remove('is-drag');
+  if (moved <= DRAG_THRESHOLD && e.type === 'pointerup') {
+    const el = document.elementsFromPoint(e.clientX, e.clientY).find(n => n.closest?.('.item'));
+    if (el) window.open(el.closest('.item').href, '_blank', 'noopener');
+  }
+}
+stage.addEventListener('pointerup', endDrag);
+stage.addEventListener('pointercancel', endDrag);
+stage.addEventListener('click', e => e.preventDefault());
+stage.addEventListener('dragstart', e => e.preventDefault());
+stage.addEventListener('keydown', e => {
+  const it = e.target.closest?.('.item');
+  if (it && e.key === 'Enter') window.open(it.href, '_blank', 'noopener');
+});
+items.forEach(it => it.el.addEventListener('focus', e => { if (e.target.matches(':focus-visible')) { target = it.index * gap; it.hot = true; } }));
+
+new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(stage);
+measure(); requestAnimationFrame(n => { last = n; tick(n); });
+</script>
+</body>
+</html>

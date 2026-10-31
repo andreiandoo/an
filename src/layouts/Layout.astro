@@ -1,0 +1,66 @@
+---
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '../styles/global.css';
+
+const { title, description, path = '/', cta = '/#contact', ctaLabel = 'Apel gratuit' } = Astro.props;
+const canonical = new URL(path, 'https://andreinastase.ro').href;
+const nav = [
+  ['/#proiecte', 'Ce am construit'],
+  ['/servicii/', 'Servicii'],
+  ['/cofondator/', 'Cofondator'],
+  ['/#despre', 'Cine sunt'],
+];
+const person = JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'Person', name: 'Andrei Năstase', url: 'https://andreinastase.ro',
+  image: 'https://andreinastase.ro/andrei.jpg', jobTitle: 'Senior full-stack developer',
+  sameAs: ['https://linkedin.com/in/andreinastase', 'https://github.com/andreiandoo'],
+});
+---
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content={canonical}>
+  <meta property="og:image" content="https://andreinastase.ro/andrei.jpg">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#f4f4f3">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script is:inline>document.documentElement.classList.add('js')</script>
+  <script is:inline type="application/ld+json" set:html={person}></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">Andrei Năstase</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Meniu</button>
+      <nav class="nav" id="nav" aria-label="Principal">
+        {nav.map(([href, label]) => <a href={href} aria-current={path === href ? 'page' : undefined}>{label}</a>)}
+        <a class="cta" href={cta}>{ctaLabel}</a>
+      </nav>
+    </div>
+  </header>
+  <main><slot /></main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© {new Date().getFullYear()} Andrei Năstase · TIXELLO SRL · Ploiești</span>
+      <nav aria-label="Subsol">
+        <a href="/servicii/">Servicii</a>
+        <a href="/cofondator/">Cofondator</a>
+        <a href="/domenii/">Domenii de vânzare</a>
+        <a href="mailto:contact@andreinastase.ro">contact@andreinastase.ro</a>
+        <a href="https://linkedin.com/in/andreinastase" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/andreiandoo" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+  <script>import '../scripts/site.js';</script>
+</body>
+</html>

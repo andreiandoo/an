@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const domains = [
+  ['bine.ro', 15000], ['epas.ro', 7800], ['cautbilet.ro', 4000], ['roplati.ro', 3600],
+  ['actoria.ro', 2000], ['agentiaweb.ro', 2000], ['cinesunt.ro', 2000], ['cursdecariera.ro', 2000],
+  ['eduplan.ro', 2000], ['livetributes.com', 2000], ['nastasia.ro', 2000], ['obli.ro', 2000],
+  ['suntonline.ro', 2000], ['e-a.ro', 1770], ['teatru-copii.ro', 1200], ['bilete-teatru.ro', 800],
+  ['hailateatru.ro', 800],
+];
+const price = n => `${n.toLocaleString('ro-RO')} €`;
+---
+<Layout
+  title="Domenii de vânzare | Andrei Năstase"
+  description="Domenii .ro și .com scurte, disponibile pentru cumpărare direct de la proprietar."
+  path="/domenii/"
+>
+  <section class="section">
+    <div class="wrap">
+      <h1>Domenii de vânzare</h1>
+      <p class="lead" style="margin-top:12px">Scrieți-mi pentru oricare dintre ele. Transferul se face direct, fără intermediar.</p>
+      <ul class="domains">
+        {domains.map(([name, value]) => (
+          <li>
+            <b style="font-weight:500">{name}</b>
+            <span>{price(value)}</span>
+            <a class="link" href={`mailto:contact@andreinastase.ro?subject=${encodeURIComponent(`Domeniu: ${name}`)}`}>Întreabă</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

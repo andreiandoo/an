@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import body from '../partials/cofondator.html?raw';
+---
+<Layout
+  title="Cofondator tehnic pentru ideea ta de produs | Andrei Năstase"
+  description="Ai o idee de produs și oameni care o așteaptă, îți lipsește cine să o construiască. Pornim împreună o firmă nouă: construiesc produsul pentru o parte din ea, sau la preț redus și o parte mai mică."
+  path="/cofondator/"
+  cta="#idee"
+  ctaLabel="Spune-mi ideea"
+>
+  <Fragment set:html={body} />
+</Layout>

@@ -1,0 +1,108 @@
+---
+import fs from 'node:fs';
+import Layout from '../layouts/Layout.astro';
+import { products, inWork, roles, clients } from '../data/portfolio.js';
+import rest from '../partials/home-rest.html?raw';
+
+const has = path => fs.existsSync(`public/shots/${path}.jpg`);
+const list = clients.map(c => ({ ...c, live: has(`clients/${c.file}`) }));
+const cats = [...new Set(clients.map(c => c.cat))];
+const arrow = 'M5 12h14M13 6l6 6-6 6';
+---
+<Layout
+  title="Aplicații web, mobile și cofondator tehnic | Andrei Năstase"
+  description="Vă spun sincer ce merită construit: o aplicație web sau mobilă, un MVP sau nimic nou. 17 ani de software, 9 produse construite. Primul apel, de 30 de minute, e gratuit."
+>
+  <section class="home-hero">
+    <div class="wrap">
+      <h1>Aveți nevoie de o aplicație? Sau de cineva care să o construiască alături de voi?</h1>
+      <p class="lead">Vă spun sincer ce merită construit: o aplicație web sau mobilă, un MVP, sau nimic nou. Dacă ideea e bună și are clienți care o așteaptă, pot intra și ca și cofondator tehnic.</p>
+      <a class="go" href="#contact"><i></i><span>Programați apelul gratuit, 30 de minute</span></a>
+      <ul class="stats label">
+        <li>17 ani de software</li>
+        <li>9 produse construite</li>
+        <li>{clients.length} proiecte pentru clienți</li>
+        <li>Răspuns într-o zi lucrătoare</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="ribbon" id="ribbon" aria-hidden="true"><canvas></canvas></section>
+
+  <div class="work">
+    <section id="proiecte" aria-labelledby="work-title">
+      <div class="wrap head">
+        <div>
+          <h2 id="work-title">Ce am construit</h2>
+          <p>Nouă produse proprii, ca fondator sau cofondator. La fiecare am făcut designul, codul și lansarea.</p>
+        </div>
+        <div class="ctrl" id="ctrl">
+          <button id="prev" aria-label="Proiectul anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button id="toggle" aria-label="Oprește mișcarea" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor"><path id="toggle-path" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+          <button id="next" aria-label="Proiectul următor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+      <div class="stage" id="stage">
+        {products.map(p => (
+          <a class="item" href={p.url} target="_blank" rel="noopener">
+            <span class="frame"><img src={`/shots/${p.file}.jpg`} alt={`Site-ul ${p.name} pe telefon`} width="780" height="6000" loading="lazy" draggable="false"></span>
+            <span class="cap"><span>{p.name}</span><span>{p.tag}</span></span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="wrap sub" aria-labelledby="work-next">
+      <h3 id="work-next">În lucru și de vânzare</h3>
+      <div class="phones">
+        {inWork.map(p => (
+          <a class="phone" href={p.url} target={p.url && '_blank'} rel={p.url && 'noopener'}>
+            {has(`work/${p.file}`)
+              ? <span class="frame"><img src={`/shots/work/${p.file}.jpg`} alt={`Site-ul ${p.name} pe telefon`} width="780" height="1688" loading="lazy"></span>
+              : <span class="frame is-empty">{p.name}</span>}
+            <b>{p.name}</b>
+            <span class="label">{p.status}</span>
+            <p>{p.text}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="wrap sub" aria-labelledby="work-roles">
+      <h3 id="work-roles">Roluri de conducere</h3>
+      <ul class="roles">
+        {roles.map(r => (
+          <li>
+            <span>{r.years}</span>
+            <div>{r.url ? <a class="link" href={r.url} target="_blank" rel="noopener">{r.name}</a> : r.name}<em>{r.role}</em></div>
+            <p>{r.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+
+  <section class="clients" id="clienti" aria-labelledby="clients-title">
+    <div class="wrap">
+      <h2 id="clients-title">Lucrări pentru clienți</h2>
+      <div class="filters" id="filters" role="group" aria-label="Filtrează după domeniu" hidden>
+        <button aria-pressed="true" data-cat="">Toate</button>
+        {cats.map(c => <button aria-pressed="false" data-cat={c}>{c}</button>)}
+      </div>
+      <ul class="rows" id="rows">
+        {list.map(c => (
+          <li data-cat={c.cat}>
+            {c.live
+              ? <a href={c.url} target="_blank" rel="noopener" data-peek={`/shots/clients/${c.file}.jpg`}><span>{c.name}</span><span>{c.work}</span><span>{c.cat}</span></a>
+              : <div class="row"><span>{c.name}</span><span>{c.work}</span><span>{c.cat}</span></div>}
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="peek" id="peek" aria-hidden="true"><img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="></div>
+  </section>
+
+  <Fragment set:html={rest} />
+
+  <script>import '../scripts/arc.js'; import '../scripts/ribbon.js'; import '../scripts/clients.js';</script>
+</Layout>

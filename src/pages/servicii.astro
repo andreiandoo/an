@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import body from '../partials/servicii.html?raw';
+---
+<Layout
+  title="Aplicații web și mobile pentru firme | Andrei Năstase"
+  description="Vă spun sincer ce merită construit în firma voastră: o aplicație web sau mobilă, o automatizare sau nimic nou. Web de la 3.000 €, mobil de la 5.000 €."
+  path="/servicii/"
+  cta="#cerere"
+>
+  <Fragment set:html={body} />
+</Layout>
