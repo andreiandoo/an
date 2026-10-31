@@ -1,33 +1,68 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-const domains = [
-  ['bine.ro', 15000], ['epas.ro', 7800], ['cautbilet.ro', 4000], ['roplati.ro', 3600],
-  ['actoria.ro', 2000], ['agentiaweb.ro', 2000], ['cinesunt.ro', 2000], ['cursdecariera.ro', 2000],
-  ['eduplan.ro', 2000], ['livetributes.com', 2000], ['nastasia.ro', 2000], ['obli.ro', 2000],
-  ['suntonline.ro', 2000], ['e-a.ro', 1770], ['teatru-copii.ro', 1200], ['bilete-teatru.ro', 800],
-  ['hailateatru.ro', 800],
+const featured = [
+  { name: 'bine.ro', price: 15000, note: 'Un singur cuvânt, pozitiv, pe care îl spune toată lumea.' },
+  { name: 'epas.ro', price: 7800, note: 'Patru litere, ușor de ținut minte în orice limbă.' },
+  { name: 'cautbilet.ro', price: 4000, note: 'Exact ce scrie cineva care vrea să meargă la un eveniment.' },
 ];
+const groups = [
+  ['Evenimente și teatru', [['bilete-teatru.ro', 800], ['hailateatru.ro', 800], ['teatru-copii.ro', 1200], ['livetributes.com', 2000]]],
+  ['Business și digital', [['agentiaweb.ro', 2000], ['suntonline.ro', 2000], ['roplati.ro', 3600], ['obli.ro', 2000], ['e-a.ro', 1770]]],
+  ['Educație și carieră', [['eduplan.ro', 2000], ['cursdecariera.ro', 2000], ['cinesunt.ro', 2000], ['actoria.ro', 2000], ['nastasia.ro', 2000]]],
+];
+const count = featured.length + groups.reduce((n, [, list]) => n + list.length, 0);
 const price = n => `${n.toLocaleString('ro-RO')} €`;
+const mail = name => `mailto:contact@andreinastase.ro?subject=${encodeURIComponent(`Domeniu: ${name}`)}`;
+const split = name => { const i = name.lastIndexOf('.'); return [name.slice(0, i), name.slice(i)]; };
 ---
 <Layout
   title="Domenii de vânzare | Andrei Năstase"
-  description="Domenii .ro și .com scurte, disponibile pentru cumpărare direct de la proprietar."
+  description="Domenii .ro și .com scurte, disponibile direct de la proprietar, de la 800 €."
   path="/domenii/"
+  theme="night"
 >
-  <section class="section">
+  <section class="shop">
     <div class="wrap">
-      <h1>Domenii de vânzare</h1>
-      <p class="lead" style="margin-top:12px">Scrieți-mi pentru oricare dintre ele. Transferul se face direct, fără intermediar.</p>
-      <ul class="domains">
-        {domains.map(([name, value]) => (
-          <li>
-            <b style="font-weight:500">{name}</b>
-            <span>{price(value)}</span>
-            <a class="link" href={`mailto:contact@andreinastase.ro?subject=${encodeURIComponent(`Domeniu: ${name}`)}`}>Întreabă</a>
-          </li>
-        ))}
+      <header class="shop-head">
+        <span class="label">{count} domenii · direct de la proprietar</span>
+        <h1>Numele bun e deja luat. Unele sunt aici.</h1>
+        <p>Domenii scurte, ușor de spus la telefon. Scrieți-mi pentru cel care vă interesează, iar transferul se face direct, fără intermediar.</p>
+      </header>
+
+      <ul class="shop-top">
+        {featured.map(d => {
+          const [base, ext] = split(d.name);
+          return (
+            <li>
+              <a href={mail(d.name)}>
+                <strong>{base}<small>{ext}</small></strong>
+                <p>{d.note}</p>
+                <span class="row"><span>{price(d.price)}</span><i>Vreau domeniul</i></span>
+              </a>
+            </li>
+          );
+        })}
       </ul>
+
+      {groups.map(([title, list]) => (
+        <section class="shop-group">
+          <h2 class="label">{title}</h2>
+          <ul>
+            {list.map(([name, value]) => {
+              const [base, ext] = split(name);
+              return (
+                <li>
+                  <a href={mail(name)}>
+                    <b>{base}<small>{ext}</small></b>
+                    <span>{price(value)}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
     </div>
   </section>
 </Layout>

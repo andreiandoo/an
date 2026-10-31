@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import body from '../partials/servicii.html?raw';
+
+const cut = body.indexOf('</section>') + '</section>'.length;
 ---
 <Layout
   title="Aplicații web și mobile pentru firme | Andrei Năstase"
@@ -8,5 +10,8 @@ import body from '../partials/servicii.html?raw';
   path="/servicii/"
   cta="#cerere"
 >
-  <Fragment set:html={body} />
+  <Fragment set:html={body.slice(0, cut)} />
+  <section class="ribbon" id="ribbon" aria-hidden="true"><canvas></canvas></section>
+  <Fragment set:html={body.slice(cut)} />
+  <script>import '../scripts/ribbon.js';</script>
 </Layout>

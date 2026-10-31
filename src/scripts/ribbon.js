@@ -11,7 +11,7 @@ if (canUse()) {
   }, { rootMargin: '500px' }).observe(section);
 }
 
-const FILES = ['tixello', 'ambilet', 'bilete-online', 'viaqui', 'tics', 'e-test', 'dreamsatlas', 'dubidu', 'emud'];
+const FILES = ['tixello', 'ambilet', 'bilete-online', 'tics', 'dreamsatlas', 'viaqui', 'e-test', 'dubidu', 'emud'];
 const CELL_W = 360, CELL_H = 780, PAD = 10, RADIUS = 18;
 
 const VS = `
@@ -95,13 +95,10 @@ async function start() {
   let visible = true;
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(section);
 
-  const from = [244, 244, 243], to = [13, 13, 13];
   function frame(now) {
     if (visible) {
       const r = section.getBoundingClientRect();
       const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
-      const d = Math.min(1, Math.max(0, (p - .62) / .3));
-      section.style.backgroundColor = `rgb(${from.map((v, i) => Math.round(v + (to[i] - v) * d)).join(',')})`;
       uniforms.uP.value = p;
       uniforms.uTime.value = now / 1000;
       renderer.render(scene, camera);

@@ -3,7 +3,7 @@ import '@fontsource-variable/geist';
 import '@fontsource-variable/geist-mono';
 import '../styles/global.css';
 
-const { title, description, path = '/', cta = '/#contact', ctaLabel = 'Apel gratuit' } = Astro.props;
+const { title, description, path = '/', cta = '/#contact', ctaLabel = 'Apel gratuit', theme = '' } = Astro.props;
 const canonical = new URL(path, 'https://andreinastase.ro').href;
 const nav = [
   ['/#proiecte', 'Ce am construit'],
@@ -36,7 +36,7 @@ const person = JSON.stringify({
   <script is:inline>document.documentElement.classList.add('js')</script>
   <script is:inline type="application/ld+json" set:html={person}></script>
 </head>
-<body>
+<body class={theme}>
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="/">Andrei Năstase</a>

@@ -2,10 +2,10 @@ export const products = [
   { name: 'Tixello', file: 'tixello', tag: 'SaaS ticketing', url: 'https://tixello.com' },
   { name: 'AmBilet', file: 'ambilet', tag: 'Bilete', url: 'https://ambilet.ro' },
   { name: 'bilete.online', file: 'bilete-online', tag: 'Atracții', url: 'https://bilete.online' },
-  { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com' },
   { name: 'TICS Radar', file: 'tics', tag: 'Comparator', url: 'https://tics.ro' },
-  { name: 'e-test.ro', file: 'e-test', tag: 'Educație', url: 'https://e-test.ro' },
   { name: 'Dreams Atlas', file: 'dreamsatlas', tag: 'AI', url: 'https://dreamsatlas.com' },
+  { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com' },
+  { name: 'e-test.ro', file: 'e-test', tag: 'Educație', url: 'https://e-test.ro' },
   { name: 'dubidu', file: 'dubidu', tag: 'Lansare 1 dec.', url: 'https://dubidu.net' },
   { name: 'eMUD', file: 'emud', tag: 'De vânzare', url: 'https://a-n.ro' },
 ];
@@ -59,4 +59,7 @@ export const clients = [
   c('IUF World', 'https://iuf.world', 'Evenimente', 'Site'),
   c('Edu-Start', 'https://edu-start.ro', 'Educație', 'Platformă și site'),
   c('Reveal', 'https://reveal.ro', 'Corporate', 'Site'),
+  c('SICAR Museum', 'https://sicarmuseum.ro', 'Cultură', 'Site de muzeu'),
+  c('EuroSpirit', 'https://eurospirit.ro', 'Educație', 'Site de organizație'),
+  c('ACS Arhivarul', 'https://acsarhivarul.ro', 'Sport', 'Site de club sportiv'),
 ];

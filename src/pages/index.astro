@@ -5,8 +5,11 @@ import { products, inWork, roles, clients } from '../data/portfolio.js';
 import rest from '../partials/home-rest.html?raw';
 
 const has = path => fs.existsSync(`public/shots/${path}.jpg`);
-const list = clients.map(c => ({ ...c, live: has(`clients/${c.file}`) }));
-const cats = [...new Set(clients.map(c => c.cat))];
+const first = ['Fiskl', 'SICAR Museum', 'PerformanceHR', 'EuroSpirit', 'ACS Arhivarul'];
+const rank = c => (first.includes(c.name) ? first.indexOf(c.name) : first.length);
+const list = clients.filter(c => has(`clients/${c.file}`)).sort((a, b) => rank(a) - rank(b));
+const older = clients.filter(c => !has(`clients/${c.file}`));
+const cats = [...new Set(list.map(c => c.cat))];
 const arrow = 'M5 12h14M13 6l6 6-6 6';
 ---
 <Layout
@@ -26,8 +29,6 @@ const arrow = 'M5 12h14M13 6l6 6-6 6';
       </ul>
     </div>
   </section>
-
-  <section class="ribbon" id="ribbon" aria-hidden="true"><canvas></canvas></section>
 
   <div class="work">
     <section id="proiecte" aria-labelledby="work-title">
@@ -83,26 +84,31 @@ const arrow = 'M5 12h14M13 6l6 6-6 6';
   </div>
 
   <section class="clients" id="clienti" aria-labelledby="clients-title">
-    <div class="wrap">
-      <h2 id="clients-title">Lucrări pentru clienți</h2>
-      <div class="filters" id="filters" role="group" aria-label="Filtrează după domeniu" hidden>
-        <button aria-pressed="true" data-cat="">Toate</button>
-        {cats.map(c => <button aria-pressed="false" data-cat={c}>{c}</button>)}
+    <div class="t-view">
+      <div class="t-bar wrap">
+        <div class="filters" id="filters" role="group" aria-label="Filtrează după domeniu">
+          <button aria-pressed="true" data-cat="">Toate</button>
+          {cats.map(c => <button aria-pressed="false" data-cat={c}>{c}</button>)}
+        </div>
+        <a class="t-skip" href="#servicii">Sari peste</a>
       </div>
-      <ul class="rows" id="rows">
+      <div class="t-intro">
+        <h2 id="clients-title">Lucrări pentru clienți</h2>
+        <p>{list.length} de site-uri, din {cats.length} domenii. Derulați.</p>
+      </div>
+      <ul class="tunnel" id="tunnel">
         {list.map(c => (
-          <li data-cat={c.cat}>
-            {c.live
-              ? <a href={c.url} target="_blank" rel="noopener" data-peek={`/shots/clients/${c.file}.jpg`}><span>{c.name}</span><span>{c.work}</span><span>{c.cat}</span></a>
-              : <div class="row"><span>{c.name}</span><span>{c.work}</span><span>{c.cat}</span></div>}
+          <li data-cat={c.cat} data-name={c.name} data-work={c.work}>
+            <a href={c.url} target="_blank" rel="noopener"><img src={`/shots/clients/${c.file}.jpg`} alt={`Site-ul ${c.name}`} width="1280" height="800" loading="lazy" draggable="false"><span class="t-cap"><b>{c.name}</b>{c.work}</span></a>
           </li>
         ))}
       </ul>
+      <div class="t-now" aria-hidden="true"><b></b><span></span><i></i></div>
     </div>
-    <div class="peek" id="peek" aria-hidden="true"><img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="></div>
   </section>
+  <p class="t-rest"><span class="wrap">Tot de la mine, dar între timp mutate sau închise: {older.map(c => c.name).join(', ')}.</span></p>
 
   <Fragment set:html={rest} />
 
-  <script>import '../scripts/arc.js'; import '../scripts/ribbon.js'; import '../scripts/clients.js';</script>
+  <script>import '../scripts/arc.js'; import '../scripts/clients.js';</script>
 </Layout>
