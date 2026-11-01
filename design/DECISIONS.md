@@ -11,3 +11,4 @@
 - Clipurile claude-motion vin doar după varianta finală a paginii.
 - 2026-11-01: construcție Astro static pe branch-ul redesign. Fără link pentru Route-a-Roo (domeniu expirat), Actoria (503), CineSunt (temă goală).
 - 2026-11-01: panglica doar pe Servicii, acasă doar arc. Ordine arc: Tixello, AmBilet, bilete.online, TICS, Dreams Atlas, Viaqui, e-test, dubidu, eMUD. Clienți: tunel 3D.
+- 2026-11-01: două obiective pe homepage: prezentare personală și promovarea ideii de cofondator. Accente portocalii mici, peste tot. Cifre reale pe proiecte.

@@ -1,13 +1,14 @@
 export const products = [
-  { name: 'Tixello', file: 'tixello', tag: 'SaaS ticketing', url: 'https://tixello.com' },
-  { name: 'AmBilet', file: 'ambilet', tag: 'Bilete', url: 'https://ambilet.ro' },
+  { name: 'Tixello', file: 'tixello', tag: 'SaaS ticketing', url: 'https://tixello.com', stat: '408.153 bilete' },
+  { name: 'AmBilet', file: 'ambilet', tag: 'Bilete', url: 'https://ambilet.ro', stat: '+148% vânzări' },
   { name: 'bilete.online', file: 'bilete-online', tag: 'Atracții', url: 'https://bilete.online' },
-  { name: 'TICS Radar', file: 'tics', tag: 'Comparator', url: 'https://tics.ro' },
-  { name: 'Dreams Atlas', file: 'dreamsatlas', tag: 'AI', url: 'https://dreamsatlas.com' },
+  { name: 'TICS Radar', file: 'tics', tag: 'Comparator', url: 'https://tics.ro', stat: '20 de platforme' },
+  { name: 'Dreams Atlas', file: 'dreamsatlas', tag: 'AI', url: 'https://dreamsatlas.com', stat: '3,22M afișări' },
   { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com' },
   { name: 'e-test.ro', file: 'e-test', tag: 'Educație', url: 'https://e-test.ro' },
   { name: 'dubidu', file: 'dubidu', tag: 'Lansare 1 dec.', url: 'https://dubidu.net' },
   { name: 'eMUD', file: 'emud', tag: 'De vânzare', url: 'https://a-n.ro' },
+  { name: 'ePAS', file: 'epas', tag: 'Prototip', url: 'https://epas.ro', h: 1688 },
 ];
 
 export const inWork = [
@@ -30,22 +31,22 @@ const c = (name, url, cat, work) => ({ name, url, cat, work, file: slug(name) })
 export const clients = [
   c('Fiskl', 'https://fiskl.com', 'Fintech', 'Site de prezentare'),
   c('DMonitor.tech', 'https://dmonitor.tech', 'Fintech', 'Platformă web cu 12 integrări API'),
-  c('Libazon', 'https://libazon.com', 'E-commerce', 'Marketplace complet'),
-  c('SAGA Festival', 'https://sagafestival.com', 'Evenimente', 'Site și integrare de ticketing'),
+  { ...c('Libazon', '', 'E-commerce', 'Marketplace complet'), offline: true },
+  { ...c('SAGA Festival', '', 'Evenimente', 'Site și integrare de ticketing'), offline: true },
   c('Naradix', 'https://naradix.ro', 'Educație', 'Dezvoltare și optimizare LMS'),
   c('Sipex Online', 'https://sipex-online.ro', 'E-commerce', 'Magazin PrestaShop'),
   c('Clinica Dr. Melnic', 'https://clinicadrmelnic.ro', 'Sănătate', 'Design și dezvoltare site'),
   c('HelloFins', 'https://hellofins.com', 'Fintech', 'Dezvoltare WordPress și WooCommerce'),
   c('Arhiserv', 'https://arhiserv.ro', 'Corporate', 'Site de companie'),
-  c('Wooba', 'https://wooba.ro', 'E-commerce', 'Magazin online'),
+  { ...c('Wooba', '', 'E-commerce', 'Magazin online'), offline: true },
   c('Educativa', 'https://educativa.ro', 'Educație', 'Site'),
   c('Optiuni.ro', 'https://optiuni.ro', 'Fintech', 'Dezvoltare full-stack'),
   c('Edmundo', 'https://edmun.do', 'Educație', 'Dezvoltare WordPress multilingv'),
-  c('Glora.us', 'https://glora.us', 'E-commerce', 'Magazin online'),
+  { ...c('Glora.us', '', 'E-commerce', 'Magazin online'), offline: true },
   c('PerformanceHR', 'https://performancehr.com.au', 'Corporate', 'Site de companie'),
   c('Ploiești 2024', 'https://ploiesti2024.eurospirit.ro/', 'Corporate', 'Platforma Capitalei Tineretului'),
   c('HartaEdu', 'https://hartaedu.ro', 'Educație', 'Idee, MVP și dezvoltare'),
-  c('LT Wealth', 'https://ltwealth.ro', 'Fintech', 'Site'),
+  { ...c('LT Wealth', '', 'Fintech', 'Site'), offline: true },
   c('Talent Financiar', 'https://talentfinanciar.ro', 'Educație', 'Site'),
   c('Teamology Institute', 'https://teamology.ro', 'Educație', 'Site'),
   c('Daisy Tech', 'https://daisy-tech.ro', 'E-commerce', 'Site'),
@@ -62,4 +63,48 @@ export const clients = [
   c('SICAR Museum', 'https://sicarmuseum.ro', 'Cultură', 'Site de muzeu'),
   c('EuroSpirit', 'https://eurospirit.ro', 'Educație', 'Site de organizație'),
   c('ACS Arhivarul', 'https://acsarhivarul.ro', 'Sport', 'Site de club sportiv'),
+  c('Sportiv Educat', 'https://sportiveducat.ro', 'Sport', 'Platformă pentru cluburi sportive'),
+];
+
+export const numbers = [
+  {
+    name: 'Tixello', url: 'https://tixello.com', note: 'Procesate prin platformă. Echivalent 27.712.033 RON.',
+    metrics: [
+      { value: 4980, label: 'evenimente' },
+      { value: 106853, label: 'clienți' },
+      { value: 408153, label: 'bilete vândute' },
+      { value: 5184956, suffix: ' €', label: 'procesați' },
+    ],
+  },
+  {
+    name: 'AmBilet', url: 'https://ambilet.ro', note: 'Creștere de vânzări și venituri.',
+    metrics: [
+      { value: 148, prefix: '+', suffix: '%', label: 'medie pe 5 luni' },
+      { value: 300, prefix: 'peste ', suffix: '%', label: 'într-o singură lună' },
+    ],
+  },
+  {
+    name: 'Dreams Atlas', url: 'https://dreamsatlas.com',
+    metrics: [
+      { value: 3.22, dec: 2, suffix: 'M', label: 'afișări organice' },
+      { value: 332, label: 'clienți' },
+    ],
+  },
+  {
+    name: 'TICS Radar', url: 'https://tics.ro', note: 'Urmărite live.',
+    metrics: [
+      { value: 4632, key: 'liveEvents', label: 'evenimente' },
+      { value: 580857, label: 'locuri monitorizate' },
+      { value: 20, key: 'platforms', label: 'platforme' },
+      { value: 498, key: 'cities', label: 'orașe' },
+    ],
+  },
+];
+
+export const skills = ['Laravel', 'Vue.js', 'Product design', 'PHP', 'MVP-uri', 'Animație', 'PostgreSQL', 'Strategie de marketing', 'WordPress', 'Stripe', 'Aplicații mobile', 'AWS', 'Integrări AI', 'Extensii Chrome', 'Conducere de echipe'];
+
+export const socials = [
+  ['LinkedIn', 'https://linkedin.com/in/andreinastase'],
+  ['GitHub', 'https://github.com/andreiandoo'],
+  ['Facebook', 'https://www.facebook.com/sinecvanon/'],
 ];

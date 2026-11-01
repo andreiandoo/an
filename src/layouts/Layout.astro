@@ -8,7 +8,7 @@ const canonical = new URL(path, 'https://andreinastase.ro').href;
 const nav = [
   ['/#proiecte', 'Ce am construit'],
   ['/servicii/', 'Servicii'],
-  ['/cofondator/', 'Cofondator'],
+  ['/cofondator/', 'Cofondator', true],
   ['/#despre', 'Cine sunt'],
 ];
 const person = JSON.stringify({
@@ -42,7 +42,7 @@ const person = JSON.stringify({
       <a class="brand" href="/">Andrei Năstase</a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Meniu</button>
       <nav class="nav" id="nav" aria-label="Principal">
-        {nav.map(([href, label]) => <a href={href} aria-current={path === href ? 'page' : undefined}>{label}</a>)}
+        {nav.map(([href, label, hot]) => <a href={href} class={hot ? 'hot' : undefined} aria-current={path === href ? 'page' : undefined}>{label}</a>)}
         <a class="cta" href={cta}>{ctaLabel}</a>
       </nav>
     </div>
@@ -58,9 +58,10 @@ const person = JSON.stringify({
         <a href="mailto:contact@andreinastase.ro">contact@andreinastase.ro</a>
         <a href="https://linkedin.com/in/andreinastase" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/andreiandoo" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.facebook.com/sinecvanon/" target="_blank" rel="noopener">Facebook</a>
       </nav>
     </div>
   </footer>
-  <script>import '../scripts/site.js';</script>
+  <script>import '../scripts/site.js'; import '../scripts/life.js';</script>
 </body>
 </html>

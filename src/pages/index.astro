@@ -1,7 +1,7 @@
 ---
 import fs from 'node:fs';
 import Layout from '../layouts/Layout.astro';
-import { products, inWork, roles, clients } from '../data/portfolio.js';
+import { products, inWork, roles, clients, numbers, skills, socials } from '../data/portfolio.js';
 import rest from '../partials/home-rest.html?raw';
 
 const has = path => fs.existsSync(`public/shots/${path}.jpg`);
@@ -10,20 +10,24 @@ const rank = c => (first.includes(c.name) ? first.indexOf(c.name) : first.length
 const list = clients.filter(c => has(`clients/${c.file}`)).sort((a, b) => rank(a) - rank(b));
 const older = clients.filter(c => !has(`clients/${c.file}`));
 const cats = [...new Set(list.map(c => c.cat))];
-const arrow = 'M5 12h14M13 6l6 6-6 6';
+const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('ro-RO', { maximumFractionDigits: m.dec ?? 0, minimumFractionDigits: m.dec ?? 0 })}${m.suffix ?? ''}`;
 ---
 <Layout
-  title="Aplicații web, mobile și cofondator tehnic | Andrei Năstase"
-  description="Vă spun sincer ce merită construit: o aplicație web sau mobilă, un MVP sau nimic nou. 17 ani de software, 9 produse construite. Primul apel, de 30 de minute, e gratuit."
+  title="Andrei Năstase | Aplicații web, mobile și cofondator tehnic"
+  description={`17 ani de software, ${products.length} produse proprii. Construiesc aplicații web și mobile și caut fondatori cu idei și clienți, pentru parteneriate pe termen lung.`}
 >
   <section class="home-hero">
     <div class="wrap">
+      <p class="label kick">Andrei Năstase · Ploiești · Fondator Tixello</p>
       <h1>Aveți nevoie de o aplicație? Sau de cineva care să o construiască alături de voi?</h1>
-      <p class="lead">Vă spun sincer ce merită construit: o aplicație web sau mobilă, un MVP, sau nimic nou. Dacă ideea e bună și are clienți care o așteaptă, pot intra și ca și cofondator tehnic.</p>
-      <a class="go" href="#contact"><i></i><span>Programați apelul gratuit, 30 de minute</span></a>
+      <p class="lead">Sunt senior full-stack, cu 17 ani de software și {products.length} produse proprii în spate. Vă spun sincer ce merită construit. Iar dacă ideea e bună și are clienți care o așteaptă, intru cofondator tehnic.</p>
+      <div class="paths">
+        <a class="go" href="#contact"><i></i><span>Programați apelul gratuit</span></a>
+        <a class="go" href="/cofondator/"><i></i><span>Am o idee, caut cofondator</span></a>
+      </div>
       <ul class="stats label">
         <li>17 ani de software</li>
-        <li>9 produse construite</li>
+        <li>{products.length} produse proprii</li>
         <li>{clients.length} proiecte pentru clienți</li>
         <li>Răspuns într-o zi lucrătoare</li>
       </ul>
@@ -35,7 +39,7 @@ const arrow = 'M5 12h14M13 6l6 6-6 6';
       <div class="wrap head">
         <div>
           <h2 id="work-title">Ce am construit</h2>
-          <p>Nouă produse proprii, ca fondator sau cofondator. La fiecare am făcut designul, codul și lansarea.</p>
+          <p>Produse proprii, ca fondator sau cofondator. La fiecare am făcut designul, codul și lansarea.</p>
         </div>
         <div class="ctrl" id="ctrl">
           <button id="prev" aria-label="Proiectul anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -46,15 +50,77 @@ const arrow = 'M5 12h14M13 6l6 6-6 6';
       <div class="stage" id="stage">
         {products.map(p => (
           <a class="item" href={p.url} target="_blank" rel="noopener">
-            <span class="frame"><img src={`/shots/${p.file}.jpg`} alt={`Site-ul ${p.name} pe telefon`} width="780" height="6000" loading="lazy" draggable="false"></span>
-            <span class="cap"><span>{p.name}</span><span>{p.tag}</span></span>
+            <span class="frame"><img src={`/shots/${p.file}.jpg`} alt={`Site-ul ${p.name} pe telefon`} width="780" height={p.h ?? 6000} loading="lazy" draggable="false"></span>
+            <span class="cap"><span>{p.name}</span><span>{p.tag}</span>{p.stat && <em>{p.stat}</em>}</span>
           </a>
         ))}
       </div>
     </section>
 
-    <section class="wrap sub" aria-labelledby="work-next">
-      <h3 id="work-next">În lucru și de vânzare</h3>
+    <section class="wrap sub nums" aria-labelledby="nums-title">
+      <h2 id="nums-title">Cifrele din spatele lor</h2>
+      <ul>
+        {numbers.map(n => (
+          <li class="reveal">
+            <div class="nums-name"><a href={n.url} target="_blank" rel="noopener">{n.name}</a>{n.note && <span>{n.note}</span>}</div>
+            <dl>
+              {n.metrics.map(m => (
+                <div>
+                  <dd data-count={m.value} data-dec={m.dec ?? 0} data-prefix={m.prefix ?? ''} data-suffix={m.suffix ?? ''} data-stat={m.key}>{format(m)}</dd>
+                  <dt>{m.label}</dt>
+                </div>
+              ))}
+            </dl>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+
+  <section class="cof" id="cofondator" aria-labelledby="cof-title">
+    <div class="wrap">
+      <div class="cof-main">
+        <p class="label kick"><i class="pulse"></i>Cel mult 2 fondatori noi în același timp</p>
+        <h2 id="cof-title">Ai ideea și oameni care o așteaptă? Îți lipsește cine să construiască produsul.</h2>
+        <p class="lead">Intru alături de tine ca și cofondator tehnic și pornim împreună o firmă nouă. Nu construiesc și plec: rămân pe termen lung și răspund eu de produs, ca tu să te ocupi de clienți și de vânzări.</p>
+        <div class="paths">
+          <a class="go" href="/cofondator/#idee"><i></i><span>Spune-mi ideea</span></a>
+          <a class="go" href="/cofondator/"><i></i><span>Cum funcționează</span></a>
+        </div>
+      </div>
+      <ul class="cof-deals">
+        <li class="reveal"><span class="label">Doar parteneriat</span><strong>0 €</strong><p>Suport eu tot costul dezvoltării. Împărțim firma egal, 50/50.</p></li>
+        <li class="reveal" data-delay="1"><span class="label">Preț redus și parteneriat</span><strong>de la 3.000 €</strong><p>Plătești o parte din cost, eu acopăr restul. Primesc o parte mai mică din firmă.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" aria-hidden="true"><div class="band-track" id="band">{[0, 1, 2].map(() => <span>{skills.map(s => <b>{s}</b>)}</span>)}</div></section>
+
+  <section class="about-new" id="despre" aria-labelledby="about-title">
+    <div class="wrap">
+      <div class="portrait reveal"><img src="/andrei.jpg" alt="Andrei Năstase" width="800" height="800" loading="lazy"></div>
+      <div>
+        <h2 id="about-title">Cine sunt</h2>
+        <p class="lead">Sunt Andrei Năstase, din Ploiești. Scriu software de 17 ani, ca senior full-stack: frontend, backend și aplicații mobile. Pe lângă cod fac product design, animație și strategie de marketing, pentru că produsele mele au avut nevoie de toate astea.</p>
+        <div class="know">
+          <div class="reveal"><h3>Ce fac</h3><p>Construiesc produse de la zero, de la idee la lansare. Le fac pentru firme, pentru mine și, tot mai des, împreună cu fondatori din alte domenii.</p></div>
+          <div class="reveal" data-delay="1"><h3>Ce știu</h3><p>Laravel, PHP, Vue.js, JavaScript, MySQL, PostgreSQL, WordPress, plăți cu Stripe, AWS, integrări AI și extensii de Chrome.</p></div>
+          <div class="reveal" data-delay="2"><h3>La ce sunt bun</h3><p>Să spun ce nu merită construit. Să duc un produs până la clienți care plătesc. Să conduc echipe, ca CTO sau ca director de festival.</p></div>
+        </div>
+        <ul class="roles-mini">
+          {roles.map(r => <li class="reveal"><span>{r.years}</span><b>{r.url ? <a href={r.url} target="_blank" rel="noopener">{r.name}</a> : r.name}</b><em>{r.role}</em></li>)}
+        </ul>
+        <div class="btn-row">
+          {socials.map(([label, url]) => <a class="btn" href={url} target="_blank" rel="noopener">{label}</a>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="next-up" aria-labelledby="work-next">
+    <div class="wrap">
+      <h2 id="work-next">În lucru și de vânzare</h2>
       <div class="phones">
         {inWork.map(p => (
           <a class="phone" href={p.url} target={p.url && '_blank'} rel={p.url && 'noopener'}>
@@ -67,21 +133,8 @@ const arrow = 'M5 12h14M13 6l6 6-6 6';
           </a>
         ))}
       </div>
-    </section>
-
-    <section class="wrap sub" aria-labelledby="work-roles">
-      <h3 id="work-roles">Roluri de conducere</h3>
-      <ul class="roles">
-        {roles.map(r => (
-          <li>
-            <span>{r.years}</span>
-            <div>{r.url ? <a class="link" href={r.url} target="_blank" rel="noopener">{r.name}</a> : r.name}<em>{r.role}</em></div>
-            <p>{r.text}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-  </div>
+    </div>
+  </section>
 
   <section class="clients" id="clienti" aria-labelledby="clients-title">
     <div class="t-view">
@@ -99,16 +152,18 @@ const arrow = 'M5 12h14M13 6l6 6-6 6';
       <ul class="tunnel" id="tunnel">
         {list.map(c => (
           <li data-cat={c.cat} data-name={c.name} data-work={c.work}>
-            <a href={c.url} target="_blank" rel="noopener"><img src={`/shots/clients/${c.file}.jpg`} alt={`Site-ul ${c.name}`} width="1280" height="800" loading="lazy" draggable="false"><span class="t-cap"><b>{c.name}</b>{c.work}</span></a>
+            {c.offline
+              ? <div class="t-off"><img src={`/shots/clients/${c.file}.jpg`} alt={`Site-ul ${c.name}`} width="1280" height="800" loading="lazy" draggable="false"><span class="t-cap"><b>{c.name}</b>{c.work}</span></div>
+              : <a href={c.url} target="_blank" rel="noopener"><img src={`/shots/clients/${c.file}.jpg`} alt={`Site-ul ${c.name}`} width="1280" height="800" loading="lazy" draggable="false"><span class="t-cap"><b>{c.name}</b>{c.work}</span></a>}
           </li>
         ))}
       </ul>
       <div class="t-now" aria-hidden="true"><b></b><span></span><i></i></div>
     </div>
   </section>
-  <p class="t-rest"><span class="wrap">Tot de la mine, dar între timp mutate sau închise: {older.map(c => c.name).join(', ')}.</span></p>
+  {older.length > 0 && <p class="t-rest"><span class="wrap">Tot de la mine: {older.map(c => c.name).join(', ')}.</span></p>}
 
   <Fragment set:html={rest} />
 
-  <script>import '../scripts/arc.js'; import '../scripts/clients.js';</script>
+  <script>import '../scripts/arc.js'; import '../scripts/clients.js'; import '../scripts/numbers.js';</script>
 </Layout>

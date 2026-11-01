@@ -1,5 +1,3 @@
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 const toggle = document.querySelector('.nav-toggle');
 const nav = document.querySelector('.site-header .nav');
 if (toggle && nav) {
@@ -10,16 +8,6 @@ if (toggle && nav) {
   };
   toggle.addEventListener('click', () => set(!nav.classList.contains('is-open')));
   nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => set(false)));
-}
-
-const reveals = document.querySelectorAll('.reveal');
-if (reduced || !('IntersectionObserver' in window)) {
-  reveals.forEach(el => el.classList.add('is-in'));
-} else {
-  const io = new IntersectionObserver(entries => entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
-  }), { rootMargin: '0px 0px -8% 0px' });
-  reveals.forEach(el => io.observe(el));
 }
 
 const calc = document.querySelector('[data-calc]');
