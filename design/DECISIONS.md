@@ -16,3 +16,6 @@
 - 2026-11-01: Servicii: haos spre ordine, aplicația explodată 3D, calculator cu slidere.
 - 2026-11-01: haos cu streamlines și procesare; aplicația explodată cu piese 3D reale și etichete; Cofondator: produsul care se construiește singur.
 - 2026-11-01: explozie: piesele apar doar pe felia în focus. Builder cu colaboratori, cod, terminal și telefon. Site lansat pe andreinastase.ro.
+
+## 2026-11-01: home page, depth and receipt
+Three real product screens as hero layers, moving at different rates while the dark section rises over them. They stay static inside the frame: images move only on hover. A small receipt collects real figures while scrolling and lands in the contact section as a ledger ending in "Urmează proiectul vostru". The TICS line stays live. Principles from scroll-craft; its engine and paid image generation are not used.

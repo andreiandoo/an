@@ -14,14 +14,28 @@ const older = clients.filter(c => !has(`clients/${c.file}`));
 const cats = [...new Set(list.map(c => c.cat))];
 const [restA, restB] = rest.split('<!--pricing-->');
 const [restC, restD] = restB.split('<!--process-->');
+const hero = [['tixello', 'a'], ['dreamsatlas', 'b'], ['tics', 'c']];
 const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('ro-RO', { maximumFractionDigits: m.dec ?? 0, minimumFractionDigits: m.dec ?? 0 })}${m.suffix ?? ''}`;
+const metric = (name, label) => format(numbers.find(n => n.name === name).metrics.find(m => m.label === label));
+const ledger = [
+  ['#proiecte', String(products.length), 'produse proprii'],
+  ['.nums li:nth-child(1)', metric('Tixello', 'procesați'), 'procesați prin Tixello'],
+  ['.nums li:nth-child(2)', metric('AmBilet', 'medie pe 5 luni'), 'vânzări AmBilet, medie pe 5 luni'],
+  ['.nums li:nth-child(3)', metric('Dreams Atlas', 'afișări organice'), 'afișări organice, Dreams Atlas'],
+  ['.nums li:nth-child(4)', metric('TICS Radar', 'evenimente'), 'evenimente live, TICS Radar', 'liveEvents'],
+  ['#despre', '17 ani', 'de software'],
+  ['#clienti', String(clients.length), 'proiecte pentru clienți'],
+];
+const ledgerHtml = `<ol class="ledger reveal" id="ledger"><li class="ledger-head"><span>Până aici, pe scurt</span></li>${ledger.map(([at, value, label, live]) => `<li data-at="${at}"${live ? ` data-live="${live}"` : ''}><b>${value}</b><span>${label}</span></li>`).join('')}<li class="ledger-next"><b>Urmează</b><span>proiectul vostru</span></li></ol>`;
 ---
 <Layout
   title="Andrei Năstase | Aplicații web, mobile și cofondator tehnic"
   description={`17 ani de software, ${products.length} produse proprii. Construiesc aplicații web și mobile și caut fondatori cu idei și clienți, pentru parteneriate pe termen lung.`}
 >
   <section class="home-hero">
+    <div class="hh-view">
     <div class="wrap">
+      <div class="hh-copy">
       <h1>Aveți nevoie de o aplicație? Sau de cineva care să o construiască <span class="hot">alături de voi</span>?</h1>
       <p class="lead">Sunt senior full-stack, cu 17 ani de software și {products.length} produse proprii în spate. Vă spun sincer ce merită construit. Iar dacă ideea e bună și are clienți care o așteaptă, intru cofondator tehnic.</p>
       <div class="paths">
@@ -34,6 +48,11 @@ const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('ro-RO', { maximu
         <li>{clients.length} proiecte pentru clienți</li>
         <li>Răspuns într-o zi lucrătoare</li>
       </ul>
+      </div>
+      <div class="hh-phones" aria-hidden="true">
+        {hero.map(([file, layer]) => <span class={`hh-phone hh-${layer}`}><img src={`/shots/${file}.jpg`} alt="" decoding="async" draggable="false"></span>)}
+      </div>
+    </div>
     </div>
   </section>
 
@@ -170,7 +189,13 @@ const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('ro-RO', { maximu
   <Pricing />
   <Fragment set:html={restC} />
   <Process steps={steps} intro="De la primul apel la aplicația folosită de echipa voastră, știți mereu unde suntem." />
-  <Fragment set:html={restD} />
+  <Fragment set:html={restD.replace('<!--ledger-->', ledgerHtml)} />
 
-  <script>import '../scripts/arc.js'; import '../scripts/clients.js'; import '../scripts/numbers.js';</script>
+  <aside class="tally" id="tally" aria-label="Cifrele de până aici" hidden>
+    <button class="tally-head" type="button" aria-expanded="false"><span>Până aici</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+    <button class="tally-x" type="button" aria-label="Ascunde sumarul"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <ol></ol>
+  </aside>
+
+  <script>import '../scripts/hero.js'; import '../scripts/arc.js'; import '../scripts/clients.js'; import '../scripts/numbers.js'; import '../scripts/receipt.js';</script>
 </Layout>
