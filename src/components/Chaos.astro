@@ -1,20 +1,34 @@
 ---
-const cards = [
-  'oferte_final_v3.xlsx', 'WhatsApp: „ai trimis oferta?”', 'Factură neplătită', 'Email de 14 mesaje', 'Clienți.xlsx', 'Post-it: sună-l pe Radu',
-  'Comandă pe telefon', 'Stocuri, caietul albastru', 'Programări în agendă', 'Raport manual, luni', 'Copy-paste în ERP', 'preturi_noi_FINAL.pdf',
-  'Reminder în telefon', 'Contract în Drive', 'Plată confirmată pe mail', 'Cine se ocupă de asta?', 'Excel de la contabilă', 'Lista de pe tablă',
+const groups = [
+  ['Clienți', [['Clienți.xlsx', 'Client'], ['Email de 14 mesaje', 'Conversație'], ['WhatsApp: „ai trimis oferta?”', 'Mesaj']]],
+  ['Oferte', [['oferte_final_v3.xlsx', 'Ofertă'], ['preturi_noi_FINAL.pdf', 'Preț'], ['Comandă pe telefon', 'Comandă']]],
+  ['Facturi', [['Factură neplătită', 'Factură'], ['Plată confirmată pe mail', 'Plată'], ['Excel de la contabilă', 'Raport']]],
+  ['Stocuri', [['Stocuri, caietul albastru', 'Stoc'], ['Lista de pe tablă', 'Listă'], ['Copy-paste în ERP', 'Sincronizare']]],
+  ['Programări', [['Programări în agendă', 'Programare'], ['Reminder în telefon', 'Reminder'], ['Post-it: sună-l pe Radu', 'Sarcină']]],
+  ['Rapoarte', [['Raport manual, luni', 'Raport'], ['Contract în Drive', 'Contract'], ['Cine se ocupă de asta?', 'Responsabil']]],
 ];
 ---
 <section class="chaos" id="haos" aria-labelledby="chaos-title">
   <div class="chaos-view">
     <div class="chaos-copy">
       <h2 id="chaos-title">De la haos la un singur loc</h2>
-      <p class="chaos-before">Azi, munca firmei stă în zeci de locuri.</p>
-      <p class="chaos-after">Cu o aplicație, totul se adună într-un singur ecran.</p>
+      <p>Azi, munca firmei stă în zeci de locuri.</p>
+      <p>Datele trec prin curățare, deduplicare și compactare.</p>
+      <p>Fiecare informație ajunge exact unde trebuie.</p>
     </div>
-    <div class="chaos-panel" aria-hidden="true"><span>Aplicația voastră</span></div>
+    <svg class="chaos-lines" id="chaos-lines" aria-hidden="true"></svg>
+    <div class="chaos-proc" id="chaos-proc" aria-hidden="true">
+      <b>Procesare</b>
+      <span>Curăță</span><span>Deduplică</span><span>Compactează</span>
+    </div>
+    <div class="chaos-app" id="chaos-app" aria-hidden="true">
+      <div class="chaos-bar"><i></i><i></i><i></i><em>aplicația-voastră.ro</em></div>
+      <div class="chaos-tiles">
+        {groups.map(([name]) => <div class="chaos-tile"><b>{name}</b><span><i></i></span></div>)}
+      </div>
+    </div>
     <ul class="chaos-cards" id="chaos-cards">
-      {cards.map(c => <li><i></i>{c}</li>)}
+      {groups.map(([, list], g) => list.map(([raw, clean]) => <li data-g={g} data-clean={clean}><i></i><span>{raw}</span></li>))}
     </ul>
   </div>
 </section>

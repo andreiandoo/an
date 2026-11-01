@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Process from '../components/Process.astro';
+import BuildApp from '../components/BuildApp.astro';
 import { founderSteps } from '../data/portfolio.js';
 import body from '../partials/cofondator.html?raw';
 
@@ -14,6 +15,7 @@ const [a, b] = body.split('<!--process-->');
   ctaLabel="Spune-mi ideea"
 >
   <Fragment set:html={a} />
+  <BuildApp />
   <Process title="Cum decurge" id="decurge" steps={founderSteps} />
   <Fragment set:html={b} />
 </Layout>

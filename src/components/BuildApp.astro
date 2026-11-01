@@ -1,0 +1,49 @@
+---
+const stages = [
+  ['Ideea', 'Totul începe de la o propoziție și un om care are problema.'],
+  ['Schița', 'Stabilim împreună ce intră în prima versiune și ce nu.'],
+  ['Designul', 'Produsul capătă formă, culoare și identitate.'],
+  ['Datele reale', 'Conturi, plăți, reguli: aplicația începe să lucreze.'],
+  ['Primii clienți', 'Tu aduci clienții. Eu rămân în produs și îl creștem împreună.'],
+];
+const kpis = [['Programări azi', 28, ''], ['Clienți activi', 412, ''], ['Încasări luna asta', 18640, ' lei']];
+const rows = [['Rex', 'Consult anual', '09:30'], ['Luna', 'Vaccin', '10:15'], ['Bruno', 'Control', '11:00'], ['Mia', 'Analize', '12:30']];
+---
+<section class="buildapp" id="construim" aria-labelledby="build-title">
+  <div class="ba-view">
+    <div class="ba-copy">
+      <h2 id="build-title">Așa se construiește un produs împreună</h2>
+      <ol id="ba-stages">
+        {stages.map(([t, text], i) => <li><i>{String(i + 1).padStart(2, '0')}</i><b>{t}</b><span>{text}</span></li>)}
+      </ol>
+      <p class="ba-note">Exemplu ilustrativ.</p>
+    </div>
+    <div class="ba-stage" aria-hidden="true">
+      <div class="ba-idea"><span id="ba-typed" data-text="O aplicație pentru clinicile veterinare mici, cu programări, fișe și remindere într-un singur loc."></span><i></i></div>
+      <div class="ba-app" id="ba-app" data-s="0">
+        <aside class="ba-side">
+          <b class="ba-logo"><i></i><span>VetLoc</span></b>
+          <span class="ba-nav is-sel"><u>Azi</u></span><span class="ba-nav"><u>Programări</u></span><span class="ba-nav"><u>Pacienți</u></span><span class="ba-nav"><u>Încasări</u></span>
+        </aside>
+        <div class="ba-main">
+          <div class="ba-top"><strong><u>Bună dimineața, Ana</u></strong><em><u>Programare nouă</u></em></div>
+          <div class="ba-kpis">
+            {kpis.map(([label, value, suffix]) => <div class="ba-kpi"><span><u>{label}</u></span><b data-n={value} data-s={suffix}><u>0</u></b></div>)}
+          </div>
+          <div class="ba-chart">
+            <svg viewBox="0 0 400 110" preserveAspectRatio="none"><path class="ba-area" d="M0 96 C50 88 70 70 110 74 S180 52 220 56 S300 26 340 30 S385 14 400 10 V110 H0Z"/><path class="ba-curve" pathLength="1" d="M0 96 C50 88 70 70 110 74 S180 52 220 56 S300 26 340 30 S385 14 400 10"/></svg>
+          </div>
+          <div class="ba-rows">
+            {rows.map(([a, b, c]) => <div class="ba-row"><span><u>{a}</u></span><span><u>{b}</u></span><span><u>{c}</u></span></div>)}
+          </div>
+        </div>
+        <div class="ba-toasts">
+          <span>Client nou: Clinica Vet Plus</span>
+          <span>Plată primită: 149 lei</span>
+          <span>Reminder trimis la 32 de clienți</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>import '../scripts/buildapp.js';</script>
