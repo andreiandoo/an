@@ -7,6 +7,7 @@ document.body.append(bar);
 // Heading words rise into place; every heading ends on an orange mark.
 document.querySelectorAll('main h1, main h2').forEach(h => {
   if (h.closest('.t-intro')) return;
+  const hot = h.querySelector('.hot')?.textContent.trim().split(/\s+/).length ?? 0;
   const text = h.textContent.trim();
   const end = /[.?!]$/.test(text) ? text.slice(-1) : '.';
   const body = /[.?!]$/.test(text) ? text.slice(0, -1) : text;
@@ -19,6 +20,7 @@ document.querySelectorAll('main h1, main h2').forEach(h => {
     w.setAttribute('aria-hidden', 'true');
     const inner = document.createElement('span');
     inner.textContent = word;
+    if (i >= words.length - hot) inner.classList.add('hot');
     inner.style.transitionDelay = `${Math.min(i, 14) * 28}ms`;
     if (i === words.length - 1) {
       const mark = document.createElement('i');
@@ -46,9 +48,7 @@ if (reduced || !('IntersectionObserver' in window)) {
   watch.forEach(el => io.observe(el));
 }
 
-const TAGLINES = ['Construiesc aplicații', 'Caut cofondatori', 'Fondator Tixello', '17 ani de software'];
 const name = document.querySelector('.brand-name');
-const tagline = document.getElementById('tagline');
 if (name) {
   const text = name.textContent;
   name.textContent = '';
@@ -60,21 +60,7 @@ if (name) {
     l.setAttribute('aria-hidden', 'true');
     name.append(l);
   });
-  name.parentElement.classList.add('is-ready');
 }
-if (tagline) {
-  let n = 0;
-  const swap = () => {
-    tagline.classList.remove('is-in');
-    setTimeout(() => {
-      tagline.textContent = TAGLINES[n++ % TAGLINES.length];
-      tagline.classList.add('is-in');
-    }, reduced ? 0 : 320);
-  };
-  swap();
-  if (!reduced) setInterval(swap, 3200);
-}
-
 const navBox = document.querySelector('.site-header .nav');
 if (navBox && matchMedia('(hover: hover)').matches) {
   const pill = document.createElement('span');

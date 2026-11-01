@@ -3,7 +3,7 @@
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
-const TO = 'contact@andreinastase.ro';
+const TO = 'salut@andreinastase.ro';
 const FROM = 'site@andreinastase.ro';
 const MAX_PER_HOUR = 8;
 const MAX_FIELD = 4000;

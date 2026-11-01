@@ -22,8 +22,7 @@ const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('ro-RO', { maximu
 >
   <section class="home-hero">
     <div class="wrap">
-      <p class="label kick">Andrei Năstase · Ploiești · Fondator Tixello</p>
-      <h1>Aveți nevoie de o aplicație? Sau de cineva care să o construiască alături de voi?</h1>
+      <h1>Aveți nevoie de o aplicație? Sau de cineva care să o construiască <span class="hot">alături de voi</span>?</h1>
       <p class="lead">Sunt senior full-stack, cu 17 ani de software și {products.length} produse proprii în spate. Vă spun sincer ce merită construit. Iar dacă ideea e bună și are clienți care o așteaptă, intru cofondator tehnic.</p>
       <div class="paths">
         <a class="go" href="#contact"><i></i><span>Programați apelul gratuit</span></a>
@@ -147,7 +146,6 @@ const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('ro-RO', { maximu
           <button aria-pressed="true" data-cat="">Toate</button>
           {cats.map(c => <button aria-pressed="false" data-cat={c}>{c}</button>)}
         </div>
-        <a class="t-skip" href="#servicii">Sari peste</a>
       </div>
       <div class="t-intro">
         <h2 id="clients-title">Lucrări pentru clienți</h2>
@@ -163,6 +161,7 @@ const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('ro-RO', { maximu
         ))}
       </ul>
       <div class="t-now" aria-hidden="true"><b></b><span></span><i></i></div>
+      <a class="t-skip" href="#servicii">Sari peste</a>
     </div>
   </section>
   {older.length > 0 && <p class="t-rest"><span class="wrap">Tot de la mine: {older.map(c => c.name).join(', ')}.</span></p>}

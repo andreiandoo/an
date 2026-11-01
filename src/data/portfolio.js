@@ -68,7 +68,7 @@ export const clients = [
 
 export const numbers = [
   {
-    name: 'Tixello', url: 'https://tixello.com', note: 'Procesate prin platformă. Echivalent 27.712.033 RON.',
+    name: 'Tixello', url: 'https://tixello.com', note: 'Procesate prin platformă.',
     metrics: [
       { value: 4980, label: 'evenimente' },
       { value: 106853, label: 'clienți' },
@@ -107,6 +107,7 @@ export const socials = [
   ['LinkedIn', 'https://linkedin.com/in/andreinastase'],
   ['GitHub', 'https://github.com/andreiandoo'],
   ['Facebook', 'https://www.facebook.com/sinecvanon/'],
+  ['Instagram', 'https://www.instagram.com/sinecvanon/'],
 ];
 
 export const steps = [

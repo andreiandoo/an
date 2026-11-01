@@ -23,7 +23,7 @@ document.querySelectorAll('form[data-endpoint]').forEach(form => {
   const fail = document.createElement('p');
   fail.className = 'form-error';
   fail.hidden = true;
-  fail.textContent = 'Mesajul nu a putut fi trimis. Scrieți-mi direct la contact@andreinastase.ro.';
+  fail.textContent = 'Mesajul nu a putut fi trimis. Scrieți-mi direct la salut@andreinastase.ro.';
   form.querySelector('button[type="submit"]').before(fail);
 
   form.addEventListener('submit', async e => {
