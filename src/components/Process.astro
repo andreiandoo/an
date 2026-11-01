@@ -1,0 +1,29 @@
+---
+const { title = 'Cum lucrez', intro, steps, id = 'cum' } = Astro.props;
+---
+<section class="process" id={id} aria-labelledby={`${id}-title`}>
+  <div class="wrap process-grid">
+    <div class="process-side">
+      <h2 id={`${id}-title`}>{title}</h2>
+      {intro && <p>{intro}</p>}
+      <ol class="process-nav" aria-hidden="true">
+        {steps.map((s, i) => <li><i></i><span>{s.title}</span></li>)}
+      </ol>
+    </div>
+    <ol class="process-steps">
+      {steps.map((s, i) => (
+        <li>
+          <span class="process-num">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+          <dl>
+            <div><dt>Durează</dt><dd>{s.time}</dd></div>
+            {s.you && <div><dt>Timpul vostru</dt><dd>{s.you}</dd></div>}
+            {s.get && <div><dt>Primiți</dt><dd>{s.get}</dd></div>}
+          </dl>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+<script>import '../scripts/process.js';</script>

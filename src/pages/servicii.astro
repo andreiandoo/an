@@ -1,8 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Pricing from '../components/Pricing.astro';
+import Process from '../components/Process.astro';
+import { steps } from '../data/portfolio.js';
 import body from '../partials/servicii.html?raw';
 
 const cut = body.indexOf('</section>') + '</section>'.length;
+const [a, rest] = body.slice(cut).split('<!--pricing-->');
+const [b, c] = rest.split('<!--process-->');
 ---
 <Layout
   title="Aplicații web și mobile pentru firme | Andrei Năstase"
@@ -12,6 +17,10 @@ const cut = body.indexOf('</section>') + '</section>'.length;
 >
   <Fragment set:html={body.slice(0, cut)} />
   <section class="ribbon" id="ribbon" aria-hidden="true"><canvas></canvas></section>
-  <Fragment set:html={body.slice(cut)} />
+  <Fragment set:html={a} />
+  <Pricing third="audit" contact="#cerere" />
+  <Fragment set:html={b} />
+  <Process steps={steps} intro="De la primul apel la aplicația folosită de echipa voastră, știți mereu unde suntem." />
+  <Fragment set:html={c} />
   <script>import '../scripts/ribbon.js';</script>
 </Layout>

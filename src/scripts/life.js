@@ -46,6 +46,54 @@ if (reduced || !('IntersectionObserver' in window)) {
   watch.forEach(el => io.observe(el));
 }
 
+const TAGLINES = ['Construiesc aplicații', 'Caut cofondatori', 'Fondator Tixello', '17 ani de software'];
+const name = document.querySelector('.brand-name');
+const tagline = document.getElementById('tagline');
+if (name) {
+  const text = name.textContent;
+  name.textContent = '';
+  [...text].forEach((ch, i) => {
+    const l = document.createElement('span');
+    l.className = 'l';
+    l.style.setProperty('--i', i);
+    l.textContent = ch === ' ' ? '\u00a0' : ch;
+    l.setAttribute('aria-hidden', 'true');
+    name.append(l);
+  });
+  name.parentElement.classList.add('is-ready');
+}
+if (tagline) {
+  let n = 0;
+  const swap = () => {
+    tagline.classList.remove('is-in');
+    setTimeout(() => {
+      tagline.textContent = TAGLINES[n++ % TAGLINES.length];
+      tagline.classList.add('is-in');
+    }, reduced ? 0 : 320);
+  };
+  swap();
+  if (!reduced) setInterval(swap, 3200);
+}
+
+const navBox = document.querySelector('.site-header .nav');
+if (navBox && matchMedia('(hover: hover)').matches) {
+  const pill = document.createElement('span');
+  pill.className = 'nav-pill';
+  navBox.prepend(pill);
+  navBox.querySelectorAll('a:not(.cta)').forEach(a => {
+    a.addEventListener('pointerenter', () => {
+      pill.style.width = `${a.offsetWidth + 24}px`;
+      pill.style.transform = `translateX(${a.offsetLeft - 12}px)`;
+      pill.classList.add('is-on');
+      navBox.querySelectorAll('a').forEach(x => x.classList.toggle('is-lit', x === a));
+    });
+  });
+  navBox.addEventListener('pointerleave', () => {
+    pill.classList.remove('is-on');
+    navBox.querySelectorAll('a').forEach(x => x.classList.remove('is-lit'));
+  });
+}
+
 const band = document.getElementById('band');
 const portrait = document.querySelector('.portrait img');
 const tunnel = document.getElementById('clienti');

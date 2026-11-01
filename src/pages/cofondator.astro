@@ -1,6 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Process from '../components/Process.astro';
+import { founderSteps } from '../data/portfolio.js';
 import body from '../partials/cofondator.html?raw';
+
+const [a, b] = body.split('<!--process-->');
 ---
 <Layout
   title="Cofondator tehnic pentru ideea ta de produs | Andrei Năstase"
@@ -9,5 +13,7 @@ import body from '../partials/cofondator.html?raw';
   cta="#idee"
   ctaLabel="Spune-mi ideea"
 >
-  <Fragment set:html={body} />
+  <Fragment set:html={a} />
+  <Process title="Cum decurge" id="decurge" steps={founderSteps} />
+  <Fragment set:html={b} />
 </Layout>

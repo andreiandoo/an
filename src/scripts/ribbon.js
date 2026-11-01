@@ -35,8 +35,7 @@ const FS = `
   void main() {
     vec4 t = texture2D(uMap, vUv);
     if (t.a < .5) discard;
-    float g = dot(t.rgb, vec3(.299, .587, .114));
-    gl_FragColor = vec4(vec3(g) * vShade, 1.0);
+    gl_FragColor = vec4(t.rgb * vShade, 1.0);
     #include <colorspace_fragment>
   }`;
 

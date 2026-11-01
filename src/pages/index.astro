@@ -1,7 +1,9 @@
 ---
 import fs from 'node:fs';
 import Layout from '../layouts/Layout.astro';
-import { products, inWork, roles, clients, numbers, skills, socials } from '../data/portfolio.js';
+import Pricing from '../components/Pricing.astro';
+import Process from '../components/Process.astro';
+import { products, inWork, roles, clients, numbers, skills, socials, steps } from '../data/portfolio.js';
 import rest from '../partials/home-rest.html?raw';
 
 const has = path => fs.existsSync(`public/shots/${path}.jpg`);
@@ -10,6 +12,8 @@ const rank = c => (first.includes(c.name) ? first.indexOf(c.name) : first.length
 const list = clients.filter(c => has(`clients/${c.file}`)).sort((a, b) => rank(a) - rank(b));
 const older = clients.filter(c => !has(`clients/${c.file}`));
 const cats = [...new Set(list.map(c => c.cat))];
+const [restA, restB] = rest.split('<!--pricing-->');
+const [restC, restD] = restB.split('<!--process-->');
 const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('ro-RO', { maximumFractionDigits: m.dec ?? 0, minimumFractionDigits: m.dec ?? 0 })}${m.suffix ?? ''}`;
 ---
 <Layout
@@ -163,7 +167,11 @@ const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('ro-RO', { maximu
   </section>
   {older.length > 0 && <p class="t-rest"><span class="wrap">Tot de la mine: {older.map(c => c.name).join(', ')}.</span></p>}
 
-  <Fragment set:html={rest} />
+  <Fragment set:html={restA} />
+  <Pricing />
+  <Fragment set:html={restC} />
+  <Process steps={steps} intro="De la primul apel la aplicația folosită de echipa voastră, știți mereu unde suntem." />
+  <Fragment set:html={restD} />
 
   <script>import '../scripts/arc.js'; import '../scripts/clients.js'; import '../scripts/numbers.js';</script>
 </Layout>

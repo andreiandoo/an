@@ -1,0 +1,107 @@
+---
+const { third = 'cofondator', contact = '#contact' } = Astro.props;
+
+const types = [
+  { name: 'Ofertare', level: 1, price: 'în jur de 3.000 €', text: 'Echipa alege produsele și manopera, prețul se calculează automat, iar oferta pleacă la client dintr-un buton.' },
+  { name: 'Programări și abonamente', level: 2, price: '4.000–7.000 €', text: 'Clienții își aleg singuri ora și plătesc online. Voi vedeți calendarul, abonamentele și încasările într-un loc.' },
+  { name: 'Portal pentru clienți', level: 2, text: 'Clienții văd singuri comenzile, facturile și documentele, fără să vă mai sune pentru fiecare întrebare.' },
+  { name: 'Panou de administrare', level: 2, text: 'Toate datele firmei într-un singur ecran, cu roluri diferite pentru fiecare om din echipă.' },
+  { name: 'CRM', level: 3, text: 'Clienții, discuțiile și ofertele într-un singur loc, ca nimic să nu se piardă între emailuri și Excel.' },
+  { name: 'Comenzi online B2B', level: 3, text: 'Partenerii comandă singuri, cu prețurile lor, iar comanda ajunge direct la voi, fără introducere manuală.' },
+  { name: 'ERP', level: 4, text: 'Stocuri, comenzi, facturi și producție legate între ele, construite după cum lucrați voi, nu invers.' },
+  { name: 'Marketplace sau SaaS', level: 4, text: 'O platformă pe care o folosesc mai multe firme sau mii de oameni. Tixello e un exemplu.' },
+];
+const included = ['Analiză', 'Design', 'Dezvoltare', 'Testare', 'Lansare', 'Instrucțiuni'];
+const drivers = ['Câte roluri are aplicația', 'Câte integrări cere', 'Dacă primește plăți', 'Cât de complicate sunt regulile', 'Dacă are și aplicație mobilă'];
+const levels = ['Mică', 'Medie', 'Mare', 'Foarte mare'];
+---
+<section class="pricing" id="preturi" aria-labelledby="pricing-title">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="pricing-title">Prețuri orientative</h2>
+      <p>Prețul exact, fix, îl știți înainte de orice linie de cod. Plătiți pe etape, iar primul pas e analiza: dacă nu vă convine ce propun, vă opriți acolo.</p>
+    </div>
+
+    <div class="plans">
+      <article class="plan plan-web reveal">
+        <span class="label">Aplicație web</span>
+        <strong>de la 3.000 €</strong>
+        <p>Merge pe orice telefon și calculator, fără descărcare.</p>
+        <a class="go" href={contact}><i></i><span>Cereți o ofertă</span></a>
+      </article>
+      <article class="plan plan-mobile reveal" data-delay="1">
+        <span class="label">Aplicație mobilă</span>
+        <strong>de la 5.000 €</strong>
+        <p>iOS și Android, pe același backend ca aplicația web. Publicarea în magazine e inclusă.</p>
+        <ul class="stores" aria-label="Publicare în magazine">
+          <li>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.54c-.03-2.74 2.24-4.06 2.34-4.12-1.28-1.87-3.26-2.12-3.96-2.15-1.69-.17-3.29.99-4.15.99-.85 0-2.17-.97-3.57-.94-1.84.03-3.53 1.07-4.48 2.71-1.91 3.31-.49 8.22 1.37 10.91.91 1.31 2 2.79 3.42 2.74 1.37-.05 1.89-.89 3.55-.89 1.65 0 2.13.89 3.58.86 1.48-.03 2.42-1.34 3.32-2.66 1.05-1.52 1.48-3 1.5-3.08-.03-.01-2.89-1.11-2.92-4.37zM14.35 4.52c.75-.91 1.26-2.18 1.12-3.44-1.08.04-2.39.72-3.17 1.63-.7.8-1.31 2.09-1.14 3.33 1.21.09 2.44-.61 3.19-1.52z"/></svg>
+            <span>App Store</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 1.8c-.3.3-.5.8-.5 1.4v17.6c0 .6.2 1.1.5 1.4l.1.1L13.5 12v-.2L3.7 1.7l-.1.1zM16.8 15.3l-3.3-3.3v-.2l3.3-3.3.1.1 3.9 2.2c1.1.6 1.1 1.7 0 2.3l-3.9 2.2h-.1zM16.9 15.2L13.5 12 3.6 22.2c.4.4 1 .4 1.7 0l11.6-7zM16.9 8.8L5.3 2.1c-.7-.4-1.3-.3-1.7.1l9.9 9.8 3.4-3.2z"/></svg>
+            <span>Google Play</span>
+          </li>
+        </ul>
+      </article>
+      {third === 'cofondator'
+        ? (
+          <article class="plan plan-hot reveal" data-delay="2">
+            <span class="label">Cofondator tehnic</span>
+            <strong>0 €</strong>
+            <p>Construiesc pe costul meu, pentru o parte din firmă. Pentru idei cu oameni care le așteaptă.</p>
+            <a class="go" href="/cofondator/"><i></i><span>Toate detaliile</span></a>
+          </article>
+        )
+        : (
+          <article class="plan plan-hot reveal" data-delay="2">
+            <span class="label">Audit pentru o aplicație făcută cu AI</span>
+            <strong>Gratuit</strong>
+            <p>Vă spun ce e solid, ce trebuie refăcut și cât ar costa să ajungă în producție.</p>
+            <a class="go" href={contact}><i></i><span>Cereți auditul</span></a>
+          </article>
+        )}
+    </div>
+
+    <div class="why-price">
+      <div class="reveal">
+        <h3>De ce de la 3.000 €?</h3>
+        <p>Pentru că o aplicație nu e un site de prezentare. Are conturi, date, reguli și plăți care trebuie să meargă în fiecare zi, pentru toată echipa. Prețul acoperă tot drumul, nu doar codul.</p>
+        <ol class="chain">{included.map(i => <li>{i}</li>)}</ol>
+      </div>
+      <div class="reveal" data-delay="1">
+        <h3>Ce face prețul să urce?</h3>
+        <ul class="drivers">{drivers.map(d => <li>{d}</li>)}</ul>
+      </div>
+    </div>
+
+    <div class="types" id="types">
+      <h3>Ce înseamnă, de fapt, o aplicație web?</h3>
+      <div class="types-grid">
+        <div class="types-tabs" role="tablist" aria-label="Tipuri de aplicații">
+          {types.map((t, i) => <button role="tab" id={`type-tab-${i}`} aria-controls={`type-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{t.name}</button>)}
+        </div>
+        <div class="types-panels">
+          {types.map((t, i) => (
+            <div role="tabpanel" id={`type-${i}`} aria-labelledby={`type-tab-${i}`} hidden={i !== 0}>
+              <strong>{t.name}</strong>
+              <p>{t.text}</p>
+              <div class="types-meta">
+                <span class="meter" aria-label={`Complexitate: ${levels[t.level - 1]}`}>{[1, 2, 3, 4].map(n => <i class={n <= t.level ? 'on' : undefined}></i>)}<em>{levels[t.level - 1]}</em></span>
+                <span>{t.price ?? 'Preț fix, după analiză'}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <ul class="terms reveal">
+      <li>Fără comision pe rezervare sau pe utilizator.</li>
+      <li>Aplicația rulează pe conturile firmei voastre, de obicei în jur de 40 € pe lună, plătiți direct furnizorilor, fără adaos.</li>
+      <li>După lansare, modificările costă de la 150 € sau intră într-un abonament lunar pe care îl opriți oricând.</li>
+      <li>Audit pentru o aplicație făcută cu AI: gratuit, fără obligații.</li>
+    </ul>
+  </div>
+</section>
+<script>import '../scripts/pricing.js';</script>

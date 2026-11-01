@@ -39,7 +39,10 @@ const person = JSON.stringify({
 <body class={theme}>
   <header class="site-header">
     <div class="wrap">
-      <a class="brand" href="/">Andrei Năstase</a>
+      <div class="brand-box">
+        <a class="brand" href="/" aria-label="Andrei Năstase, pagina principală"><span class="brand-name">Andrei Năstase</span><i class="brand-dot"></i></a>
+        <span class="tagline" id="tagline" aria-hidden="true"></span>
+      </div>
       <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Meniu</button>
       <nav class="nav" id="nav" aria-label="Principal">
         {nav.map(([href, label, hot]) => <a href={href} class={hot ? 'hot' : undefined} aria-current={path === href ? 'page' : undefined}>{label}</a>)}
