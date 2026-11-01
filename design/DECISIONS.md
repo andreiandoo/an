@@ -15,3 +15,4 @@
 - 2026-11-01: imagini mereu color, inclusiv ribbon și fotografia. Fără box-shadow. Texte mai mari. Prețuri explicative și pași cu scroll.
 - 2026-11-01: Servicii: haos spre ordine, aplicația explodată 3D, calculator cu slidere.
 - 2026-11-01: haos cu streamlines și procesare; aplicația explodată cu piese 3D reale și etichete; Cofondator: produsul care se construiește singur.
+- 2026-11-01: explozie: piesele apar doar pe felia în focus. Builder cu colaboratori, cod, terminal și telefon. Site lansat pe andreinastase.ro.

@@ -1,0 +1,10 @@
+<!doctype html><html lang="ro"><meta charset="utf-8"><title>Capturi sau clipuri</title>
+<style>body{margin:0;background:#0d0d0d;color:#f2f2f2;font:17px/1.5 system-ui,sans-serif;padding:40px}h1{font-weight:400;font-size:30px;margin:0}p{color:#8a8a8a;margin:6px 0 32px}
+.g{display:grid;grid-template-columns:repeat(3,236px);gap:24px 28px;justify-content:start}h2{grid-column:1/-1;font-weight:400;font-size:20px;margin:16px 0 0}
+.f{position:relative;width:236px;aspect-ratio:390/844;border-radius:16px;overflow:hidden;background:#1b1b1b}.f img{position:absolute;left:0;top:0;width:100%;transition:transform 9s linear}.f:hover img{transform:translateY(-60%)}.f video{width:100%;height:100%;object-fit:cover;display:block}</style>
+<h1>Capturi sau clipuri</h1><p>Treci cu mouse-ul peste fiecare card.</p>
+<div class="g"><h2>Acum: captură care se derulează</h2>
+<div class="f"><img src="../public/shots/tixello.jpg"></div><div class="f"><img src="../public/shots/ambilet.jpg"></div><div class="f"><img src="../public/shots/tics.jpg"></div>
+<h2>Clip real, înregistrat de pe site</h2>
+<div class="f"><video src="clips/tixello.webm" muted loop playsinline preload="metadata"></video></div><div class="f"><video src="clips/ambilet.webm" muted loop playsinline preload="metadata"></video></div><div class="f"><video src="clips/tics.webm" muted loop playsinline preload="metadata"></video></div></div>
+<script>document.querySelectorAll('.f video').forEach(v=>{const f=v.parentElement;f.onmouseenter=()=>v.play();f.onmouseleave=()=>{v.pause();v.currentTime=0}})</script></html>

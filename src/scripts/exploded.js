@@ -47,7 +47,7 @@ function kit(T, RoundedBox) {
   return { mat, add, box, cyl, gear };
 }
 
-function tray(T, K, color) {
+function tray(T, K, color, name) {
   const g = new T.Group();
   K.box(g, TRAY_W, TRAY_H, .14, K.mat('#26282e', .75, .35), 0, 0, 0, 0);
   K.box(g, TRAY_W + .1, TRAY_H + .1, .05, K.mat(color, .5, .35), 0, 0, -.08, 0);
@@ -55,6 +55,25 @@ function tray(T, K, color) {
     const x = (i % 2 ? 1 : -1) * (TRAY_W / 2 - .22), y = (i < 2 ? 1 : -1) * (TRAY_H / 2 - .22);
     K.cyl(g, .07, .1, K.mat('#b9bec9', .9, .25), x, y, .08, 0, 16);
   }
+  const c = document.createElement('canvas');
+  c.width = 512;
+  c.height = Math.round(512 * TRAY_H / TRAY_W);
+  const x = c.getContext('2d');
+  x.fillStyle = '#26282e';
+  x.fillRect(0, 0, c.width, c.height);
+  x.strokeStyle = '#363a43';
+  x.lineWidth = 2;
+  for (let i = 40; i < c.height; i += 48) { x.beginPath(); x.moveTo(0, i); x.lineTo(c.width, i); x.stroke(); }
+  for (let i = 40; i < c.width; i += 48) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i, c.height); x.stroke(); }
+  x.fillStyle = color;
+  x.font = '500 44px "Geist Variable", system-ui, sans-serif';
+  x.fillText(name, 40, c.height - 44);
+  const map = new T.CanvasTexture(c);
+  map.colorSpace = T.SRGBColorSpace;
+  const face = new T.Mesh(new T.PlaneGeometry(TRAY_W - .3, TRAY_H - .3), new T.MeshBasicMaterial({ map, toneMapped: false }));
+  face.position.z = .075;
+  face.userData = { z: .075, lift: 0 };
+  g.add(face);
   return g;
 }
 
@@ -73,7 +92,7 @@ function buildUi(T, K, g, shot, anisotropy) {
     map.colorSpace = T.SRGBColorSpace;
     map.anisotropy = anisotropy;
     const face = new T.MeshBasicMaterial({ map, toneMapped: false });
-    const mesh = new T.Mesh(new T.BoxGeometry(TRAY_W - .24, h - .05, .07), [side, side, side, side, face, side]);
+    const mesh = new T.Mesh(new T.BoxGeometry(TRAY_W - .24, h - .004, .07), [side, side, side, side, face, side]);
     mesh.position.set(0, top - h / 2, .12);
     mesh.userData = { z: .12, lift };
     g.add(mesh);
@@ -191,7 +210,8 @@ async function start() {
   K.g = { sphere: new T.SphereGeometry(.2, 24, 16) };
   const spin = [];
   const anisotropy = renderer.capabilities.getMaxAnisotropy();
-  const trays = COLORS.map(c => { const t = tray(T, K, c); group.add(t); return t; });
+  const names = [...section.querySelectorAll('#exploded-list li')].map(li => li.dataset.title);
+  const trays = COLORS.map((c, i) => { const t = tray(T, K, c, names[i]); group.add(t); return t; });
   const anchors = [
     buildUi(T, K, trays[0], shot, anisotropy),
     buildRoles(K, trays[1]),
@@ -201,6 +221,7 @@ async function start() {
     buildNotify(T, K, trays[5]),
   ];
   const parts = trays.map(t => t.children.filter(c => c.userData.lift));
+  parts.flat().forEach(m => { m.userData.scale = m.scale.x; });
 
   const count = trays.length;
   let wide = true;
@@ -262,7 +283,13 @@ async function start() {
         const baseZ = ((count - 1) / 2 - i) * GAP * spread;
         if (wide) t.position.set(s.out * SIDE_DIST * SIDE_X, s.out * SIDE_DIST * SIDE_Y, baseZ + s.out * .6);
         else t.position.set(s.out * 1.2, s.out * -1.1, baseZ + s.out * (i * GAP + 1.6));
-        parts[i].forEach(m => { m.position.z = m.userData.z + m.userData.lift * (spread * .28 + s.out * .85); });
+        t.visible = i === 0 || spread > .015 || s.out > .02;
+        parts[i].forEach(m => {
+          m.position.z = m.userData.z + m.userData.lift * s.out * 1.1;
+          if (i === 0) return;
+          m.visible = s.out > .03;
+          m.scale.setScalar(m.userData.scale * Math.max(.001, smooth(0, 1, s.out)));
+        });
       });
       spin.forEach(([m, speed]) => { m.rotation.z += dt * speed * (.25 + spread); });
 
