@@ -105,7 +105,7 @@ async function start() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.position.z = camera.aspect < .8 ? 25 : 21;
+    camera.position.z = camera.aspect < .8 ? 29 : 25;
     camera.updateProjectionMatrix();
   }
   addEventListener('resize', resize);
@@ -127,6 +127,7 @@ async function start() {
       const spread = smooth(.1, .26, eased) * (1 - smooth(.86, .98, eased));
       group.rotation.set(-turn * 1.02, 0, turn * .72);
       group.position.x = -turn * 1.1;
+      group.position.y = -turn * .9;
       const active = eased >= .28 && eased < .86 ? Math.min(count - 1, Math.floor((eased - .28) / .58 * count)) : -1;
       layers.forEach((l, i) => {
         l.out += ((i === active ? 1 : 0) - l.out) * .14;
