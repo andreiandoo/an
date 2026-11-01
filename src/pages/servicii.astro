@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Pricing from '../components/Pricing.astro';
 import Process from '../components/Process.astro';
+import Chaos from '../components/Chaos.astro';
+import Exploded from '../components/Exploded.astro';
 import { steps } from '../data/portfolio.js';
 import body from '../partials/servicii.html?raw';
 
@@ -18,6 +20,8 @@ const [b, c] = rest.split('<!--process-->');
   <Fragment set:html={body.slice(0, cut)} />
   <section class="ribbon" id="ribbon" aria-hidden="true"><canvas></canvas></section>
   <Fragment set:html={a} />
+  <Chaos />
+  <Exploded />
   <Pricing third="audit" contact="#cerere" />
   <Fragment set:html={b} />
   <Process steps={steps} intro="De la primul apel la aplicația folosită de echipa voastră, știți mereu unde suntem." />

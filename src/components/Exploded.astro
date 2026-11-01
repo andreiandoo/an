@@ -1,0 +1,24 @@
+---
+const layers = [
+  ['Interfață', 'Ce vede omul: ecrane, butoane, formulare.'],
+  ['Conturi și roluri', 'Cine are voie să vadă și să facă fiecare lucru.'],
+  ['Reguli', 'Cum calculează aplicația, după regulile firmei voastre.'],
+  ['Bază de date', 'Unde stau datele voastre, în siguranță.'],
+  ['Plăți', 'Încasări, facturi și abonamente.'],
+  ['Notificări', 'Emailuri și mesaje care pleacă singure, la timp.'],
+];
+---
+<section class="exploded" id="explodat" aria-labelledby="exploded-title">
+  <div class="exploded-view">
+    <div class="exploded-copy">
+      <h2 id="exploded-title">Ce e, de fapt, într-o aplicație</h2>
+      <p class="exploded-intro">Vedeți doar ecranul. Sub el lucrează încă cinci straturi.</p>
+      <ol id="exploded-list">
+        {layers.map(([title, text], i) => <li data-title={title}><i>{String(i + 1).padStart(2, '0')}</i><b>{title}</b><span>{text}</span></li>)}
+      </ol>
+      <p class="exploded-end">Toate intră în preț.</p>
+    </div>
+    <canvas id="exploded-canvas" aria-hidden="true"></canvas>
+  </div>
+</section>
+<script>import '../scripts/exploded.js';</script>

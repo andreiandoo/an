@@ -1,0 +1,21 @@
+---
+const cards = [
+  'oferte_final_v3.xlsx', 'WhatsApp: „ai trimis oferta?”', 'Factură neplătită', 'Email de 14 mesaje', 'Clienți.xlsx', 'Post-it: sună-l pe Radu',
+  'Comandă pe telefon', 'Stocuri, caietul albastru', 'Programări în agendă', 'Raport manual, luni', 'Copy-paste în ERP', 'preturi_noi_FINAL.pdf',
+  'Reminder în telefon', 'Contract în Drive', 'Plată confirmată pe mail', 'Cine se ocupă de asta?', 'Excel de la contabilă', 'Lista de pe tablă',
+];
+---
+<section class="chaos" id="haos" aria-labelledby="chaos-title">
+  <div class="chaos-view">
+    <div class="chaos-copy">
+      <h2 id="chaos-title">De la haos la un singur loc</h2>
+      <p class="chaos-before">Azi, munca firmei stă în zeci de locuri.</p>
+      <p class="chaos-after">Cu o aplicație, totul se adună într-un singur ecran.</p>
+    </div>
+    <div class="chaos-panel" aria-hidden="true"><span>Aplicația voastră</span></div>
+    <ul class="chaos-cards" id="chaos-cards">
+      {cards.map(c => <li><i></i>{c}</li>)}
+    </ul>
+  </div>
+</section>
+<script>import '../scripts/chaos.js';</script>
