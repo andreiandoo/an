@@ -111,15 +111,15 @@ export const socials = [
 ];
 
 export const steps = [
-  { title: 'Apel gratuit', time: '30 de minute', you: '30 de minute', text: 'Îmi spuneți ce vreți să rezolvați. Vă spun dacă vă pot ajuta și cum.', get: 'Un răspuns sincer: merită construit sau nu.' },
-  { title: 'Analiză', time: '2–5 zile', you: 'o oră de discuție și câteva răspunsuri', text: 'Mă uit la cum lucrați azi și stabilim ce merită făcut.', get: 'Un preț fix, înainte de orice linie de cod.' },
-  { title: 'Construim', time: '3–8 săptămâni', you: 'câte o privire pe fiecare etapă', text: 'Livrez pe etape și vedeți fiecare pas.', get: 'Aplicația, codul, conturile și instrucțiunile.' },
-  { title: 'După lansare', time: 'cât aveți nevoie', you: 'doar când vreți ceva nou', text: 'Modificările costă de la 150 € sau intră într-un abonament lunar pe care îl opriți oricând.', get: 'O aplicație care rămâne a voastră.' },
+  { title: 'Apel gratuit', head: ['Un răspuns sincer:', 'merită construit sau nu.'], time: '30 de minute', you: '30 de minute', text: 'Îmi spuneți ce vreți să rezolvați. Vă spun dacă vă pot ajuta și cum.', get: 'Un răspuns sincer: merită construit sau nu.' },
+  { title: 'Analiză', head: ['Un preț fix,', 'înainte de orice linie de cod.'], time: '2–5 zile', you: 'o oră de discuție și câteva răspunsuri', text: 'Mă uit la cum lucrați azi și stabilim ce merită făcut.', get: 'Un preț fix, înainte de orice linie de cod.' },
+  { title: 'Construim', head: ['Aplicația, codul,', 'conturile și instrucțiunile.'], time: '3–8 săptămâni', you: 'câte o privire pe fiecare etapă', text: 'Livrez pe etape și vedeți fiecare pas.', get: 'Aplicația, codul, conturile și instrucțiunile.' },
+  { title: 'După lansare', head: ['O aplicație care rămâne', 'a voastră.'], time: 'cât aveți nevoie', you: 'doar când vreți ceva nou', text: 'Modificările costă de la 150 € sau intră într-un abonament lunar pe care îl opriți oricând.', get: 'O aplicație care rămâne a voastră.' },
 ];
 
 export const founderSteps = [
-  { title: 'Îmi spui ideea', time: '30 de minute', text: 'Într-un apel sau în scris. Dacă îmi scrii, îți răspund în cel mult o zi lucrătoare, cu ce cred și ce întrebări am.' },
-  { title: 'Explorăm problema', time: '1–2 săptămâni, gratuit', text: 'Îmi dai context și mă pui în legătură cu cel puțin un om, în afară de tine, care are problema. La final alegem ce intră în prima versiune și scriem termenii. Până semnăm, nu plătești nimic și nu cedezi nimic din firmă.' },
-  { title: 'Construim prima versiune', time: '3–6 săptămâni', text: 'Pe etape, ca primii clienți să o folosească repede. Tu aduci clienții și ce spun ei, eu produsul.' },
-  { title: 'Mergem mai departe', time: 'după lansare', text: 'Rămân în produs și îl creștem după ce spun clienții. Partea mea se câștigă pe măsură ce lucrăm.' },
+  { title: 'Îmi spui ideea', head: ['Într-un apel', 'sau în scris.'], time: '30 de minute', text: 'Într-un apel sau în scris. Dacă îmi scrii, îți răspund în cel mult o zi lucrătoare, cu ce cred și ce întrebări am.' },
+  { title: 'Explorăm problema', head: ['Alegem ce intră', 'în prima versiune.'], time: '1–2 săptămâni, gratuit', text: 'Îmi dai context și mă pui în legătură cu cel puțin un om, în afară de tine, care are problema. La final alegem ce intră în prima versiune și scriem termenii. Până semnăm, nu plătești nimic și nu cedezi nimic din firmă.' },
+  { title: 'Construim prima versiune', head: ['Primii clienți o folosesc', 'repede.'], time: '3–6 săptămâni', text: 'Pe etape, ca primii clienți să o folosească repede. Tu aduci clienții și ce spun ei, eu produsul.' },
+  { title: 'Mergem mai departe', head: ['Creștem produsul', 'după ce spun clienții.'], time: 'după lansare', text: 'Rămân în produs și îl creștem după ce spun clienții. Partea mea se câștigă pe măsură ce lucrăm.' },
 ];

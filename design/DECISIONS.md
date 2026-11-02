@@ -19,3 +19,6 @@
 
 ## 2026-11-01: home page, depth and receipt
 Three real product screens as hero layers, moving at different rates while the dark section rises over them. They stay static inside the frame: images move only on hover. A small receipt collects real figures while scrolling and lands in the contact section as a ledger ending in "Urmează proiectul vostru". The TICS line stays live. Principles from scroll-craft; its engine and paid image generation are not used.
+
+## 2026-11-02: process as stacked cards
+"Cum lucrez" takes the mechanics of clay.com's features section: sticky cards stacking over each other, a tag with growing rings, a two-tone heading, and one ball travelling through a machine on every card. The machines are our own Three.js models in neutral tones with an orange ball; no Clay artwork is used. One WebGL renderer draws into a 2D canvas per card, Three loads only near the section.
