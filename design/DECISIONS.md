@@ -22,3 +22,8 @@ Three real product screens as hero layers, moving at different rates while the d
 
 ## 2026-11-02: process as stacked cards
 "Cum lucrez" takes the mechanics of clay.com's features section: sticky cards stacking over each other, a tag with growing rings, a two-tone heading, and one ball travelling through a machine on every card. The machines are our own Three.js models in neutral tones with an orange ball; no Clay artwork is used. One WebGL renderer draws into a 2D canvas per card, Three loads only near the section.
+
+## 2026-11-02: refined machines, domain prices
+Machines rebuilt from real parts: a swept U channel, gears, dial, gantry, detailed product layers. Tags show all four shapes, as on Clay. Clay has no card shadow; ours was the founder's request.
+
+Domains: added x-x.ro (2.000) and e-test.ro (2.500), removed obli.ro. Revised: epas 7.800 to 6.500, cautbilet 4.000 to 3.000, roplati 3.600 to 3.000, agentiaweb and eduplan and actoria 2.000 to 2.500, e-a 1.770 to 1.800, suntonline 2.000 to 1.500, livetributes 2.000 to 1.500, teatru-copii 1.200 to 900, cursdecariera and nastasia 2.000 to 1.200. Evidence is thin: sold .ro names found were zuno.ro $6.650 (2010), nn.ro $5.699 (2015), af.ro $5.000 (2011), edumanager.ro $3.300 (2026), and hyphenated domains average about $1.100 across NameBio sales (2020). No sale of any domain in this list or a true comparable was found, so these are judgement-based asking prices.

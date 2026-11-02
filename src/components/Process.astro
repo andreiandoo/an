@@ -10,9 +10,10 @@ const { title = 'Cum lucrez', intro, steps, id = 'cum' } = Astro.props;
     {steps.map((s, i) => (
       <li class="pc">
         <div class="pc-copy">
-          <span class="pc-tag"><b>{s.title}</b>{Array.from({ length: i + 1 }, () => <i></i>)}</span>
+          <span class="pc-tag">{steps.map((_, k) => (k === i ? <b style={`z-index:${steps.length}`}>{s.title}</b> : <i style={`z-index:${steps.length - Math.abs(k - i)}`}></i>))}</span>
           <h3>{s.head[0]} <em>{s.head[1]}</em></h3>
           <p>{s.text}</p>
+          <ul>{s.list.map(item => <li>{item}</li>)}</ul>
           <dl>
             <div><dt>Durează</dt><dd>{s.time}</dd></div>
             {s.you && <div><dt>Timpul vostru</dt><dd>{s.you}</dd></div>}

@@ -3,13 +3,13 @@ import Layout from '../layouts/Layout.astro';
 
 const featured = [
   { name: 'bine.ro', price: 15000, note: 'Un singur cuvânt, pozitiv, pe care îl spune toată lumea.' },
-  { name: 'epas.ro', price: 7800, note: 'Patru litere, ușor de ținut minte în orice limbă.' },
-  { name: 'cautbilet.ro', price: 4000, note: 'Exact ce scrie cineva care vrea să meargă la un eveniment.' },
+  { name: 'epas.ro', price: 6500, note: 'Patru litere, ușor de ținut minte în orice limbă.' },
+  { name: 'cautbilet.ro', price: 3000, note: 'Exact ce scrie cineva care vrea să meargă la un eveniment.' },
 ];
 const groups = [
-  ['Evenimente și teatru', [['bilete-teatru.ro', 800], ['hailateatru.ro', 800], ['teatru-copii.ro', 1200], ['livetributes.com', 2000]]],
-  ['Business și digital', [['agentiaweb.ro', 2000], ['suntonline.ro', 2000], ['roplati.ro', 3600], ['obli.ro', 2000], ['e-a.ro', 1770]]],
-  ['Educație și carieră', [['eduplan.ro', 2000], ['cursdecariera.ro', 2000], ['cinesunt.ro', 2000], ['actoria.ro', 2000], ['nastasia.ro', 2000]]],
+  ['Evenimente și teatru', [['bilete-teatru.ro', 800], ['hailateatru.ro', 800], ['teatru-copii.ro', 900], ['livetributes.com', 1500]]],
+  ['Business și digital', [['roplati.ro', 3000], ['agentiaweb.ro', 2500], ['x-x.ro', 2000], ['e-a.ro', 1800], ['suntonline.ro', 1500]]],
+  ['Educație și carieră', [['e-test.ro', 2500], ['eduplan.ro', 2500], ['actoria.ro', 2500], ['cinesunt.ro', 2000], ['cursdecariera.ro', 1200], ['nastasia.ro', 1200]]],
 ];
 const count = featured.length + groups.reduce((n, [, list]) => n + list.length, 0);
 const price = n => `${n.toLocaleString('ro-RO')} €`;
