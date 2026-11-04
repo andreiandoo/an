@@ -21,8 +21,8 @@ export const inWork = [
 
 export const roles = [
   { name: 'Narada', years: '2020–2022', role: 'CTO', text: 'ONG de educație. Strategie tehnică, arhitectură și echipe de dezvoltare, inclusiv Naradix LMS, cu peste 27.000 de utilizatori, și HartaEdu.', url: 'https://narada.ro' },
-  { name: 'LAROCK Festival', years: '2024–2025', role: 'Project Manager și director de festival', text: 'Festival de rock pe mai multe zile, cu artiști din țară și din afară.', url: 'https://larockfestival.ro' },
-  { name: 'FREEFEST Festival', years: '2011–2013', role: 'Director de festival', text: 'Festival de muzică cu intrare liberă. Trei ediții la rând: operațiuni, artiști, logistică.' },
+  { name: 'LAROCK Festival', years: '2024–2025', role: 'Project Manager și director de festival', editions: 'edițiile 2 și 3', text: 'Festival de rock pe mai multe zile, cu artiști din țară și din afară.', url: 'https://larockfestival.ro' },
+  { name: 'FREEFEST Festival', years: '2011–2013', role: 'Director de festival', editions: 'edițiile 1, 2 și 3', text: 'Festival de muzică cu intrare liberă. Trei ediții la rând: operațiuni, artiști, logistică.' },
 ];
 
 const slug = name => name.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -111,12 +111,26 @@ export const ai = [
   { name: 'Grok', d: 'M9.27 15.29l7.978-5.897c.391-.29.95-.177 1.137.272.98 2.369.542 5.215-1.41 7.169-1.951 1.954-4.667 2.382-7.149 1.406l-2.711 1.257c3.889 2.661 8.611 2.003 11.562-.953 2.341-2.344 3.066-5.539 2.388-8.42l.006.007c-.983-4.232.242-5.924 2.75-9.383.06-.082.12-.164.179-.248l-3.301 3.305v-.01L9.267 15.292M7.623 16.723c-2.792-2.67-2.31-6.801.071-9.184 1.761-1.763 4.647-2.483 7.166-1.425l2.705-1.25a7.808 7.808 0 00-1.829-1A8.975 8.975 0 005.984 5.83c-2.533 2.536-3.33 6.436-1.962 9.764 1.022 2.487-.653 4.246-2.34 6.022-.599.63-1.199 1.259-1.682 1.925l7.62-6.815' },
 ];
 
+// Outline marks from lucide-static 0.469.0, 24×24 viewBox, stroke="currentColor".
 export const socials = [
-  ['LinkedIn', 'https://linkedin.com/in/andreinastase'],
-  ['GitHub', 'https://github.com/andreiandoo'],
-  ['Facebook', 'https://www.facebook.com/sinecvanon/'],
-  ['Instagram', 'https://www.instagram.com/sinecvanon/'],
+  { label: 'GitHub', handle: 'andreiandoo', url: 'https://github.com/andreiandoo', icon: '<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/>' },
+  { label: 'LinkedIn', handle: 'nastase-andrei', url: 'https://www.linkedin.com/in/nastase-andrei/', icon: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>' },
+  { label: 'Facebook', handle: 'sinecvanon', url: 'https://www.facebook.com/sinecvanon/', icon: '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>' },
+  { label: 'Instagram', handle: 'sinecvanon', url: 'https://www.instagram.com/sinecvanon/', icon: '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>' },
+  { label: 'Email', handle: 'salut@andreinastase.ro', url: 'mailto:salut@andreinastase.ro', icon: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>' },
 ];
+
+export const stack = [
+  ['Backend', 'PHP, Laravel, Filament, Livewire, CodeIgniter, Python'],
+  ['Frontend', 'JavaScript, Vue.js, CSS, Tailwind, Bootstrap'],
+  ['Date', 'SQL, MySQL, PostgreSQL, Supabase'],
+  ['CMS și magazine', 'WordPress, Magento'],
+  ['Găzduire', 'AWS, Cloudflare, Vercel, Railway'],
+  ['Produs', 'Plăți cu Stripe, aplicații iOS și Android, extensii de Chrome'],
+];
+
+export const aiUses = ['Integrări prin API', 'Servere MCP', 'Agenți de programare', 'Automatizări', 'Voce: transcriere, traducere, sinteză'];
+
 
 export const steps = [
   { title: 'Apel gratuit', list: ['Nu pregătiți nimic și nu aveți nevoie de termeni tehnici.', 'Îmi povestiți cum lucrați azi și ce vă încurcă.', 'Dacă nu merită construit, vă spun direct și ne oprim aici.', 'Alegeți singuri ora din calendar.'], head: ['Un răspuns sincer:', 'merită construit sau nu.'], time: '30 de minute', you: '30 de minute', text: 'Îmi spuneți ce vreți să rezolvați. Vă spun dacă vă pot ajuta și cum.', get: 'Un răspuns sincer: merită construit sau nu.' },

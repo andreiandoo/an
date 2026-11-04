@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import Layout from '../layouts/Layout.astro';
 import Pricing from '../components/Pricing.astro';
 import Process from '../components/Process.astro';
-import { products, inWork, roles, clients, numbers, skills, ai, socials, steps } from '../data/portfolio.js';
+import { products, inWork, roles, clients, numbers, skills, ai, aiUses, socials, stack, steps } from '../data/portfolio.js';
 import rest from '../partials/home-rest.html?raw';
 
 const has = path => fs.existsSync(`public/shots/${path}.jpg`);
@@ -121,30 +121,41 @@ const ledgerHtml = `<ol class="ledger reveal" id="ledger"><li class="ledger-head
 
   <section class="about-new" id="despre" aria-labelledby="about-title">
     <div class="wrap">
-      <div class="portrait reveal"><img src="/andrei.jpg" alt="Andrei Năstase" width="800" height="800" loading="lazy"></div>
+      <aside class="about-side">
+        <div class="portrait reveal"><img src="/andrei.jpg" alt="Andrei Năstase" width="800" height="800" loading="lazy"></div>
+        <ul class="about-links">
+          {socials.map(s => <li><a href={s.url} target={s.url.startsWith('mailto:') ? undefined : '_blank'} rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={s.icon} /><b>{s.label}</b><span>{s.handle}</span></a></li>)}
+        </ul>
+      </aside>
       <div>
         <h2 id="about-title">Cine sunt</h2>
         <p class="lead">Sunt Andrei Năstase, din Ploiești. Scriu software de 17 ani, ca senior full-stack: frontend, backend și aplicații mobile. Pe lângă cod fac product design, animație și strategie de marketing, pentru că produsele mele au avut nevoie de toate astea.</p>
+        <p class="lead lead-2">Sunt și tatăl a doi băieți minunați. Asta schimbă felul în care mă uit la un produs: mă întreb ce vede un copil pe ecran, cât timp îi cere aplicația și dacă un părinte obosit o poate folosi seara, cu o singură mână. Două dintre produsele mele, dubidu și Story of WHO, sunt gândite pentru copii și pentru părinții lor.</p>
         <div class="know">
           <div class="reveal"><h3>Ce fac</h3><p>Construiesc produse de la zero, de la idee la lansare. Le fac pentru firme, pentru mine și, tot mai des, împreună cu fondatori din alte domenii.</p></div>
-          <div class="reveal" data-delay="1"><h3>Ce știu</h3><p>PHP, Laravel, Filament, Livewire, CodeIgniter și Python. JavaScript, Vue.js, CSS, Tailwind și Bootstrap. SQL, cu MySQL, PostgreSQL și Supabase. WordPress și Magento. Găzduire pe AWS, Cloudflare, Vercel și Railway. Plăți cu Stripe, aplicații mobile, integrări AI și extensii de Chrome.</p></div>
-          <div class="reveal" data-delay="2"><h3>La ce sunt bun</h3><p>Să spun ce nu merită construit. Să duc un produs până la clienți care plătesc. Să conduc echipe, ca CTO sau ca director de festival.</p></div>
+          <div class="reveal" data-delay="1"><h3>La ce sunt bun</h3><p>Să spun ce nu merită construit. Să duc un produs până la clienți care plătesc. Să conduc echipe, ca CTO sau ca director de festival.</p></div>
+        </div>
+        <div class="stack reveal">
+          <h3>Ce știu</h3>
+          <dl>
+            {stack.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+          </dl>
         </div>
         <div class="ai-tools reveal">
           <div>
             <h3>Lucrez cu AI</h3>
-            <p>Și nu mă feresc s-o spun. Azi ar fi o prostie să nu folosesc cele mai bune unelte. Cu ele scriu, testez și verific mai repede, iar deciziile și răspunderea pentru cod rămân la mine.</p>
+            <p>Și nu mă feresc s-o spun. Azi ar fi o prostie să nu folosesc cele mai bune unelte. Și nu doar întreb lucruri în chat: le integrez prin API în produsele pe care le construiesc, le leg de baze de date și de alte unelte prin servere MCP și lucrez zilnic cu agenți care scriu și testează cod alături de mine. Deciziile și răspunderea pentru cod rămân la mine.</p>
           </div>
-          <ul>
+          <ul class="ai-marks">
             {ai.map(a => <li><svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d={a.d} /></svg>{a.name}</li>)}
+          </ul>
+          <ul class="ai-uses">
+            {aiUses.map(u => <li>{u}</li>)}
           </ul>
         </div>
         <ul class="roles-mini">
-          {roles.map(r => <li class="reveal"><span>{r.years}</span><b>{r.url ? <a href={r.url} target="_blank" rel="noopener">{r.name}</a> : r.name}</b><em>{r.role}</em></li>)}
+          {roles.map(r => <li class="reveal"><span>{r.years}</span><b>{r.url ? <a href={r.url} target="_blank" rel="noopener">{r.name}</a> : r.name}</b><em>{r.role}{r.editions && `, ${r.editions}`}</em></li>)}
         </ul>
-        <div class="btn-row">
-          {socials.map(([label, url]) => <a class="btn" href={url} target="_blank" rel="noopener">{label}</a>)}
-        </div>
       </div>
     </div>
   </section>
