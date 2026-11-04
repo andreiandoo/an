@@ -44,16 +44,57 @@ if (calc) {
   update();
 }
 
+const FAIL_TEXT = 'Mesajul nu a putut fi trimis. Scrieți-mi direct la salut@andreinastase.ro.';
+const FILES_TOO_BIG = 'Fișierele sunt prea mari. Trimite cel mult 5 fișiere și 10 MB în total, sau pune un link.';
+const FILES_BAD_TYPE = 'Pot primi doar imagini (PNG, JPG, WebP, GIF) și PDF.';
+
+// "name=a|b": true when the checked radio called name has one of the values.
+const matches = (form, rule) => {
+  const [name, values] = rule.split('=');
+  const on = form.querySelector(`input[name="${name}"]:checked`);
+  return !!on && values.split('|').includes(on.value);
+};
+
 document.querySelectorAll('form[data-endpoint]').forEach(form => {
   const fail = document.createElement('p');
   fail.className = 'form-error';
   fail.hidden = true;
-  fail.textContent = 'Mesajul nu a putut fi trimis. Scrieți-mi direct la salut@andreinastase.ro.';
+  fail.textContent = FAIL_TEXT;
   form.querySelector('button[type="submit"]').before(fail);
+
+  // Blocks that appear only for some choices; their inputs are disabled while hidden, so they are not sent.
+  const syncChoices = () => {
+    form.querySelectorAll('[data-show-when]').forEach(el => {
+      el.hidden = !matches(form, el.dataset.showWhen);
+      el.querySelectorAll('input').forEach(i => { i.disabled = el.hidden; });
+    });
+    form.querySelectorAll('[data-required-when]').forEach(el => {
+      el.required = matches(form, el.dataset.requiredWhen);
+      el.closest('.field')?.querySelector('em')?.toggleAttribute('hidden', el.required);
+    });
+  };
+  form.addEventListener('change', syncChoices);
+  syncChoices();
+
+  const filesProblem = () => {
+    for (const input of form.querySelectorAll('input[type="file"]:not(:disabled)')) {
+      const files = [...input.files];
+      const bytes = files.reduce((sum, f) => sum + f.size, 0);
+      if (files.length > +input.dataset.maxFiles || bytes > +input.dataset.maxBytes) return FILES_TOO_BIG;
+      if (files.some(f => !/\.(png|jpe?g|webp|gif|pdf)$/i.test(f.name))) return FILES_BAD_TYPE;
+    }
+    return '';
+  };
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const btn = form.querySelector('button[type="submit"]');
+    const problem = filesProblem();
+    if (problem) {
+      fail.textContent = problem;
+      fail.hidden = false;
+      return;
+    }
     const data = new FormData(form);
     data.set('subiect', form.dataset.subject || 'Mesaj de pe andreinastase.ro');
     btn.disabled = true;
@@ -63,7 +104,8 @@ document.querySelectorAll('form[data-endpoint]').forEach(form => {
       if (!res.ok) throw new Error(String(res.status));
       form.querySelector('.form-done').hidden = false;
       btn.textContent = 'Trimis';
-    } catch {
+    } catch (err) {
+      fail.textContent = err.message === '413' ? FILES_TOO_BIG : err.message === '415' ? FILES_BAD_TYPE : FAIL_TEXT;
       fail.hidden = false;
       btn.disabled = false;
     }

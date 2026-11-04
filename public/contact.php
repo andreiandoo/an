@@ -8,6 +8,9 @@ const TO = 'salut@andreinastase.ro';
 const FROM = 'site@andreinastase.ro';
 const MAX_PER_HOUR = 8;
 const MAX_FIELD = 4000;
+const MAX_FILES = 5;
+const MAX_FILES_BYTES = 10 * 1024 * 1024;
+const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/pdf'];
 // Opțional: login SMTP, ținut un nivel deasupra public_html ca să nu fie servit niciodată.
 // Conținut: <?php return ['host' => 'mail.andreinastase.ro', 'port' => 465, 'user' => 'site@andreinastase.ro', 'pass' => '...'];
 const SMTP_CONFIG = __DIR__ . '/../contact-smtp.php';
@@ -83,6 +86,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     reply(405, ['ok' => false]);
 }
 
+// Peste post_max_size, PHP golește $_POST și $_FILES: spunem clar că e prea mare.
+if (empty($_POST) && empty($_FILES) && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+    reply(413, ['ok' => false]);
+}
+
 // Capcană pentru roboți: răspundem normal, dar nu trimitem nimic.
 if (!empty($_POST['website'])) {
     reply(200, ['ok' => true]);
@@ -116,14 +124,67 @@ if ($name === '' || ($email === '' && $phone === '') || ($email !== '' && !filte
     reply(422, ['ok' => false]);
 }
 
+// Atașamente (schițe, ecrane): doar imagini și PDF, cu limită de număr și mărime.
+$attachments = [];
+$up = $_FILES['fisiere'] ?? null;
+if ($up && is_array($up['name'])) {
+    $total = 0;
+    $finfo = function_exists('finfo_open') ? finfo_open(FILEINFO_MIME_TYPE) : null;
+    foreach ($up['name'] as $i => $original) {
+        $err = $up['error'][$i];
+        if ($err === UPLOAD_ERR_NO_FILE) {
+            continue;
+        }
+        if ($err === UPLOAD_ERR_INI_SIZE || $err === UPLOAD_ERR_FORM_SIZE) {
+            reply(413, ['ok' => false]);
+        }
+        if ($err !== UPLOAD_ERR_OK || !is_uploaded_file($up['tmp_name'][$i])) {
+            reply(400, ['ok' => false]);
+        }
+        $total += $up['size'][$i];
+        if (count($attachments) >= MAX_FILES || $total > MAX_FILES_BYTES) {
+            reply(413, ['ok' => false]);
+        }
+        $ext = strtolower(pathinfo((string) $original, PATHINFO_EXTENSION));
+        $type = $finfo ? finfo_file($finfo, $up['tmp_name'][$i])
+            : (['png' => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'webp' => 'image/webp', 'gif' => 'image/gif', 'pdf' => 'application/pdf'][$ext] ?? '');
+        if (!in_array($type, ALLOWED_TYPES, true)) {
+            reply(415, ['ok' => false]);
+        }
+        $name_safe = preg_replace('/[^\p{L}\p{N}._\-() ]+/u', '_', basename((string) $original)) ?: 'fisier';
+        $attachments[] = ['name' => mb_substr($name_safe, 0, 100), 'type' => $type, 'data' => file_get_contents($up['tmp_name'][$i])];
+    }
+    if ($attachments) {
+        $lines[] = 'Fișiere atașate: ' . implode(', ', array_column($attachments, 'name'));
+    }
+}
+
 $subject = clean_line((string) ($_POST['subiect'] ?? 'Mesaj de pe andreinastase.ro'));
 $subject = '=?UTF-8?B?' . base64_encode(mb_substr($subject, 0, 120)) . '?=';
-$headers = ['From: andreinastase.ro <' . FROM . '>', 'Content-Type: text/plain; charset=UTF-8'];
+$headers = ['From: andreinastase.ro <' . FROM . '>'];
 if ($email !== '') {
     $headers[] = "Reply-To: $email";
 }
 
-if (!send_mail(TO, $subject, implode("\n\n", $lines), $headers)) {
+$text = implode("\n\n", $lines);
+if ($attachments) {
+    $boundary = 'an-' . bin2hex(random_bytes(12));
+    $headers[] = "Content-Type: multipart/mixed; boundary=\"$boundary\"";
+    $parts = ["--$boundary\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($text))];
+    foreach ($attachments as $a) {
+        // Numele cu diacritice merg ca encoded-word (RFC 2047), forma pe care o citesc Gmail și Outlook.
+        $fname = preg_match('/[^\x20-\x7e]/', $a['name']) ? '=?UTF-8?B?' . base64_encode($a['name']) . '?=' : $a['name'];
+        $parts[] = "--$boundary\r\nContent-Type: {$a['type']}; name=\"$fname\"\r\nContent-Transfer-Encoding: base64\r\n"
+            . "Content-Disposition: attachment; filename=\"$fname\"\r\n\r\n"
+            . chunk_split(base64_encode($a['data']));
+    }
+    $body = implode('', $parts) . "--$boundary--\r\n";
+} else {
+    $headers[] = 'Content-Type: text/plain; charset=UTF-8';
+    $body = $text;
+}
+
+if (!send_mail(TO, $subject, $body, $headers)) {
     reply(500, ['ok' => false]);
 }
 
