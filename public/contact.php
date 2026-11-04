@@ -30,7 +30,7 @@ function smtp_send(array $c, string $to, string $subject, string $body, array $h
         return false;
     }
     stream_set_timeout($s, 15);
-    $step = function (?string $cmd, string $expect) use ($s): bool {
+    $step = function (string $label, ?string $cmd, string $expect) use ($s): bool {
         if ($cmd !== null) {
             fwrite($s, $cmd . "\r\n");
         }
@@ -42,7 +42,7 @@ function smtp_send(array $c, string $to, string $subject, string $body, array $h
             }
         }
         if (strncmp($res, $expect, 3) !== 0) {
-            error_log('contact.php smtp ' . ($cmd === null ? 'greeting' : strtok($cmd, ' :')) . ': ' . trim($res));
+            error_log("contact.php smtp $label: " . trim($res));
             return false;
         }
         return true;
@@ -53,15 +53,16 @@ function smtp_send(array $c, string $to, string $subject, string $body, array $h
         $headers,
         ['', str_replace("\n", "\r\n", $text)]
     ));
-    $ok = $step(null, '220')
-        && $step('EHLO andreinastase.ro', '250')
-        && $step('AUTH LOGIN', '334')
-        && $step(base64_encode($c['user']), '334')
-        && $step(base64_encode($c['pass']), '235')
-        && $step('MAIL FROM:<' . FROM . '>', '250')
-        && $step("RCPT TO:<$to>", '250')
-        && $step('DATA', '354')
-        && $step($data . "\r\n.", '250');
+    // Labels, not commands, go to the log, so the base64 login never ends up there.
+    $ok = $step('greeting', null, '220')
+        && $step('EHLO', 'EHLO andreinastase.ro', '250')
+        && $step('AUTH', 'AUTH LOGIN', '334')
+        && $step('user', base64_encode($c['user']), '334')
+        && $step('password', base64_encode($c['pass']), '235')
+        && $step('MAIL FROM', 'MAIL FROM:<' . FROM . '>', '250')
+        && $step('RCPT TO', "RCPT TO:<$to>", '250')
+        && $step('DATA', 'DATA', '354')
+        && $step('message', $data . "\r\n.", '250');
     fwrite($s, "QUIT\r\n");
     fclose($s);
     return $ok;
