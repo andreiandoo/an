@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import Layout from '../layouts/Layout.astro';
 import Pricing from '../components/Pricing.astro';
 import Process from '../components/Process.astro';
-import { products, inWork, roles, clients, numbers, skills, socials, steps } from '../data/portfolio.js';
+import { products, inWork, roles, clients, numbers, skills, ai, socials, steps } from '../data/portfolio.js';
 import rest from '../partials/home-rest.html?raw';
 
 const has = path => fs.existsSync(`public/shots/${path}.jpg`);
@@ -129,6 +129,15 @@ const ledgerHtml = `<ol class="ledger reveal" id="ledger"><li class="ledger-head
           <div class="reveal"><h3>Ce fac</h3><p>Construiesc produse de la zero, de la idee la lansare. Le fac pentru firme, pentru mine și, tot mai des, împreună cu fondatori din alte domenii.</p></div>
           <div class="reveal" data-delay="1"><h3>Ce știu</h3><p>PHP, Laravel, Filament, Livewire, CodeIgniter și Python. JavaScript, Vue.js, CSS, Tailwind și Bootstrap. SQL, cu MySQL, PostgreSQL și Supabase. WordPress și Magento. Găzduire pe AWS, Cloudflare, Vercel și Railway. Plăți cu Stripe, aplicații mobile, integrări AI și extensii de Chrome.</p></div>
           <div class="reveal" data-delay="2"><h3>La ce sunt bun</h3><p>Să spun ce nu merită construit. Să duc un produs până la clienți care plătesc. Să conduc echipe, ca CTO sau ca director de festival.</p></div>
+        </div>
+        <div class="ai-tools reveal">
+          <div>
+            <h3>Lucrez cu AI</h3>
+            <p>Și nu mă feresc s-o spun. Azi ar fi o prostie să nu folosesc cele mai bune unelte. Cu ele scriu, testez și verific mai repede, iar deciziile și răspunderea pentru cod rămân la mine.</p>
+          </div>
+          <ul>
+            {ai.map(a => <li><svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d={a.d} /></svg>{a.name}</li>)}
+          </ul>
         </div>
         <ul class="roles-mini">
           {roles.map(r => <li class="reveal"><span>{r.years}</span><b>{r.url ? <a href={r.url} target="_blank" rel="noopener">{r.name}</a> : r.name}</b><em>{r.role}</em></li>)}
