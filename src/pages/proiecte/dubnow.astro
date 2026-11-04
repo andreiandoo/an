@@ -133,7 +133,8 @@ const maxP = Math.max(...parts.map(x => x.p));
         <div class="tts-head">
           <p class="label">Demo live</p>
           <h2 id="demo-title">Scrie un text, alege limba, ascultă.</h2>
-          <p>Vocea se generează acum, pe un server Dubnow. Nimic nu e înregistrat dinainte. Timpii de mai jos sunt măsurați în browserul tău.</p>
+          <p>Vocea se generează pe calculatorul tău, nu pe un server. Modelul se descarcă o singură dată, apoi rulează în browser, pe placa video sau pe procesor. Timpii de mai jos sunt măsurați aici.</p>
+          <p class="tts-engine">Va rula pe: <b data-engine>…</b></p>
         </div>
         <form class="tts-form" id="tts" data-samples={JSON.stringify(samples)}>
           <label class="tts-text">
@@ -152,17 +153,20 @@ const maxP = Math.max(...parts.map(x => x.p));
               <legend>Vocea</legend>
               {voices.map(([v, l], i) => <label><input type="radio" name="voice" value={v} checked={i === 0}><span>{l}</span></label>)}
             </fieldset>
-            <button class="btn btn-primary btn-lg" type="submit">Generează vocea</button>
+            <button class="btn btn-primary btn-lg" type="button" data-load>Descarcă modelul (398 MB)</button>
+            <button class="btn btn-primary btn-lg" type="submit" hidden>Generează vocea</button>
           </div>
-          <p class="tts-status" role="status" aria-live="polite">Gata de pornire.</p>
+          <div class="tts-bar" hidden><i></i></div>
+          <p class="tts-status" role="status" aria-live="polite">Pornește modelul ca să generezi voce. Pe date mobile, descarcă-l pe Wi-Fi.</p>
           <audio controls hidden></audio>
           <dl class="tts-times">
-            <div><dt>Server alocat</dt><dd data-t="server">-</dd></div>
-            <div><dt>Prima voce, după trimitere</dt><dd data-t="voice">-</dd></div>
+            <div><dt>Pornire model</dt><dd data-t="load">-</dd></div>
+            <div><dt>Timp de sinteză</dt><dd data-t="voice">-</dd></div>
             <div><dt>Durata vocii</dt><dd data-t="audio">-</dd></div>
+            <div><dt>Raport (RTF)</dt><dd data-t="rtf">-</dd></div>
           </dl>
         </form>
-        <p class="tts-note">Vocile din demo sunt stilurile generice ale modelului. dubidu adaugă voci de personaje și, în curând, voci înregistrate cu actori. Textul ajunge la serverul dubidu doar ca să fie citit și nu se salvează. Dacă niciun server nu e pornit, primul clic poate aștepta câteva minute.</p>
+        <p class="tts-note">Textul nu pleacă de pe calculatorul tău. Modelul rămâne salvat în browser, deci a doua vizită pornește fără descărcare. Pe placa video vocea vine mai repede decât timpul real; doar pe procesor, poate dura mai mult decât fraza. Vocile din demo sunt stilurile generice ale modelului; dubidu adaugă voci de personaje și, în curând, voci înregistrate cu actori.</p>
       </div>
     </section>
 
@@ -427,7 +431,6 @@ const maxP = Math.max(...parts.map(x => x.p));
           <li><b>Antrenarea pe română.</b> Codul de antrenare al modelului de bază nu e public, așa că trebuie reconstruit. E riscul tehnic cel mai mare.</li>
           <li><b>Browserul.</b> Fără placă video, sinteza în browser e prea lentă. Testăm pe cel puțin 8 laptopuri înainte să o mutăm acolo.</li>
         </ul>
-        <p class="small muted">Dubnow pornește de la Supertonic 3 (Supertone Inc.), un model cu greutăți deschise publicat sub licența OpenRAIL-M. Licența și restricțiile ei de utilizare se aplică și lui Dubnow.</p>
       </div>
     </section>
 
@@ -440,5 +443,6 @@ const maxP = Math.max(...parts.map(x => x.p));
       </div>
     </div></section>
   </article>
-  <script>import '../../scripts/numbers.js'; import '../../scripts/tts-demo.js';</script>
+  <script>import '../../scripts/numbers.js';</script>
+  <script is:inline type="module" src="/dubnow/demo.js"></script>
 </Layout>

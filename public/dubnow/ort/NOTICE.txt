@@ -1,0 +1,2 @@
+onnxruntime-web 1.31.1, (c) Microsoft Corporation, MIT License: https://github.com/microsoft/onnxruntime/blob/main/LICENSE
+Files copied unchanged from the npm package dist/ folder.

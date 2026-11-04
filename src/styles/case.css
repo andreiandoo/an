@@ -217,3 +217,10 @@
   .vs-bars li { grid-template-columns: 1fr 56px; }
   .vs-bars i { grid-column: 1 / -1; grid-row: 2; }
 }
+.tts-engine { font-size: 15px; color: var(--muted); }
+.tts-engine b { font-weight: 500; color: var(--ink); }
+.tts-bar { height: 6px; border-radius: 999px; background: var(--paper-2); overflow: hidden; }
+.tts-bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s linear; }
+.tts-times { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 560px) { .tts-times { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tts [hidden] { display: none !important; }

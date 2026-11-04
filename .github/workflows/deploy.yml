@@ -1,6 +1,7 @@
 # Builds the site and uploads dist/ to the Romarg hosting (public_html) over FTPS on every push to redesign.
 # Needs three repository secrets: FTP_SERVER, FTP_USERNAME, FTP_PASSWORD (an FTP account rooted at public_html).
-# Only files that changed since the last upload are sent; files the site never uploaded stay untouched.
+# Only files that changed since the last upload are sent. The action deletes only files it uploaded itself and that
+# left dist/; the folders in exclude below are never touched at all.
 name: Deploy
 
 on:
@@ -44,3 +45,17 @@ jobs:
           protocol: ftps
           local-dir: ./dist/
           server-dir: ./
+          # Never uploaded, compared or deleted: other sites and server files living in public_html.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            dreams/**
+            edu/**
+            edustart/**
+            iuf/**
+            ltw/**
+            survey/**
+            cgi-bin/**
+            .well-known/**
+            error_log
+            .ftp-quota

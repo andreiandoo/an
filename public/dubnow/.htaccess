@@ -1,0 +1,7 @@
+# Dubnow demo files: modules and WebAssembly need the right types to load.
+AddType text/javascript .mjs .js
+AddType application/wasm .wasm
+<IfModule mod_headers.c>
+  Header set Cross-Origin-Resource-Policy "same-origin"
+  Header set Cache-Control "public, max-age=604800"
+</IfModule>
