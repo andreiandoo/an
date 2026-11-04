@@ -1,14 +1,14 @@
 export const products = [
   { name: 'Tixello', file: 'tixello', tag: 'SaaS ticketing', url: 'https://tixello.com', stat: '408.153 bilete' },
   { name: 'AmBilet', file: 'ambilet', tag: 'Bilete', url: 'https://ambilet.ro', stat: '+148% vânzări' },
-  { name: 'bilete.online', file: 'bilete-online', tag: 'Atracții', url: 'https://bilete.online' },
+  { name: 'bilete.online', file: 'bilete-online', tag: 'Atracții', url: 'https://bilete.online', stat: '7.954 atracții' },
   { name: 'TICS Radar', file: 'tics', tag: 'Comparator', url: 'https://tics.ro', stat: '20 de platforme' },
   { name: 'Dreams Atlas', file: 'dreamsatlas', tag: 'AI', url: 'https://dreamsatlas.com', stat: '3,22M afișări' },
-  { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com' },
+  { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com', stat: '113.093 atracții' },
   { name: 'e-test.ro', file: 'e-test', tag: 'Educație', url: 'https://e-test.ro' },
   { name: 'dubidu', file: 'dubidu', tag: 'Lansare 1 dec.', url: 'https://dubidu.net' },
   { name: 'eMUD', file: 'emud', tag: 'De vânzare', url: 'https://a-n.ro' },
-  { name: 'ePAS', file: 'epas', tag: 'Prototip', url: 'https://epas.ro', h: 1688 },
+  { name: 'ePAS', file: 'epas', tag: 'Prototip', url: 'https://epas.ro' },
 ];
 
 export const inWork = [
@@ -88,6 +88,19 @@ export const numbers = [
     metrics: [
       { value: 3.22, dec: 2, suffix: 'M', label: 'afișări organice' },
       { value: 332, label: 'clienți' },
+    ],
+  },
+  {
+    name: 'bilete.online', url: 'https://bilete.online', note: 'Bilete la atracții, muzee și parcuri.',
+    metrics: [
+      { value: 7954, label: 'atracții din România' },
+    ],
+  },
+  {
+    name: 'Viaqui', url: 'https://viaqui.com', note: 'Bilete la atracții, în toată lumea.',
+    metrics: [
+      { value: 113093, label: 'atracții' },
+      { value: 51, label: 'de țări' },
     ],
   },
   {
