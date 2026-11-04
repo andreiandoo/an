@@ -2,6 +2,9 @@
 AddType text/javascript .mjs .js
 AddType application/wasm .wasm
 <IfModule mod_headers.c>
+  # The runtime starts worker threads from these files; they need the same isolation headers as the demo page.
+  Header set Cross-Origin-Opener-Policy "same-origin"
+  Header set Cross-Origin-Embedder-Policy "credentialless"
   Header set Cross-Origin-Resource-Policy "same-origin"
   Header set Cache-Control "public, max-age=604800"
 </IfModule>
