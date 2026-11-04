@@ -71,7 +71,7 @@ const ledgerHtml = `<ol class="ledger reveal" id="ledger"><li class="ledger-head
       </div>
       <div class="stage" id="stage">
         {products.map(p => (
-          <a class="item" href={p.url} target="_blank" rel="noopener">
+          <a class="item" href={p.cs ?? p.url} target={p.cs ? undefined : '_blank'} rel={p.cs ? undefined : 'noopener'}>
             <span class="frame"><img src={`/shots/${p.file}.jpg`} alt={`Site-ul ${p.name} pe telefon`} width="780" height={p.h ?? 6000} loading="lazy" draggable="false"></span>
             <span class="cap"><span>{p.name}</span><span>{p.tag}</span>{p.stat && <em>{p.stat}</em>}</span>
           </a>

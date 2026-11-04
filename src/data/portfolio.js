@@ -6,7 +6,7 @@ export const products = [
   { name: 'Dreams Atlas', file: 'dreamsatlas', tag: 'AI', url: 'https://dreamsatlas.com', stat: '3,22M afișări' },
   { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com', stat: '113.093 atracții' },
   { name: 'e-test.ro', file: 'e-test', tag: 'Educație', url: 'https://e-test.ro' },
-  { name: 'dubidu', file: 'dubidu', tag: 'Lansare 1 dec.', url: 'https://dubidu.net' },
+  { name: 'dubidu', file: 'dubidu', tag: 'Lansare 1 dec.', url: 'https://dubidu.net', cs: '/proiecte/dubidu/', stat: 'Studiu de caz' },
   { name: 'eMUD', file: 'emud', tag: 'De vânzare', url: 'https://a-n.ro' },
   { name: 'ePAS', file: 'epas', tag: 'Prototip', url: 'https://epas.ro' },
 ];

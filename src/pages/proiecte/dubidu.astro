@@ -1,0 +1,498 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Figures checked on 4 Nov 2026: git history of the three repos, the code, dubidu.net and dubidu.net/investors.
+const facts = [
+  ['Rol', 'Fondator. Produs, design, cod, date'],
+  ['Perioadă', 'Octombrie 2026 - prezent'],
+  ['Stare', 'Beta. Lansare pe 1 decembrie 2026'],
+  ['Platforme', 'Extensie Chrome, web, server de voce'],
+];
+
+const top = [
+  { value: 8, label: 'zile de lucru intens, de la v0.7 la v0.19' },
+  { value: 429, label: 'commit-uri în 3 repo-uri' },
+  { value: 237, label: 'teste automate pe backend' },
+  { value: 31, label: 'de limbi în motorul de voce' },
+];
+
+const pivots = [
+  {
+    v: 'v0.1 - v0.7',
+    t: 'Traducere live, sunet în sunet',
+    d: 'Prima variantă trimitea sunetul tabului la Gemini Live și reda traducerea. Am auzit română pe YouTube și Netflix, dar cu circa 3 secunde întârziere. Engleza se auzea pe dedesubt, iar când am coborât tot mixul a dispărut și muzica.',
+    r: 'Merge, dar sună a interpret, nu a film.',
+  },
+  {
+    v: 'v0.8',
+    t: 'Scoatem doar dialogul din mix',
+    d: 'Un filtru audio în browser (STFT de 2048 de eșantioane, banda 150-7.000 Hz) scoate ce e în centrul stereo, unde stă de obicei vocea. Muzica și ambianța, care sunt late, rămân. Pe semnale de test vocea scade cu 20 dB, ambianța se schimbă cu 0,13 dB.',
+    r: 'Muzica rămâne. Pe filme reale, testul se face la ureche.',
+  },
+  {
+    v: 'v0.14',
+    t: 'Dublaj din subtitrări',
+    d: 'Am schimbat abordarea. Subtitrarea în română există deja pe platformă și știm replicile dinainte. Un model de limbaj stabilește cine spune fiecare replică, iar fiecare personaj primește o voce. Pilotul pe Sintel a arătat 1,4-4,2 secunde de sinteză pe replică, așa că vocile se pregătesc cu 45 de secunde înainte.',
+    r: 'Întârzierea dispare. Apar vocile pe personaje.',
+  },
+  {
+    v: 'v0.15 - v0.19',
+    t: 'Motor de voce propriu: Dubnow',
+    d: 'Am testat mai multe motoare de voce și le-am ales după ureche. Câștigătorul, un model deschis, a devenit Dubnow. Rulează pe procesoare obișnuite, așa că am mutat serverele de pe plăci video închiriate pe CPU.',
+    r: 'Costul pe oră dublată scade la o fracțiune de cent (estimare).',
+  },
+];
+
+const parts = [
+  {
+    n: '01',
+    t: 'Extensia Chrome',
+    d: 'O bară discretă pe video, care apare la mișcarea mouse-ului, ca la Meet. Pornește dublajul, reglează separat vocea română și sunetul filmului, arată timpul rămas.',
+    items: ['Citește subtitrarea afișată și găsește singură pista în română', 'Captează sunetul tabului și scoate 85% din dialogul original', 'Redă replicile pe ceasul video-ului: pauză, derulare, viteză', 'Setări în pagină, cu taburi; scurtătura Alt+Shift+D', 'Ecran de consimțământ și pachet separat pentru Chrome Web Store'],
+  },
+  {
+    n: '02',
+    t: 'Platforma dubidu.net',
+    d: 'Laravel 13 și PostgreSQL. Tot ce nu e sunet: conturi, plăți, catalog, conținut. Nu stă niciodată în drumul audio.',
+    items: ['Conturi de familie, dispozitive, istoric, recomandări', 'Abonamente Stripe pe ore, facturi automate', 'Contor de minute cu registru, ca într-o contabilitate', 'Tichete de sesiune semnate Ed25519 pentru serverele de voce', 'Catalog de filme, ghid pentru părinți, articole, ajutor'],
+  },
+  {
+    n: '03',
+    t: 'Dubnow, motorul de voce',
+    d: 'Derivat din modelul deschis Supertonic 3, cu licența respectată. Sintetizează o secundă de vorbire în 0,35 secunde pe patru fire de procesor.',
+    items: ['31 de limbi dintr-un singur model', '72 de voci în paletă, distribuite pe personaje', 'Rulează și în browser, prin WebGPU (0,20× timp real, măsurat pe un PC)', 'Dubnow Studio: actorii înregistrează replici pentru voci noi', 'Servere pornite la cerere, oprite când nu mai e nimeni'],
+  },
+  {
+    n: '04',
+    t: 'Panoul de administrare',
+    d: 'Filament 5, cu 87 de fișiere de resurse și pagini. Aici se pregătesc filmele și se urmăresc costurile.',
+    items: ['Catalog cu stadiul fiecărui titlu', 'Atribuirea replicilor pe personaje cu AI, apoi verificare umană', 'Distribuirea vocilor: copiii nu primesc voci de adult', 'Cereri de dublaj de la clienți, cu termen de 24 de ore', 'Costul fiecărui apel la modele, la cursul BCE al zilei'],
+  },
+];
+
+const metrics = [
+  ['39%', 'din 244 de titluri Netflix pentru familie verificate în România nu au audio în română', 'măsurat'],
+  ['693', 'titluri în catalogul public, din care 376 pregătite pentru dublaj cu dubidu', 'măsurat'],
+  ['536 / 19', 'replici și personaje cu voce proprie pentru Epoca de gheață', 'măsurat'],
+  ['0,35×', 'timp real pentru sinteză pe CPU: 1 secundă de vorbire în 0,35 secunde', 'măsurat'],
+  ['20', 'de spectatori simultan pe un server cu 10 fire, niciunul în urmă', 'test simulat'],
+  ['−20 dB', 'vocea din centru, pe semnale de test; ambianța rămâne aproape neatinsă', 'măsurat'],
+  ['45 s', 'replici pregătite înaintea momentului în care sunt rostite', 'în cod'],
+  ['~3 s → 0', 'întârzierea vocii față de imagine: traducerea live față de replicile pregătite dinainte', 'din design'],
+  ['93%', 'marja de contribuție pe planul Start, după plăți și servere', 'estimare'],
+  ['41,2 mil.', 'copii de 3-9 ani în cele 25 de țări a căror limbă o vorbește Dubnow', 'Eurostat'],
+];
+
+const build = [
+  ['34', 'modele de date'],
+  ['47', 'migrații'],
+  ['35', 'servicii în backend'],
+  ['87', 'fișiere în panoul de admin'],
+  ['28', 'fișiere de teste'],
+  ['77', 'documente de analiză'],
+];
+
+const lessons = [
+  ['Schimbă problema, nu doar soluția', 'La început am încercat să fac traducerea live mai rapidă. Subtitrarea în română exista deja. Odată ce am pornit de la ea, întârzierea a dispărut de tot.'],
+  ['Urechea decide, nu benchmark-ul', 'Am eliminat motoare de voce care arătau bine pe hârtie. Fiecare voce a trecut un test de ascultare înainte să ajungă în produs.'],
+  ['Scrie ce e măsurat și ce e estimat', 'Fiecare cifră din analize are o etichetă: măsurat, estimat, netestat. Pagina pentru investitori păstrează aceeași regulă.'],
+  ['Gândește de la început pentru mii de clienți', 'Serverele de voce nu țin stare și pot fi înlocuite oricând. Platforma web stă în afara drumului audio, iar minutele se țin într-un registru, ca banii.'],
+];
+
+const shots = '/shots/dubidu';
+---
+<Layout
+  title="dubidu: studiu de caz | Andrei Năstase"
+  description="Cum am construit dubidu: dublaj în română, în timp real, pentru filmele pe care copiii nu le pot urmări cu subtitrare. Extensie Chrome, platformă web și motor de voce propriu."
+  path="/proiecte/dubidu/"
+>
+  <article class="cs">
+    <header class="wrap cs-hero">
+      <a class="cs-back" href="/#proiecte">← Ce am construit</a>
+      <p class="label">Studiu de caz · 2026</p>
+      <h1>dubidu: filme dublate în română, în timp real, pentru copiii care nu citesc încă subtitrarea.</h1>
+      <p class="lead">O extensie Chrome transformă subtitrarea din Netflix sau YouTube în voci românești, câte una pentru fiecare personaj. Muzica și efectele rămân ale filmului.</p>
+      <dl class="cs-facts">
+        {facts.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://dubidu.net" target="_blank" rel="noopener">dubidu.net</a>
+        <a class="btn" href="https://dubidu.net/investors#demo" target="_blank" rel="noopener">Demo live în 18 limbi</a>
+      </div>
+    </header>
+
+    <figure class="wrap cs-hero-shot reveal">
+      <div class="browser"><span><i></i><i></i><i></i></span><b>dubidu.net</b></div>
+      <img src={`${shots}/home-hero.jpg`} alt="Pagina principală dubidu.net: Orice film sau desen animat, dublat în română" width="1424" height="996">
+    </figure>
+
+    <section class="wrap cs-top" aria-label="Pe scurt">
+      <ul>
+        {top.map(m => (
+          <li class="reveal">
+            <b data-count={m.value} data-dec="0" data-prefix="" data-suffix="">{m.value}</b>
+            <span>{m.label}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="small muted">Cifrele vin din istoricul git al celor trei repo-uri și din cod, la 4 noiembrie 2026. Cele 8 zile sunt intervalul 28 octombrie - 4 noiembrie; primele versiuni le făcusem înainte.</p>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">01 · Problema</p></div>
+      <div class="cs-body">
+        <h2>„Mami, ce zice?”</h2>
+        <p>În România, filmele străine de pe platformele de streaming vin cu subtitrare. Un copil sub 8-9 ani nu citește destul de repede ca să țină pasul. Părintele are două variante: traduce tot filmul cu voce tare sau închide filmul după zece minute.</p>
+        <p>Am numărat. Din 244 de titluri Netflix pentru familie disponibile în România, <strong>39% nu au pistă audio în română</strong>. Platformele dublează titlurile mari în limbile mari. Restul rămân doar cu subtitrare.</p>
+        <p>Sunt tată a doi băieți, așa că am privit problema și ca părinte.</p>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">02 · Ce face</p></div>
+      <div class="cs-body">
+        <h2>Un buton pe video. Personajele vorbesc românește.</h2>
+        <p>Părintele deschide filmul pe platforma pe care o plătește deja și apasă butonul dubidu. Replicile vin în română, fiecare personaj cu vocea lui, în timp ce muzica și efectele rămân cele originale.</p>
+      </div>
+    </section>
+
+    <figure class="wrap cs-fig reveal">
+      <img src={`${shots}/bar.jpg`} alt="Bara extensiei dubidu deasupra unui film, cu butonul Oprește, volumul vocii și al filmului, timpul și orele rămase" width="1440" height="810" loading="lazy">
+      <figcaption>Bara extensiei, peste filmul Sintel. Butonul de pornire și oprire, volumul vocii române, volumul muzicii și al efectelor, timpul sesiunii și orele rămase din abonament.</figcaption>
+    </figure>
+    <figure class="wrap cs-fig cs-zoom reveal">
+      <img src={`${shots}/bar-zoom.jpg`} alt="Bara dubidu mărită" width="1250" height="100" loading="lazy">
+      <figcaption>Bara, mărită. Butoanele sunt plate, cu iconuri SVG, iar stilurile sunt izolate într-un shadow DOM închis, ca CSS-ul site-ului să nu le poată strica.</figcaption>
+    </figure>
+
+    <div class="wrap cs-pair">
+      <figure class="cs-fig reveal">
+        <img src={`${shots}/home-demo.jpg`} alt="Demo interactiv pe dubidu.net: scena din Sintel cu butonul dubidu RO" width="1280" height="1122" loading="lazy">
+        <figcaption>Demo-ul de pe prima pagină: vizitatorul pornește scena și comută singur între engleză și română.</figcaption>
+      </figure>
+      <figure class="cs-fig reveal" data-delay="1">
+        <img src={`${shots}/home-why.jpg`} alt="Secțiunea De ce dubidu: pe orice platformă, în timp real, un singur clic, 4 ecrane, muzica rămâne, voci pentru fiecare personaj" width="1280" height="944" loading="lazy">
+        <figcaption>Promisiunea produsului, într-un singur ecran.</figcaption>
+      </figure>
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">03 · Drumul</p></div>
+      <div class="cs-body">
+        <h2>Patru versiuni, trei schimbări de direcție.</h2>
+        <p>Am început cu ChatGPT până la v0.7, apoi am continuat cu Claude Code. Fiecare experiment are un document cu data, rezultatul și limitele lui. Așa se vede de ce am renunțat la o idee, nu doar că am renunțat.</p>
+        <ol class="cs-steps">
+          {pivots.map(p => (
+            <li class="reveal">
+              <span class="cs-v">{p.v}</span>
+              <div>
+                <h3>{p.t}</h3>
+                <p>{p.d}</p>
+                <p class="cs-r">{p.r}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">04 · Arhitectura</p></div>
+      <div class="cs-body">
+        <h2>Trei piese. Sunetul nu trece niciodată prin site.</h2>
+        <p>Platforma web dă tichete și numără minutele. Sunetul circulă direct între extensie și serverul de voce, pe o conexiune WebSocket securizată. Dacă platforma web are o problemă, filmul care rulează nu se oprește.</p>
+      </div>
+    </section>
+
+    <div class="wrap"><figure class="cs-arch reveal" aria-label="Schema arhitecturii dubidu">
+      <svg viewBox="0 0 1000 420" role="img" aria-labelledby="arch-t">
+        <title id="arch-t">Extensia Chrome cere un tichet de la dubidu.net, apoi primește vocile direct de la serverul Dubnow</title>
+        <g class="a-box">
+          <rect x="20" y="40" width="290" height="340" rx="14"/>
+          <rect x="690" y="40" width="290" height="150" rx="14"/>
+          <rect x="690" y="230" width="290" height="150" rx="14"/>
+        </g>
+        <g class="a-head">
+          <text x="44" y="80">Extensia Chrome</text>
+          <text x="714" y="80">dubidu.net · Laravel</text>
+          <text x="714" y="270">Dubnow · server de voce</text>
+        </g>
+        <g class="a-txt">
+          <text x="44" y="118">Citește subtitrarea în română</text>
+          <text x="44" y="150">Captează sunetul tabului</text>
+          <text x="44" y="182">Scoate dialogul din centru</text>
+          <text x="44" y="214">Cere replici cu 45 s înainte</text>
+          <text x="44" y="246">Le redă pe ceasul video-ului</text>
+          <text x="44" y="278">Amestecă vocea cu filmul</text>
+          <text x="714" y="112">Conturi, abonamente, minute</text>
+          <text x="714" y="140">Catalog, personaje, voci</text>
+          <text x="714" y="168">Tichete semnate Ed25519</text>
+          <text x="714" y="302">Sinteză pe CPU, 31 de limbi</text>
+          <text x="714" y="330">Fără stare, pornit la cerere</text>
+          <text x="714" y="358">Mai mulți spectatori pe server</text>
+        </g>
+        <g class="a-line">
+          <path d="M310 110 H690"/>
+          <path d="M310 300 H690"/>
+        </g>
+        <g class="a-dot"><circle cx="310" cy="110" r="5"/><circle cx="690" cy="110" r="5"/><circle cx="310" cy="300" r="5"/><circle cx="690" cy="300" r="5"/></g>
+        <g class="a-lbl">
+          <text x="500" y="96" text-anchor="middle">HTTPS · cont, tichet, replici cu personaje</text>
+          <text x="500" y="286" text-anchor="middle">WSS · replici trimise, voci primite</text>
+          <text x="500" y="330" text-anchor="middle" class="a-acc">drumul sunetului</text>
+        </g>
+      </svg>
+    </figure></div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">05 · Componente</p></div>
+      <div class="cs-body">
+        <h2>Ce am construit, piesă cu piesă.</h2>
+      </div>
+    </section>
+
+    <div class="wrap cs-parts">
+      {parts.map((p, i) => (
+        <section class="reveal" data-delay={String(i % 2)}>
+          <span class="cs-n">{p.n}</span>
+          <h3>{p.t}</h3>
+          <p>{p.d}</p>
+          <ul>{p.items.map(x => <li>{x}</li>)}</ul>
+        </section>
+      ))}
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">06 · Catalogul</p></div>
+      <div class="cs-body">
+        <h2>Fiecare film pregătit are o distribuție.</h2>
+        <p>Pentru un film, un model de limbaj citește replicile și decide cine vorbește, ce vârstă și ce gen are personajul. Fiecare personaj primește o voce din paletă, iar o voce de copil nu ajunge la un adult. Adnotările rămân ciornă până le verifică un om.</p>
+        <p>Pagina fiecărui film spune dacă are deja dublaj pe platformă, câte replici și câte personaje are. Paginile sunt făcute pentru căutările părinților: „Epoca de gheață dublat în română”.</p>
+      </div>
+    </section>
+
+    <div class="wrap cs-pair">
+      <figure class="cs-fig reveal">
+        <img src={`${shots}/catalog.jpg`} alt="Catalogul dubidu: filme și desene dublate în română, cu filtre pe platformă, vârstă și gen" width="1440" height="1100" loading="lazy">
+        <figcaption>Catalogul: 693 de titluri, cu filtre pe platformă, vârstă, gen și limbă.</figcaption>
+      </figure>
+      <figure class="cs-fig reveal" data-delay="1">
+        <img src={`${shots}/film.jpg`} alt="Pagina filmului Epoca de gheață: 536 de replici, 19 personaje cu voce proprie" width="1440" height="1100" loading="lazy">
+        <figcaption>Pagina unui film: 536 de replici și 19 personaje, fiecare cu vocea lui.</figcaption>
+      </figure>
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">07 · Pentru părinți</p></div>
+      <div class="cs-body">
+        <h2>Un ghid: ce film să vadă copilul în seara asta.</h2>
+        <p>Părintele spune vârsta copilului, ce îi place și pe ce platforme are cont. Primește filmele potrivite, cu nota IMDb și cu informația dacă sunt deja în română. Răspunsurile nu se salvează în cont. Din aceleași date ies liste pe vârste și pe teme, pentru căutări.</p>
+      </div>
+    </section>
+
+    <figure class="wrap cs-fig reveal">
+      <img src={`${shots}/kids.jpg`} alt="Ghidul Ce film să vadă copilul tău, cu vârstă, platforme, genuri și liste pe vârste și teme" width="1440" height="1100" loading="lazy">
+      <figcaption>dubidu.net/filme-copii: filtrul pentru părinți și listele generate din catalog.</figcaption>
+    </figure>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">08 · Motorul de voce</p></div>
+      <div class="cs-body">
+        <h2>Aceeași scenă, în orice limbă, generată pe loc.</h2>
+        <p>Pe pagina pentru investitori, vizitatorul alege o limbă. Serverul sintetizează fiecare replică din scena Sintel, iar pagina arată timpul măsurat chiar în browserul lui. Nimic nu e preînregistrat. Demo-ul arată că același produs poate intra în altă țară fără să schimbăm extensia, plățile sau serverele.</p>
+      </div>
+    </section>
+
+    <div class="wrap cs-pair">
+      <figure class="cs-fig reveal">
+        <img src={`${shots}/inv-demo.jpg`} alt="Demo live: aceeași scenă în 18 limbi, generată de Dubnow pe un server CPU" width="1440" height="818" loading="lazy">
+        <figcaption>Demo-ul live: 18 limbi, timpul până la prima replică măsurat la fiecare clic.</figcaption>
+      </figure>
+      <figure class="cs-fig reveal" data-delay="1">
+        <img src={`${shots}/inv-tech.jpg`} alt="Tehnologia: 31 de limbi, 0,35x timp real pe CPU, rulează și în browser, distribuție pe personaje, voci de actori, servere la cerere" width="1440" height="759" loading="lazy">
+        <figcaption>Cifrele motorului, fiecare cu eticheta „măsurat” sau „estimare”.</figcaption>
+      </figure>
+    </div>
+
+    <section class="cs-night">
+      <div class="wrap">
+        <p class="label">09 · Metrici</p>
+        <h2>Ce am măsurat și ce am estimat.</h2>
+        <p class="cs-note">Fiecare cifră are eticheta ei. Produsul nu e încă lansat, așa că nu există încă cifre de abonați sau de venit.</p>
+        <ul class="cs-metrics">
+          {metrics.map(([v, l, tag]) => (
+            <li class="reveal">
+              <b>{v}</b>
+              <span>{l}</span>
+              <em class={tag === 'estimare' ? 'est' : undefined}>{tag}</em>
+            </li>
+          ))}
+        </ul>
+        <h3 class="cs-sub">Cât cod</h3>
+        <dl class="cs-build">
+          {build.map(([v, l]) => <div><dd>{v}</dd><dt>{l}</dt></div>)}
+        </dl>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">10 · Modelul de business</p></div>
+      <div class="cs-body">
+        <h2>Plătești cât te uiți.</h2>
+        <p>Trei planuri pe ore de dublaj pe lună, de la 5,99 €, fără perioadă minimă. Prima oră e gratuită. Prețurile se citesc din panoul de administrare, așa că site-ul, contul și pagina pentru investitori arată mereu aceleași cifre.</p>
+        <p>Sinteza rulează pe procesoare obișnuite, nu pe plăci video. Asta face ca o oră dublată să coste foarte puțin. Pentru mine e cifra care contează cel mai mult în tot proiectul.</p>
+      </div>
+    </section>
+
+    <figure class="wrap cs-fig reveal">
+      <img src={`${shots}/home-plans.jpg`} alt="Planurile dubidu: Start 5,99 €, Familie 9,99 €, Maxi 14,99 € pe lună" width="1280" height="1214" loading="lazy">
+      <figcaption>Planurile: calculatorul de sus recomandă planul după câte filme vede familia pe lună.</figcaption>
+    </figure>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">11 · Ce am învățat</p></div>
+      <div class="cs-body">
+        <h2>Patru lucruri pe care le iau cu mine în următorul proiect.</h2>
+        <div class="cs-lessons">
+          {lessons.map(([t, d]) => <div class="reveal"><h3>{t}</h3><p>{d}</p></div>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">12 · Ce urmează</p></div>
+      <div class="cs-body">
+        <h2>Lansare pe 1 decembrie 2026.</h2>
+        <ul class="cs-next">
+          <li><b>Voci de actori.</b> Actori români înregistrează replici în Dubnow Studio, cu contract, ca vocile să fie ale noastre.</li>
+          <li><b>Dubnow în browser.</b> Sinteza pe placa video a utilizatorului, aproape fără cost de server.</li>
+          <li><b>Alte browsere.</b> Edge și Opera folosesc același motor ca Chrome, deci se pot adăuga ieftin. Firefox și Safari nu permit încă captura sunetului din tab.</li>
+          <li><b>Alte țări.</b> Bulgaria, Grecia, Ungaria, Polonia și alte țări unde filmele pentru copii vin tot cu subtitrare.</li>
+        </ul>
+        <p class="small muted">Limite pe care le spun deschis: dubidu depinde de subtitrarea pe care platforma o afișează în browser, iar în beta l-am testat doar pe Netflix și YouTube, în Chrome.</p>
+      </div>
+    </section>
+
+    <section class="wrap"><div class="cs-end">
+      <h2>Ai o idee de produs pe care vrei s-o duci până la capăt?</h2>
+      <p class="lead">Lucrez ca dezvoltator sau ca cofondator tehnic. Scrie-mi și vedem dacă se potrivește.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary btn-lg" href="/cofondator/">Caut cofondator tehnic</a>
+        <a class="btn btn-lg" href="/#contact">Scrie-mi</a>
+      </div>
+    </div></section>
+  </article>
+  <script>import '../../scripts/numbers.js';</script>
+</Layout>
+
+<style>
+  .cs { padding-bottom: 40px; }
+  .cs-hero { display: grid; gap: 22px; padding-top: clamp(32px, 6vh, 64px); }
+  .cs-hero > * { max-width: 980px; }
+  .cs-back { font-size: 16px; color: var(--muted); width: max-content; }
+  .cs-back:hover { color: var(--accent); }
+  .cs-hero h1 { max-width: 22ch; }
+  .cs-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); margin-top: 8px; }
+  .cs-facts div { padding: 14px 16px 0 0; }
+  .cs-facts dt { font: 400 13px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .cs-facts dd { margin: 4px 0 0; font-size: 16px; }
+
+  .cs-hero-shot { margin-top: clamp(36px, 6vh, 64px); }
+  .browser { display: flex; align-items: center; gap: 14px; height: 38px; padding: 0 14px; background: var(--paper-2); border: 1px solid var(--line); border-bottom: 0; border-radius: 12px 12px 0 0; font: 400 13px var(--mono); color: var(--muted); }
+  .browser span { display: flex; gap: 6px; }
+  .browser i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+  .browser b { font-weight: 400; flex: 1; text-align: center; margin-right: 50px; }
+  .cs-hero-shot img { width: 100%; border: 1px solid var(--line); border-radius: 0 0 12px 12px; }
+
+  .cs-top { margin-top: clamp(48px, 8vh, 88px); }
+  .cs-top ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--ink); }
+  .cs-top li { padding: 20px 20px 0 0; display: grid; gap: 6px; }
+  .cs-top b { font-weight: 400; font-size: clamp(44px, 6vw, 84px); line-height: 1; letter-spacing: -.04em; }
+  .cs-top span { color: var(--muted); font-size: 16px; max-width: 22ch; }
+  .cs-top p { margin-top: 18px; }
+
+  .cs-sec { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: 24px; margin-top: clamp(72px, 11vh, 128px); }
+  .cs-side .label { position: sticky; top: calc(var(--hh) + 16px); }
+  .cs-body { display: grid; gap: 18px; max-width: 760px; }
+  .cs-body h2 { max-width: 26ch; }
+  .cs-body > p { color: #333; }
+
+  .cs-fig { margin-top: clamp(28px, 4vh, 44px); }
+  .cs-fig img { width: 100%; border-radius: 12px; border: 1px solid var(--line); background: #0b0b10; }
+  .cs-fig figcaption { margin-top: 10px; font-size: 15px; color: var(--muted); max-width: 70ch; }
+  .cs-zoom img { border-radius: 10px; }
+  .cs-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+
+  .cs-steps { display: grid; margin-top: 10px; border-top: 1px solid var(--line); }
+  .cs-steps li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .cs-v { font: 400 14px/1.6 var(--mono); color: var(--accent); }
+  .cs-steps h3 { margin-bottom: 6px; }
+  .cs-steps p { font-size: 17px; color: #333; }
+  .cs-r { margin-top: 8px; color: var(--ink) !important; font-weight: 500; }
+
+  .cs-arch { margin-top: clamp(28px, 4vh, 44px); background: var(--paper-2); border-radius: 14px; padding: clamp(12px, 2vw, 28px); }
+  .cs-arch svg { width: 100%; height: auto; display: block; }
+  .a-box rect { fill: var(--paper); stroke: var(--line); }
+  .a-head text { font: 500 20px var(--sans); fill: var(--ink); }
+  .a-txt text { font: 400 16px var(--sans); fill: #444; }
+  .a-line path { stroke: var(--ink); stroke-width: 1.5; fill: none; }
+  .a-line path:last-child { stroke: var(--accent); stroke-width: 2.5; }
+  .a-dot circle { fill: var(--ink); }
+  .a-dot circle:nth-child(n+3) { fill: var(--accent); }
+  .a-lbl text { font: 400 14px var(--mono); fill: var(--muted); }
+  .a-lbl .a-acc { fill: var(--accent); }
+
+  .cs-parts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: clamp(24px, 3vh, 36px); }
+  .cs-parts section { border: 1px solid var(--line); border-radius: 14px; padding: clamp(20px, 2.4vw, 32px); display: grid; gap: 10px; align-content: start; background: #fff; }
+  .cs-n { font: 400 14px var(--mono); color: var(--accent); }
+  .cs-parts h3 { font-size: 22px; }
+  .cs-parts p { font-size: 17px; color: #444; }
+  .cs-parts ul { display: grid; gap: 8px; margin-top: 6px; }
+  .cs-parts li { position: relative; padding-left: 18px; font-size: 16px; }
+  .cs-parts li::before { content: ""; position: absolute; left: 0; top: .62em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  .cs-night { background: var(--night); color: var(--night-ink); margin-top: clamp(80px, 12vh, 140px); padding: clamp(56px, 9vh, 104px) 0; }
+  .cs-night .label { color: var(--night-muted); }
+  .cs-night h2 { margin-top: 14px; }
+  .cs-note { margin-top: 12px; color: var(--night-muted); max-width: 60ch; }
+  .cs-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; margin-top: 32px; }
+  .cs-metrics li { display: grid; grid-template-columns: minmax(130px, 2fr) minmax(0, 5fr) auto; gap: 18px; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--night-line); }
+  .cs-metrics b { font-weight: 400; font-size: clamp(26px, 2.6vw, 36px); letter-spacing: -.03em; line-height: 1.1; }
+  .cs-metrics span { font-size: 16px; color: #c9c9c9; }
+  .cs-metrics em { font: normal 400 12px var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--night-muted); border: 1px solid var(--night-line); border-radius: 999px; padding: 3px 9px; white-space: nowrap; }
+  .cs-metrics em.est { color: var(--accent); border-color: var(--accent); }
+  .cs-sub { margin-top: 48px; font-weight: 400; color: var(--night-muted); font: 400 14px var(--mono); text-transform: uppercase; letter-spacing: .05em; }
+  .cs-build { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin-top: 14px; border-top: 1px solid var(--night-line); }
+  .cs-build div { padding: 16px 16px 0 0; }
+  .cs-build dd { margin: 0; font-size: clamp(28px, 3vw, 44px); letter-spacing: -.03em; line-height: 1; }
+  .cs-build dt { margin-top: 6px; font-size: 15px; color: var(--night-muted); }
+
+  .cs-lessons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 32px; margin-top: 8px; }
+  .cs-lessons div { border-top: 1px solid var(--ink); padding-top: 14px; display: grid; gap: 8px; }
+  .cs-lessons p { font-size: 17px; color: #444; }
+
+  .cs-next { display: grid; gap: 12px; }
+  .cs-next li { padding: 14px 0; border-top: 1px solid var(--line); font-size: 17px; color: #333; }
+  .cs-next b { font-weight: 500; color: var(--ink); }
+
+  .cs-end { margin-top: clamp(80px, 12vh, 140px); display: grid; gap: 18px; justify-items: start; border-top: 1px solid var(--ink); padding-top: 40px; }
+  .cs-end h2 { max-width: 24ch; }
+
+  @media (max-width: 900px) {
+    .cs-facts, .cs-top ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cs-top li { padding-bottom: 16px; }
+    .cs-sec { grid-template-columns: 1fr; gap: 12px; }
+    .cs-side .label { position: static; }
+    .cs-pair, .cs-parts, .cs-metrics, .cs-lessons { grid-template-columns: 1fr; }
+    .cs-build { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .cs-build div { padding-bottom: 14px; }
+  }
+  @media (max-width: 560px) {
+    .cs-steps li { grid-template-columns: 1fr; gap: 6px; }
+    .cs-metrics li { grid-template-columns: 1fr auto; }
+    .cs-metrics span { grid-column: 1 / -1; grid-row: 2; }
+    .browser b { margin-right: 0; }
+    .cs-arch { overflow-x: auto; }
+    .cs-arch svg { min-width: 640px; }
+  }
+</style>
