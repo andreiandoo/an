@@ -1,0 +1,46 @@
+# Builds the site and uploads dist/ to the Romarg hosting (public_html) over FTPS on every push to redesign.
+# Needs three repository secrets: FTP_SERVER, FTP_USERNAME, FTP_PASSWORD (an FTP account rooted at public_html).
+# Only files that changed since the last upload are sent; files the site never uploaded stay untouched.
+name: Deploy
+
+on:
+  push:
+    branches: [redesign]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Check FTP secrets
+        id: ftp
+        env:
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          if [ -z "$FTP_PASSWORD" ]; then
+            echo "FTP secrets are not set yet: built, not uploaded."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Upload to andreinastase.ro
+        if: steps.ftp.outputs.ready == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./dist/
+          server-dir: ./

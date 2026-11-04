@@ -1,0 +1,444 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/case.css';
+
+// Our measurements: mivo/analysis/SUPERTONIC-EVALUATION-2026-10-30.md and the server load test (2026-10-30).
+// Reading accuracy across languages: published by the authors of the base model (Minimax-MLS-test), labelled as such.
+const facts = [
+  ['Rol', 'Fondator. Integrare, testare, servere'],
+  ['Folosit în', 'dubidu, dublaj din subtitrări'],
+  ['Ieșire', 'WAV 44,1 kHz, 16 biți'],
+  ['Rulează pe', 'Procesor obișnuit sau în browser'],
+];
+
+const top = [
+  { value: 31, label: 'de limbi, dintr-un singur model' },
+  { value: 99, label: 'de milioane de parametri' },
+  { value: 20, label: 'de spectatori pe un server cu 10 fire' },
+  { value: 44.1, dec: 1, label: 'kHz, calitatea sunetului' },
+];
+
+const versus = [
+  ['Mărime', '0,7 - 2 miliarde de parametri', 'circa 99 de milioane'],
+  ['Unde rulează', 'Plăci video în centrul de date al furnizorului', 'Procesor obișnuit pe server, sau placa video din browser'],
+  ['Cum plătești', 'La caracter sau la minut, la fiecare apel', 'Doar serverul. În browser, aproape nimic'],
+  ['Textul tău', 'Pleacă la furnizor', 'Rămâne pe serverul nostru sau pe calculatorul tău'],
+  ['Fără internet', 'Nu', 'Da, în browser, după prima descărcare'],
+  ['Prima pornire', 'Instant, modelul e la furnizor', '398 MB de descărcat o singură dată'],
+  ['Limbi', 'Depinde de furnizor', '31, fără modele separate pe limbă'],
+  ['Voci noi', 'Clonare din câteva secunde de voce', 'Stiluri vocale; vocile de actori sunt în lucru'],
+];
+
+const parts = [
+  { name: 'Estimator vectorial', p: 64.0, mb: 257, d: 'Construiește sunetul în 5-16 pași. Aici se duce 90% din timp.' },
+  { name: 'Vocoder', p: 25.3, mb: 101, d: 'Transformă reprezentarea internă în undă audio la 44,1 kHz.' },
+  { name: 'Codor de text', p: 9.0, mb: 36, d: 'Citește textul literă cu literă, fără dicționar de pronunție.' },
+  { name: 'Predictor de durată', p: 0.86, mb: 4, d: 'Estimează cât durează replica. De aici calculăm viteza.' },
+];
+
+const tiers = [
+  { tag: 'În producție', t: 'Server, procesor', hw: 'Intel i7-6700K, 4 fire, Python și ONNX Runtime', v: '0,35×', sub: 'timp real la 10 pași; 0,20× la 5 pași', note: 'O secundă de vorbire în 0,35 secunde.' },
+  { tag: 'În test', t: 'Browser, WebGPU', hw: 'Chrome, placă Radeon RX 570', v: '0,20×', sub: 'timp real la 10 pași; 0,14-0,22 în Dubnow Lab', note: 'Calculatorul utilizatorului face sinteza. Serverul nu mai costă.' },
+  { tag: 'Test de încărcare', t: 'Mai mulți spectatori', hw: 'Xeon E5-2630 v4, 10 fire, simulare', v: '20', sub: 'spectatori simultan, nicio replică întârziată', note: 'La 30 de spectatori, 76% din replici au întârziat. Limita e între 20 și 30.' },
+  { tag: 'Nu e timp real', t: 'Browser fără placă video', hw: 'WebAssembly, un singur fir', v: '2,86×', sub: 'timp real la 10 pași', note: 'Prea lent. Varianta cu mai multe fire nu e testată încă.' },
+];
+
+const accuracy = [
+  ['Română', '2,19'], ['Engleză', '2,06'], ['Germană', '0,86'], ['Spaniolă', '1,13'], ['Turcă', '1,00'], ['Ucraineană', '1,23'],
+  ['Olandeză', '1,47'], ['Poloneză', '1,63'], ['Italiană', '1,75'], ['Cehă', '3,02'], ['Greacă', '3,54'], ['Franceză', '4,89'],
+];
+
+const romanian = [
+  ['VoxCPM2', 22.39], ['OmniVoice', 2.29], ['Dubnow (modelul de bază)', 2.19],
+];
+
+const added = [
+  ['Reguli de ortografie pentru română', 'Numere, abrevieri și cuvinte pe care modelul le citea greșit, rescrise înainte de sinteză.'],
+  ['Replica intră exact în timp', 'Viteza se calculează din durata estimată și din fereastra subtitrării. Nu mai e nevoie de întinderea sunetului.'],
+  ['Voci de copil', 'Înălțimea și formanții vocii, schimbate după sinteză. Două voci de copil au trecut testul de ascultare.'],
+  ['Amestecuri de voci', 'Două stiluri combinate dau o voce nouă, cu altă înălțime.'],
+  ['Server comun pentru mulți spectatori', 'Fiecare proces ia replica cea mai urgentă dintre toți spectatorii. Replicile vin cu 45 de secunde înainte.'],
+  ['Dubnow Studio și Dubnow Lab', 'Actorii înregistrează replici pentru voci noi. Lab măsoară viteza pe laptopuri reale, înainte să mutăm sinteza în browser.'],
+];
+
+const uses = [
+  { s: 'În produs', t: 'Dublaj de filme', d: 'dubidu citește subtitrarea în română și dă fiecărui personaj vocea lui, sincron cu filmul.' },
+  { s: 'Demo', t: 'Produse în mai multe limbi', d: 'Aceeași scenă, în 18 limbi, pe pagina pentru investitori. O țară nouă înseamnă voci și reguli de scriere, nu alt model.' },
+  { s: 'În plan', t: 'Podcasturi și interviuri', d: 'Doi sau trei vorbitori, fiecare cu vocea lui, traduși dintr-o limbă în alta.' },
+  { s: 'Posibil', t: 'Accesibilitate și educație', d: 'Texte citite pentru copiii care nu citesc încă și pentru oamenii care nu văd bine. În browser, textul nu pleacă de pe calculator.' },
+  { s: 'Posibil', t: 'Narațiune pentru video', d: 'Voce pentru tutoriale, prezentări și reclame, fără plată la caracter.' },
+  { s: 'În test', t: 'Aplicații care merg fără internet', d: 'Modelul se descarcă o dată, apoi vorbește direct pe dispozitiv.' },
+];
+
+// Language code, name in Romanian, own name, demo sentence.
+const languages = [
+  ['ar', 'Arabă', 'العربية', 'مرحبًا! أنا دَبناو، ويمكنني قراءة أي نص بصوت عالٍ.'],
+  ['bg', 'Bulgară', 'Български', 'Здравейте! Аз съм Dubnow и мога да прочета на глас всеки текст.'],
+  ['cs', 'Cehă', 'Čeština', 'Ahoj! Jsem Dubnow a umím nahlas přečíst jakýkoli text.'],
+  ['ko', 'Coreeană', '한국어', '안녕하세요! 저는 더브나우입니다. 어떤 글이든 소리 내어 읽을 수 있어요.'],
+  ['hr', 'Croată', 'Hrvatski', 'Bok! Ja sam Dubnow i mogu naglas pročitati bilo koji tekst.'],
+  ['da', 'Daneză', 'Dansk', 'Hej! Jeg hedder Dubnow og kan læse enhver tekst højt.'],
+  ['en', 'Engleză', 'English', "Hello! I'm Dubnow, and I can read any text aloud."],
+  ['et', 'Estonă', 'Eesti', 'Tere! Mina olen Dubnow ja oskan iga teksti ette lugeda.'],
+  ['fi', 'Finlandeză', 'Suomi', 'Hei! Olen Dubnow, ja osaan lukea minkä tahansa tekstin ääneen.'],
+  ['fr', 'Franceză', 'Français', "Bonjour ! Je suis Dubnow et je peux lire n'importe quel texte à voix haute."],
+  ['de', 'Germană', 'Deutsch', 'Hallo! Ich bin Dubnow und kann jeden Text vorlesen.'],
+  ['el', 'Greacă', 'Ελληνικά', 'Γεια σας! Είμαι ο Dubnow και μπορώ να διαβάσω δυνατά οποιοδήποτε κείμενο.'],
+  ['hi', 'Hindi', 'हिन्दी', 'नमस्ते! मैं डबनाउ हूँ, और मैं कोई भी पाठ ज़ोर से पढ़ सकता हूँ।'],
+  ['id', 'Indoneziană', 'Bahasa Indonesia', 'Halo! Saya Dubnow, dan saya bisa membacakan teks apa pun.'],
+  ['it', 'Italiană', 'Italiano', 'Ciao! Sono Dubnow e posso leggere ad alta voce qualsiasi testo.'],
+  ['ja', 'Japoneză', '日本語', 'こんにちは！私はダブナウです。どんな文章でも読み上げることができます。'],
+  ['lv', 'Letonă', 'Latviešu', 'Sveiki! Es esmu Dubnow, un es varu skaļi nolasīt jebkuru tekstu.'],
+  ['lt', 'Lituaniană', 'Lietuvių', 'Labas! Aš esu Dubnow ir galiu garsiai perskaityti bet kokį tekstą.'],
+  ['hu', 'Maghiară', 'Magyar', 'Szia! Dubnow vagyok, és bármilyen szöveget fel tudok olvasni.'],
+  ['nl', 'Olandeză', 'Nederlands', 'Hallo! Ik ben Dubnow en ik kan elke tekst voorlezen.'],
+  ['pl', 'Poloneză', 'Polski', 'Cześć! Jestem Dubnow i mogę przeczytać na głos dowolny tekst.'],
+  ['pt', 'Portugheză', 'Português', 'Olá! Sou o Dubnow e consigo ler qualquer texto em voz alta.'],
+  ['ro', 'Română', 'Română', 'Bună! Sunt Dubnow și pot citi cu voce tare orice text. Scrie-mi ceva și ascultă.'],
+  ['ru', 'Rusă', 'Русский', 'Привет! Я Dubnow, и я могу прочитать вслух любой текст.'],
+  ['sk', 'Slovacă', 'Slovenčina', 'Ahoj! Som Dubnow a viem nahlas prečítať akýkoľvek text.'],
+  ['sl', 'Slovenă', 'Slovenščina', 'Živjo! Sem Dubnow in znam na glas prebrati katero koli besedilo.'],
+  ['es', 'Spaniolă', 'Español', '¡Hola! Soy Dubnow y puedo leer en voz alta cualquier texto.'],
+  ['sv', 'Suedeză', 'Svenska', 'Hej! Jag heter Dubnow och kan läsa upp vilken text som helst.'],
+  ['tr', 'Turcă', 'Türkçe', 'Merhaba! Ben Dubnow, her metni sesli okuyabilirim.'],
+  ['uk', 'Ucraineană', 'Українська', 'Привіт! Я Dubnow, і я можу прочитати вголос будь-який текст.'],
+  ['vi', 'Vietnameză', 'Tiếng Việt', 'Xin chào! Tôi là Dubnow, và tôi có thể đọc to bất kỳ văn bản nào.'],
+];
+const samples = Object.fromEntries(languages.map(([c, , , s]) => [c, s]));
+const voices = [['F1', 'Femeie, caldă'], ['F3', 'Femeie, tânără'], ['M1', 'Bărbat, calm'], ['M3', 'Bărbat, grav']];
+const maxP = Math.max(...parts.map(x => x.p));
+---
+<Layout
+  title="Dubnow: studiu de caz | Andrei Năstase"
+  description="Dubnow, motorul de voce din spatele dubidu: 31 de limbi, un model de 99 de milioane de parametri care rulează pe procesor obișnuit sau în browser. Demo live, scheme și cifre măsurate."
+  path="/proiecte/dubnow/"
+>
+  <article class="cs">
+    <header class="wrap cs-hero">
+      <a class="cs-back" href="/proiecte/dubidu/">← dubidu, studiul de caz</a>
+      <p class="label">Studiu de caz · 2026</p>
+      <h1>Dubnow: un motor de voce care vorbește 31 de limbi, fără plăci video.</h1>
+      <p class="lead">Dubnow transformă textul în voce. E motorul din spatele dubidu: citește replicile din subtitrare cu vocea fiecărui personaj, pe un server obișnuit sau direct în browser.</p>
+      <dl class="cs-facts">
+        {facts.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#demo">Încearcă demo-ul</a>
+        <a class="btn" href="#limbi">Cele 31 de limbi</a>
+      </div>
+    </header>
+
+    <section class="wrap" id="demo" aria-labelledby="demo-title">
+      <div class="tts">
+        <div class="tts-head">
+          <p class="label">Demo live</p>
+          <h2 id="demo-title">Scrie un text, alege limba, ascultă.</h2>
+          <p>Vocea se generează acum, pe un server Dubnow. Nimic nu e înregistrat dinainte. Timpii de mai jos sunt măsurați în browserul tău.</p>
+        </div>
+        <form class="tts-form" id="tts" data-samples={JSON.stringify(samples)}>
+          <label class="tts-text">
+            <span class="vh">Textul de citit</span>
+            <textarea name="text" rows="4" maxlength="300" dir="auto" required>{samples.ro}</textarea>
+            <small><b data-count-chars>0</b> / 300</small>
+          </label>
+          <div class="tts-row">
+            <label class="tts-field">
+              <span>Limba</span>
+              <select name="lang">
+                {languages.map(([c, ro, own]) => <option value={c} selected={c === 'ro'}>{ro}{own !== ro ? ` · ${own}` : ''}</option>)}
+              </select>
+            </label>
+            <fieldset class="tts-voices">
+              <legend>Vocea</legend>
+              {voices.map(([v, l], i) => <label><input type="radio" name="voice" value={v} checked={i === 0}><span>{l}</span></label>)}
+            </fieldset>
+            <button class="btn btn-primary btn-lg" type="submit">Generează vocea</button>
+          </div>
+          <p class="tts-status" role="status" aria-live="polite">Gata de pornire.</p>
+          <audio controls hidden></audio>
+          <dl class="tts-times">
+            <div><dt>Server alocat</dt><dd data-t="server">-</dd></div>
+            <div><dt>Prima voce, după trimitere</dt><dd data-t="voice">-</dd></div>
+            <div><dt>Durata vocii</dt><dd data-t="audio">-</dd></div>
+          </dl>
+        </form>
+        <p class="tts-note">Vocile din demo sunt stilurile generice ale modelului. dubidu adaugă voci de personaje și, în curând, voci înregistrate cu actori. Textul ajunge la serverul dubidu doar ca să fie citit și nu se salvează. Dacă niciun server nu e pornit, primul clic poate aștepta câteva minute.</p>
+      </div>
+    </section>
+
+    <section class="wrap cs-top" aria-label="Pe scurt">
+      <ul>
+        {top.map(m => (
+          <li class="reveal">
+            <b data-count={m.value} data-dec={m.dec ?? 0} data-prefix="" data-suffix="">{m.value.toLocaleString('ro-RO')}</b>
+            <span>{m.label}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">01 · De ce</p></div>
+      <div class="cs-body">
+        <h2>Un film dublat cere mii de replici. La preț de API, nu iese la socoteală.</h2>
+        <p>Un film are în jur de o mie de replici. Cu un serviciu de voce în cloud, plătești fiecare caracter la fiecare vizionare, pentru că dublajul nu se păstrează: se generează pe loc, pentru fiecare familie. Am testat mai multe motoare și le-am ales după ureche. Am păstrat unul mic, cu greutăți deschise, care rulează pe un procesor obișnuit. Pe el l-am construit pe Dubnow.</p>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">02 · Comparație</p></div>
+      <div class="cs-body">
+        <h2>Model mare în cloud sau Dubnow.</h2>
+        <p>Comparația e generală: „model mare” înseamnă clasa de motoare de voce cu 0,7-2 miliarde de parametri, rulate de un furnizor.</p>
+      </div>
+    </section>
+    <div class="wrap">
+      <div class="vs reveal" role="table" aria-label="Model mare în cloud față de Dubnow">
+        <div class="vs-row vs-head" role="row"><span role="columnheader"></span><span role="columnheader">Model mare în cloud</span><span role="columnheader">Dubnow</span></div>
+        {versus.map(([k, a, b]) => <div class="vs-row" role="row"><span role="rowheader">{k}</span><span role="cell">{a}</span><span role="cell">{b}</span></div>)}
+      </div>
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">03 · Cum funcționează</p></div>
+      <div class="cs-body">
+        <h2>Patru rețele mici, legate una după alta.</h2>
+        <p>Textul intră literă cu literă, fără dicționar de pronunție. O rețea estimează cât durează replica, alta construiește sunetul în câțiva pași, iar ultima îl transformă în undă audio. Vocea vine dintr-un stil: un fișier mic care descrie timbrul și ritmul unui vorbitor.</p>
+      </div>
+    </section>
+
+    <div class="wrap"><figure class="cs-arch reveal" aria-label="Schema sintezei Dubnow">
+      <svg viewBox="0 0 1000 470" role="img" aria-labelledby="pipe-t">
+        <title id="pipe-t">Text, reguli de ortografie, codor de text, predictor de durată, estimator vectorial, vocoder, audio 44,1 kHz. Stilul vocal intră în predictor și în estimator.</title>
+        <g class="a-box">
+          <rect x="20" y="40" width="180" height="96" rx="12"/>
+          <rect x="230" y="40" width="200" height="96" rx="12"/>
+          <rect x="460" y="40" width="200" height="96" rx="12"/>
+          <rect x="690" y="40" width="290" height="96" rx="12"/>
+          <rect x="460" y="230" width="200" height="110" rx="12"/>
+          <rect x="690" y="230" width="290" height="110" rx="12"/>
+          <rect x="20" y="230" width="410" height="110" rx="12" class="a-soft"/>
+        </g>
+        <g class="a-head">
+          <text x="40" y="78">Text</text>
+          <text x="250" y="78">Reguli de scriere</text>
+          <text x="480" y="78">Codor de text</text>
+          <text x="710" y="78">Predictor de durată</text>
+          <text x="480" y="268">Estimator vectorial</text>
+          <text x="710" y="268">Vocoder</text>
+          <text x="40" y="268">Stil vocal</text>
+        </g>
+        <g class="a-txt">
+          <text x="40" y="110">„Bună! Ce faci?”</text>
+          <text x="250" y="110">numere, abrevieri (RO)</text>
+          <text x="480" y="110">9,0 mil. parametri</text>
+          <text x="710" y="110">0,86 mil. · viteza replicii</text>
+          <text x="480" y="300">64,0 mil. · 5-16 pași</text>
+          <text x="480" y="324">90% din timp</text>
+          <text x="710" y="300">25,3 mil. parametri</text>
+          <text x="710" y="324">undă la 44,1 kHz</text>
+          <text x="40" y="300">fișier JSON: timbru și ritm</text>
+          <text x="40" y="324">F1, M3, voce de copil, amestec</text>
+        </g>
+        <g class="a-line">
+          <path d="M200 88 H230"/><path d="M430 88 H460"/><path d="M660 88 H690"/>
+          <path d="M835 136 V185 H560 V230"/>
+          <path d="M660 285 H690"/>
+          <path d="M835 340 V400"/>
+        </g>
+        <g class="a-line a-dash">
+          <path d="M430 285 H460"/>
+          <path d="M330 230 V170 H760 V136"/>
+        </g>
+        <g class="a-out">
+          <rect x="690" y="400" width="290" height="50" rx="25"/>
+          <text x="835" y="431" text-anchor="middle">Audio WAV, 16 biți</text>
+        </g>
+        <g class="a-lbl"><text x="572" y="214">durate pe litere</text><text x="560" y="160" text-anchor="middle">stilul intră în ambele</text></g>
+      </svg>
+    </figure></div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">04 · Mărime</p></div>
+      <div class="cs-body">
+        <h2>99 de milioane de parametri, 398 MB.</h2>
+        <p>Cea mai mare parte e estimatorul care construiește sunetul. Acolo se câștigă viteză: mai puțini pași înseamnă sinteză mai rapidă, cu un mic preț în calitate.</p>
+        <ul class="bars">
+          {parts.map(x => (
+            <li class="reveal">
+              <div class="bars-top"><b>{x.name}</b><span>{x.p.toLocaleString('ro-RO')} mil. · {x.mb} MB</span></div>
+              <i style={`--w:${Math.max(2, x.p / maxP * 100)}%`}></i>
+              <p>{x.d}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">05 · Unde rulează</p></div>
+      <div class="cs-body">
+        <h2>Pe server astăzi. În browser, mâine.</h2>
+        <p>În dubidu, extensia trimite replicile cu 45 de secunde înainte. Serverele pornesc când apar spectatori și se opresc când pleacă. Pe un calculator cu placă video, sinteza poate rula chiar în Chrome, prin WebGPU, iar serverul nu mai e necesar.</p>
+      </div>
+    </section>
+
+    <div class="wrap"><figure class="cs-arch reveal" aria-label="Unde rulează Dubnow">
+      <svg viewBox="0 0 1000 380" role="img" aria-labelledby="run-t">
+        <title id="run-t">Extensia dubidu trimite replicile la un pool de servere Dubnow pe procesor sau le sintetizează local în browser prin WebGPU.</title>
+        <g class="a-box">
+          <rect x="20" y="130" width="250" height="120" rx="14"/>
+          <rect x="400" y="30" width="270" height="150" rx="14"/>
+          <rect x="400" y="210" width="270" height="140" rx="14" class="a-soft"/>
+          <rect x="770" y="30" width="210" height="150" rx="14"/>
+        </g>
+        <g class="a-head">
+          <text x="44" y="172">Extensia dubidu</text>
+          <text x="424" y="72">Server Dubnow · CPU</text>
+          <text x="424" y="252">Browser · WebGPU</text>
+          <text x="794" y="72">Pool de servere</text>
+        </g>
+        <g class="a-txt">
+          <text x="44" y="204">replici cu 45 s înainte</text>
+          <text x="44" y="228">redate pe ceasul video-ului</text>
+          <text x="424" y="104">cea mai urgentă replică</text>
+          <text x="424" y="128">dintre toți spectatorii</text>
+          <text x="424" y="152">20 de spectatori / 10 fire</text>
+          <text x="424" y="284">sinteză pe placa video</text>
+          <text x="424" y="308">a utilizatorului, 0,20×</text>
+          <text x="424" y="332">în test pe laptopuri</text>
+          <text x="794" y="104">pornește la cerere</text>
+          <text x="794" y="128">se oprește când e liber</text>
+          <text x="794" y="152">cost după folosire</text>
+        </g>
+        <g class="a-line">
+          <path d="M270 170 H335 V105 H400"/>
+          <path d="M670 105 H770"/>
+        </g>
+        <g class="a-line a-dash"><path d="M270 210 H335 V280 H400"/></g>
+        <g class="a-lbl">
+          <text x="300" y="92">astăzi</text>
+          <text x="300" y="304">în test</text>
+        </g>
+      </svg>
+    </figure></div>
+
+    <section class="cs-night" id="performanta">
+      <div class="wrap">
+        <p class="label">06 · Performanță</p>
+        <h2>Cât de repede vorbește, pe ce hardware.</h2>
+        <p class="cs-note">Toate cifrele de mai jos sunt măsurate de noi, pe replici în română, cu hardware-ul indicat. RTF înseamnă timpul de calcul împărțit la durata vocii: sub 1 e mai rapid decât timpul real.</p>
+        <ul class="tiers">
+          {tiers.map(x => (
+            <li class="reveal">
+              <em>{x.tag}</em>
+              <h3>{x.t}</h3>
+              <p class="tiers-hw">{x.hw}</p>
+              <b>{x.v}</b>
+              <span>{x.sub}</span>
+              <p>{x.note}</p>
+            </li>
+          ))}
+        </ul>
+
+        <div class="acc">
+          <div>
+            <h3 class="cs-sub">Cât de corect citește în română</h3>
+            <dl class="cs-build acc-ro">
+              <div><dd>2,89%</dd><dt>cuvinte greșite la 10 pași, diacritice ignorate</dt></div>
+              <div><dd>4,13%</dd><dt>cu diacritice cu tot</dt></div>
+              <div><dd>11,2</dd><dt>caractere pe secundă, la viteza normală</dt></div>
+            </dl>
+            <p class="cs-note small">Măsurat de noi: 24 de replici, 4 voci, citite înapoi cu Whisper. O parte din erori sunt chiar ale lui Whisper.</p>
+          </div>
+          <div>
+            <h3 class="cs-sub">Comparat cu alte modele, în română</h3>
+            <ul class="vs-bars">
+              {romanian.map(([n, v]) => (
+                <li class={n.startsWith('Dubnow') ? 'is-us' : undefined}>
+                  <span>{n}</span><i style={`--w:${Math.min(100, v / 22.39 * 100)}%`}></i><b>{v.toLocaleString('ro-RO')}%</b>
+                </li>
+              ))}
+            </ul>
+            <p class="cs-note small">Rată de cuvinte greșite pe testul Minimax-MLS, publicată de autorii modelului de bază. Mai mic e mai bine.</p>
+          </div>
+        </div>
+
+        <h3 class="cs-sub">Rata de cuvinte greșite, pe limbi</h3>
+        <dl class="cs-build acc-langs">
+          {accuracy.map(([l, v]) => <div><dd>{v}%</dd><dt>{l}</dt></div>)}
+        </dl>
+        <p class="cs-note small">Aceeași sursă: testul Minimax-MLS, publicat de autorii modelului de bază. Nu l-am refăcut noi.</p>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">07 · Ce am adăugat</p></div>
+      <div class="cs-body">
+        <h2>Ce face Dubnow în plus față de modelul de la care a pornit.</h2>
+        <div class="cs-lessons">
+          {added.map(([t, d]) => <div class="reveal"><h3>{t}</h3><p>{d}</p></div>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">08 · Utilizări</p></div>
+      <div class="cs-body">
+        <h2>Unde se potrivește.</h2>
+        <p>Acolo unde contează viteza, costul pe oră și locul în care rămâne textul. Fiecare utilizare are scris lângă ea unde am ajuns.</p>
+      </div>
+    </section>
+    <div class="wrap cs-uses">
+      {uses.map((u, i) => (
+        <section class="reveal" data-delay={String(i % 3)}>
+          <em class={u.s === 'În produs' ? 'is-live' : undefined}>{u.s}</em>
+          <h3>{u.t}</h3>
+          <p>{u.d}</p>
+        </section>
+      ))}
+    </div>
+
+    <section class="wrap cs-sec" id="limbi">
+      <div class="cs-side"><p class="label">09 · Limbi</p></div>
+      <div class="cs-body">
+        <h2>31 de limbi, un singur model.</h2>
+        <p>Nu există modele separate pe limbă. Româna e ajustată după ureche, cu reguli de scriere proprii; celelalte limbi merg cum au fost publicate. Toate pot fi încercate în demo.</p>
+      </div>
+    </section>
+    <div class="wrap">
+      <ul class="langs reveal">
+        {languages.map(([c, ro, own]) => (
+          <li class={c === 'ro' ? 'is-tuned' : undefined}>
+            <button type="button" data-lang={c}><code>{c}</code><span>{ro}</span>{own !== ro && <small lang={c}>{own}</small>}</button>
+          </li>
+        ))}
+      </ul>
+      <p class="small muted langs-note">Apasă pe o limbă ca să o alegi în demo.</p>
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">10 · Limite</p></div>
+      <div class="cs-body">
+        <h2>Ce nu face încă bine.</h2>
+        <ul class="cs-next">
+          <li><b>Emoția.</b> Vocea e clară, dar nu strigă și nu șoptește convingător. Lucrăm la stiluri pe emoții, alese din textul replicii.</li>
+          <li><b>Vocile de copil.</b> Le obținem modificând vocile de adult. Vocile înregistrate cu actori vor rezolva asta.</li>
+          <li><b>Antrenarea pe română.</b> Codul de antrenare al modelului de bază nu e public, așa că trebuie reconstruit. E riscul tehnic cel mai mare.</li>
+          <li><b>Browserul.</b> Fără placă video, sinteza în browser e prea lentă. Testăm pe cel puțin 8 laptopuri înainte să o mutăm acolo.</li>
+        </ul>
+        <p class="small muted">Dubnow pornește de la Supertonic 3 (Supertone Inc.), un model cu greutăți deschise publicat sub licența OpenRAIL-M. Licența și restricțiile ei de utilizare se aplică și lui Dubnow.</p>
+      </div>
+    </section>
+
+    <section class="wrap"><div class="cs-end">
+      <h2>Ai nevoie de voce în produsul tău?</h2>
+      <p class="lead">Pot integra Dubnow sau alt motor de voce într-o aplicație web, mobilă sau într-o extensie.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary btn-lg" href="/#contact">Scrie-mi</a>
+        <a class="btn btn-lg" href="/proiecte/dubidu/">Vezi studiul dubidu</a>
+      </div>
+    </div></section>
+  </article>
+  <script>import '../../scripts/numbers.js'; import '../../scripts/tts-demo.js';</script>
+</Layout>
