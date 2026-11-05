@@ -1,0 +1,113 @@
+---
+import CaseStudy from '../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of resources/marketplaces/bileteonline in the ePAS repo, the code,
+// the two attraction CSVs and bilete.online. The 7,954 attractions are an informational catalogue, not bookable stock.
+const cs = {
+  title: 'bilete.online: studiu de caz | Andrei Năstase',
+  description: 'Cum am construit bilete.online: atracții, muzee și experiențe din toată România, cu hartă interactivă, trasee și un planificator de excursii, pe aceeași platformă ca Tixello și AmBilet.',
+  path: '/proiecte/bilete-online/',
+  shots: '/shots/bileteonline',
+  label: 'Studiu de caz · 2026',
+  h1: 'bilete.online: 7.954 de locuri de văzut în România, pe o hartă, cu bilet de pe telefon.',
+  lead: 'Un marketplace pentru atracții, muzee, parcuri și experiențe din toată țara. Alegi ziua, plătești online și intri cu codul QR de pe telefon. Pe lângă bilete, site-ul te ajută să alegi: hartă, trasee și un planificator de excursii.',
+  facts: [
+    ['Rol', 'Fondator. Produs, design, cod'],
+    ['Perioadă', 'Mai - octombrie 2026'],
+    ['Stare', 'Live pe bilete.online'],
+    ['Construit pe', 'ePAS, platforma din spatele Tixello'],
+  ],
+  links: [{ href: 'https://bilete.online', text: 'bilete.online' }, { href: 'https://bilete.online/harta', text: 'Harta atracțiilor' }],
+  hero: { src: 'home.jpg', alt: 'Pagina principală bilete.online: Experiențele încep înainte de intrare', domain: 'bilete.online' },
+  top: [
+    { value: 7954, label: 'atracții din România în catalog' },
+    { value: 341, label: 'de orașe' },
+    { value: 37, label: 'de trasee tematice' },
+    { value: 321, label: 'commit-uri pe site, în cinci luni' },
+  ],
+  topNote: 'Numărate în repo și pe site, pe 5 noiembrie 2026. Atracțiile formează un catalog informativ. Biletele se vând doar pentru experiențele adăugate de operatori.',
+  blocks: [
+    {
+      label: '01 · Problema', h2: 'Știi că vrei să ieși din oraș. Nu știi încă unde.',
+      ps: [
+        'Biletele la muzee și atracții din România se cumpără în multe locuri diferite, de multe ori doar la casă. Informația despre ce merită văzut e și ea împrăștiată: site-uri de primării, bloguri, liste vechi.',
+        'Am vrut un singur loc în care o familie pleacă de la o întrebare simplă, „ce facem în weekend?”, și ajunge la un plan, cu biletul inclus acolo unde se poate cumpăra.',
+      ],
+    },
+    {
+      label: '02 · Ce face', h2: 'De la hartă la plan, apoi la bilet.',
+      ps: [
+        'Fiecare atracție are pagina ei, cu descriere, poze și locul pe hartă. Harta interactivă arată toate cele 7.954 de puncte și le filtrează pe tip, regiune și județ. Traseele tematice leagă atracțiile pe un drum real, cu distanțe și ore de mers.',
+        'Planificatorul pornește de la orașul tău, numărul de zile și oamenii cu care pleci, apoi propune un itinerar zi cu zi. E făcut pe reguli, nu de un model de limbaj, și spune deschis că duratele vizitelor sunt estimate.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'harta.jpg', alt: 'Harta atracțiilor din România pe bilete.online, cu grupuri de puncte pe fiecare zonă', cap: 'Harta: toate atracțiile, încărcate dintr-un singur fișier static, fără câte un apel pentru fiecare punct.' },
+      { src: 'traseu.jpg', alt: 'Traseul Drumul castelelor din Transilvania pe hartă, cu opririle în ordine', cap: 'Un traseu: Drumul castelelor din Transilvania, cu opriri, distanțe și timp de mers.' },
+    ] },
+    { type: 'pair', items: [
+      { src: 'atractie.jpg', alt: 'Pagina atracției Castelul Peleș, cu poză, descriere și hartă', cap: 'Pagina unei atracții: ce e, unde e, ce mai e în apropiere.' },
+      { src: 'plan.jpg', alt: 'Planificatorul de excursii bilete.online: Hai să mergem undeva', cap: 'Planificatorul: de unde pleci, câte zile, cu cine. Planul rămâne în adresă, ca să-l poți trimite.' },
+    ] },
+    {
+      type: 'flow', label: '03 · Arhitectura', h2: 'Un site rapid în față, o platformă de ticketing în spate.',
+      ps: ['bilete.online nu are bază de date proprie. E un site PHP separat, care vorbește cu ePAS, platforma mea de ticketing (aceeași de sub Tixello și AmBilet), printr-un API cu cheie proprie. În ePAS, fiecare marketplace e un client cu domeniul, moneda și modulele lui.'],
+      nodes: [
+        { t: 'ePAS (Laravel)', items: ['Atracții, experiențe, locații', 'Comenzi, bilete cu QR, plăți', 'Panou Filament comun tuturor site-urilor'] },
+        { t: 'API marketplace', items: ['Cheie separată pentru fiecare site', 'Module pornite doar pentru clientul lor', 'Limită de 120 de cereri pe minut'] },
+        { t: 'Cache pe două niveluri', items: ['Răspunsuri API, servite și când expiră', 'Pagini întregi, gata generate', 'Cereri paralele cu curl_multi'], accent: true },
+        { t: 'Vizitatorul', items: ['Pagini HTML rapide, în spatele Cloudflare', 'Hartă și planificator din fișiere statice', 'Plata trimisă înapoi în ePAS'] },
+      ],
+      foot: 'Modulele noi, ca activitățile cu sloturi orare, sunt pornite doar pentru bilete.online. AmBilet, care rulează pe aceeași platformă, nu le vede.',
+    },
+    {
+      type: 'parts', label: '04 · Componente', h2: 'Ce am construit, piesă cu piesă.',
+      items: [
+        { t: 'Site-ul pentru vizitatori', d: '55 de tipuri de pagini, toate redesenate în septembrie 2026.', items: ['Oraș, categorie, atracție, experiență, locație', 'Hartă pe tipuri și pe regiuni, 37 de trasee', 'Planificator de excursii determinist', 'Coș, plată, card cadou, voucher, recuperare comandă', 'Cont de client: familie, 2FA, export de date'] },
+        { t: 'Panoul operatorului', d: '41 de pagini pentru muzeele și firmele care își vând experiențele aici.', items: ['Vânzări, participanți, analiză', 'Echipă, facturi, plăți către operator', 'Casă de marcat (POS) pentru vânzarea la intrare', 'Widget de rezervare pentru site-ul lor', 'Documentație de API'] },
+        { t: 'Modulul de activități din ePAS', d: '14 servicii noi în platformă, folosite acum și de Viaqui.', items: ['Sloturi orare și rezervări cu termen de plată', 'Eliberarea automată a locurilor neplătite', 'Comision cu minim pe bilet', 'Recomandări pe trei niveluri, locuri din apropiere', 'Import de atracții din CSV'] },
+        { t: 'Date și SEO', d: 'Catalogul și paginile de căutare.', items: ['7.275 de atracții dintr-un import, plus 681 de monumente din Wikidata', 'Pagini oraș × intenție pentru căutări', 'Text SEO și întrebări frecvente din admin', 'Date structurate WebSite, Organization, FAQPage', 'Miniaturi generate pe server, la 3% din mărimea pozei'] },
+      ],
+    },
+    {
+      label: '05 · Datele', h2: 'Cincisprezece reședințe de județ lipseau din catalog.',
+      ps: [
+        'Fișierul inițial de atracții nu avea niciun rând pentru orașe ca Brașov, Sibiu, Iași sau Constanța. Le-am completat din Wikidata, cu o căutare pe zona orașului: 680 de monumente, față de 253 cât dădea căutarea după unitatea administrativă. Extragerea în bloc expira, așa că am rescris-o să meargă oraș cu oraș și să adauge la ce există deja.',
+        'Pozele originale aveau până la 18 MB și se afișau în carduri de 300 de pixeli. Acum serverul generează o miniatură o singură dată, la circa 3% din mărime, și o păstrează pe disc.',
+      ],
+    },
+    { type: 'fig', src: 'categorie.jpg', alt: 'Categoria Muzee și expoziții în România pe bilete.online', cap: 'O categorie: muzee și expoziții, cu filtre, text pentru căutări și hartă.' },
+    {
+      type: 'metrics', label: '06 · Metrici', h2: 'Ce am numărat.',
+      note: 'Toate cifrele sunt măsurate în repo sau pe site, pe 5 noiembrie 2026. Site-ul nu are încă trafic sau vânzări pe care să le pot publica.',
+      items: [
+        ['7.954', 'atracții în catalog: 7.275 din importul inițial și 681 de monumente din Wikidata', 'măsurat'],
+        ['341', 'de orașe, în 8 regiuni', 'de pe site'],
+        ['12', 'categorii de experiențe', 'de pe site'],
+        ['~3%', 'mărimea unei miniaturi față de poza originală', 'măsurat'],
+        ['0,3 s', 'timpul de răspuns al paginii principale, o singură măsurătoare', 'măsurat'],
+        ['55 + 41', 'pagini pentru vizitatori și pentru operatori', 'în cod'],
+      ],
+      build: [['205', 'fișiere PHP'], ['52k', 'linii de PHP'], ['89', 'fișiere CSS'], ['191', 'machete de design'], ['14', 'servicii noi în ePAS'], ['~25', 'migrații în ePAS']],
+    },
+    {
+      type: 'lessons', label: '07 · Ce am învățat', h2: 'Ce iau cu mine.',
+      items: [
+        ['O platformă comună scurtează lansarea', 'Plățile, biletele, emailurile și panoul de admin existau deja în ePAS. Am construit doar ce era nou: activitățile, harta și planificatorul.'],
+        ['Modulele noi nu au voie să atingă clienții vechi', 'Fiecare funcție nouă e pornită doar pentru clientul care o folosește, iar platforma refuză cererile de la ceilalți.'],
+        ['Datele statice bat API-ul la volum mare', 'Harta cu aproape 8.000 de puncte se încarcă dintr-un singur fișier JSON, generat la build. Nu face câte un apel pentru fiecare punct.'],
+        ['Spune ce e estimat', 'Planificatorul nu are orele de vizitare ale fiecărui muzeu. Folosește durate pe tip de atracție și scrie asta chiar pe pagină.'],
+      ],
+    },
+    {
+      label: '08 · Unde e acum', h2: 'Catalogul e mare. Biletele de vânzare sunt încă puține.',
+      ps: ['Toate cele 7.954 de atracții au pagină, poze și loc pe hartă, dar biletele se pot cumpăra doar pentru experiențele adăugate de operatori, iar acestea sunt deocamdată câteva. Paginile atracțiilor nu sunt încă în sitemap. Panoul de operator, plata și biletele cu QR funcționează și așteaptă mai mulți parteneri.'],
+    },
+    {
+      label: '09 · Mai departe', h2: 'Am clonat site-ul pentru Europa în 11 zile.',
+      ps: ['În octombrie 2026, am pornit de la bilete.online și am făcut Viaqui: 113.093 de atracții în 51 de țări, cu monede și limbi. <a class="link" href="/proiecte/viaqui/">Studiul de caz Viaqui</a>.'],
+    },
+  ],
+};
+---
+<CaseStudy cs={cs} />

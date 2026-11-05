@@ -1,0 +1,166 @@
+---
+// One case study page from data: the hero, then blocks in order. Same markup and styles as /proiecte/dubidu/.
+// Block types: text, fig, pair, phones, steps, flow, parts, metrics, lessons, next. Paragraphs may hold inline HTML.
+import Layout from '../layouts/Layout.astro';
+import '../styles/case.css';
+
+const { cs } = Astro.props;
+const shot = (src) => (src.startsWith('/') ? src : `${cs.shots}/${src}`);
+---
+<Layout title={cs.title} description={cs.description} path={cs.path}>
+  <article class="cs">
+    <header class="wrap cs-hero">
+      <a class="cs-back" href={cs.back?.href ?? '/#proiecte'}>{cs.back?.text ?? '← Ce am construit'}</a>
+      <p class="label">{cs.label}</p>
+      <h1>{cs.h1}</h1>
+      <p class="lead">{cs.lead}</p>
+      <dl class="cs-facts">
+        {cs.facts.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      {cs.links?.length > 0 && (
+        <div class="btn-row">
+          {cs.links.map((l, i) => <a class={i === 0 ? 'btn btn-primary' : 'btn'} href={l.href} target="_blank" rel="noopener">{l.text}</a>)}
+        </div>
+      )}
+    </header>
+
+    {cs.hero && (
+      <figure class="wrap cs-hero-shot reveal">
+        <div class="browser"><span><i></i><i></i><i></i></span><b>{cs.hero.domain}</b></div>
+        <img src={shot(cs.hero.src)} alt={cs.hero.alt} width={cs.hero.w ?? 1440} height={cs.hero.h ?? 1000}>
+      </figure>
+    )}
+
+    {cs.top && (
+      <section class="wrap cs-top" aria-label="Pe scurt">
+        <ul>
+          {cs.top.map(m => (
+            <li class="reveal">
+              <b data-count={m.value} data-stat={m.stat} data-dec={m.dec ?? 0} data-prefix={m.prefix ?? ''} data-suffix={m.suffix ?? ''}>{(m.prefix ?? '') + m.value.toLocaleString('ro-RO') + (m.suffix ?? '')}</b>
+              <span>{m.label}</span>
+            </li>
+          ))}
+        </ul>
+        {cs.topNote && <p class="small muted">{cs.topNote}</p>}
+      </section>
+    )}
+
+    {cs.blocks.map((b) => {
+      const head = b.label && (
+        <section class="wrap cs-sec">
+          <div class="cs-side"><p class="label">{b.label}</p></div>
+          <div class="cs-body">
+            <h2>{b.h2}</h2>
+            {(b.ps ?? []).map(p => <p set:html={p} />)}
+            {b.type === 'steps' && (
+              <ol class="cs-steps">
+                {b.items.map(s => (
+                  <li class="reveal">
+                    <span class="cs-v">{s.v}</span>
+                    <div><h3>{s.t}</h3><p>{s.d}</p>{s.r && <p class="cs-r">{s.r}</p>}</div>
+                  </li>
+                ))}
+              </ol>
+            )}
+            {b.type === 'lessons' && <div class="cs-lessons">{b.items.map(([t, d]) => <div class="reveal"><h3>{t}</h3><p>{d}</p></div>)}</div>}
+            {b.type === 'next' && <ul class="cs-next">{b.items.map(([t, d]) => <li><b>{t}</b> {d}</li>)}</ul>}
+            {b.note && <p class="small muted">{b.note}</p>}
+          </div>
+        </section>
+      );
+      if (b.type === 'fig') return (
+        <figure class="wrap cs-fig reveal">
+          <img src={shot(b.src)} alt={b.alt} width={b.w ?? 1440} height={b.h ?? 1000} loading="lazy">
+          {b.cap && <figcaption>{b.cap}</figcaption>}
+        </figure>
+      );
+      if (b.type === 'pair') return (
+        <div class="wrap cs-pair">
+          {b.items.map((f, i) => (
+            <figure class="cs-fig reveal" data-delay={String(i)}>
+              <img src={shot(f.src)} alt={f.alt} width={f.w ?? 1440} height={f.h ?? 1000} loading="lazy">
+              {f.cap && <figcaption>{f.cap}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      );
+      if (b.type === 'phones') return (
+        <div class="wrap">
+          <div class="cs-phones">
+            {b.items.map((f, i) => (
+              <figure class="reveal" data-delay={String(i % 4)}>
+                <img src={shot(f.src)} alt={f.alt} width="780" height="1688" loading="lazy">
+                <figcaption>{f.cap}</figcaption>
+              </figure>
+            ))}
+          </div>
+          {b.cap && <p class="cs-phones-cap">{b.cap}</p>}
+        </div>
+      );
+      if (b.type === 'flow') return (
+        <>
+          {head}
+          <div class="wrap">
+            <ol class="cs-flow reveal" aria-label={b.aria ?? b.h2}>
+              {b.nodes.map((n, i) => (
+                <li class={n.accent ? 'is-acc' : undefined}>
+                  <span class="cs-n">{String(i + 1).padStart(2, '0')}</span>
+                  <h3>{n.t}</h3>
+                  <ul>{n.items.map(x => <li>{x}</li>)}</ul>
+                </li>
+              ))}
+            </ol>
+            {b.foot && <p class="cs-flow-foot">{b.foot}</p>}
+          </div>
+        </>
+      );
+      if (b.type === 'parts') return (
+        <>
+          {head}
+          <div class="wrap cs-parts">
+            {b.items.map((p, i) => (
+              <section class="reveal" data-delay={String(i % 2)}>
+                <span class="cs-n">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{p.t}</h3>
+                <p>{p.d}</p>
+                <ul>{p.items.map(x => <li>{x}</li>)}</ul>
+              </section>
+            ))}
+          </div>
+        </>
+      );
+      if (b.type === 'metrics') return (
+        <section class="cs-night">
+          <div class="wrap">
+            <p class="label">{b.label}</p>
+            <h2>{b.h2}</h2>
+            {b.note && <p class="cs-note">{b.note}</p>}
+            <ul class="cs-metrics">
+              {b.items.map(([v, l, tag]) => (
+                <li class="reveal"><b>{v}</b><span>{l}</span><em class={tag === 'estimare' ? 'est' : undefined}>{tag}</em></li>
+              ))}
+            </ul>
+            {b.build && (
+              <>
+                <h3 class="cs-sub">{b.buildTitle ?? 'Cât cod'}</h3>
+                <dl class="cs-build">{b.build.map(([v, l]) => <div><dd>{v}</dd><dt>{l}</dt></div>)}</dl>
+                {b.buildNote && <p class="cs-note small">{b.buildNote}</p>}
+              </>
+            )}
+          </div>
+        </section>
+      );
+      return head;
+    })}
+
+    <section class="wrap"><div class="cs-end">
+      <h2>{cs.end?.h2 ?? 'Ai un proiect asemănător?'}</h2>
+      <p class="lead">{cs.end?.p ?? 'Construiesc produse web de la idee la lansare, ca dezvoltator sau ca cofondator tehnic. Scrie-mi și vedem dacă se potrivește.'}</p>
+      <div class="btn-row">
+        <a class="btn btn-primary btn-lg" href="/#contact">Scrie-mi</a>
+        <a class="btn btn-lg" href="/#proiecte">Alte proiecte</a>
+      </div>
+    </div></section>
+  </article>
+  <script>import '../scripts/numbers.js';</script>
+</Layout>

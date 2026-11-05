@@ -1,0 +1,104 @@
+---
+import CaseStudy from '../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of resources/marketplaces/viaqui in the ePAS repo, the data files,
+// viaqui.com and its sitemaps. The attraction pages are informational; booking goes through partners for now.
+const cs = {
+  title: 'Viaqui: studiu de caz | Andrei Năstase',
+  description: 'Cum am construit Viaqui în 11 zile: 113.093 de atracții din 51 de țări europene, din date deschise, cu 17 monede, hărți, trasee și un planificator de călătorie.',
+  path: '/proiecte/viaqui/',
+  shots: '/shots/viaqui',
+  label: 'Studiu de caz · 2026',
+  h1: 'Viaqui: 113.093 de atracții din Europa, pornite de la un site românesc, în 11 zile.',
+  lead: 'Un site în engleză pentru călători: ce merită văzut în fiecare oraș european, pe hartă, în trasee și într-un plan de călătorie. A pornit ca o copie a bilete.online, generalizată pentru mai multe țări, monede și limbi.',
+  facts: [
+    ['Rol', 'Fondator. Produs, design, cod, date'],
+    ['Perioadă', '6 - 16 octombrie 2026'],
+    ['Stare', 'Live pe viaqui.com din 8 octombrie'],
+    ['Construit pe', 'ePAS, pornind din codul bilete.online'],
+  ],
+  links: [{ href: 'https://viaqui.com', text: 'viaqui.com' }, { href: 'https://viaqui.com/map/italy', text: 'Harta Italiei' }],
+  hero: { src: 'home.jpg', alt: 'Pagina principală Viaqui: Experiences begin before you arrive', domain: 'viaqui.com' },
+  top: [
+    { value: 113093, label: 'atracții în catalog' },
+    { value: 51, label: 'de țări europene' },
+    { value: 17, label: 'monede de afișare' },
+    { value: 11, label: 'zile, de la primul la ultimul commit' },
+  ],
+  topNote: 'Atracțiile sunt numărate în fișierele de date din repo; restul de pe site și din git, pe 5 noiembrie 2026.',
+  blocks: [
+    {
+      label: '01 · Ideea', h2: 'Același produs, dar pentru toată Europa.',
+      ps: [
+        'bilete.online avea deja harta, traseele, planificatorul și panoul pentru operatori, dar doar pentru România și doar în română. Am vrut să văd cât de repede poate deveni același cod un produs internațional.',
+        'Răspunsul: 80 de commit-uri în 11 zile. Pe 8 octombrie site-ul era public și indexabil.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'rome.jpg', alt: 'Pagina orașului Roma pe Viaqui: Things to do in Rome', cap: 'Pagina unui oraș: atracții cu încărcare continuă, experiențe de la parteneri, zboruri și servicii de călătorie.' },
+      { src: 'colosseum.jpg', alt: 'Pagina atracției Colosseum pe Viaqui', cap: 'Pagina unei atracții: descriere din Wikidata, poze din Wikimedia Commons, cu autorul și licența.' },
+    ] },
+    {
+      type: 'steps', label: '02 · Cele 11 zile', h2: 'Cum a crescut, zi cu zi.',
+      items: [
+        { v: '6 oct.', t: 'Copia și scheletul în engleză', d: 'Am pornit de la codul bilete.online: interfață în engleză, 12 categorii, locurile Europei din GeoNames, pagini de țară și de oraș, prețuri în euro.' },
+        { v: '7 oct.', t: 'Toate atracțiile', d: 'Atracțiile din Wikidata pentru 50 de țări, cu descriere, date, insignă UNESCO și vecinii cei mai apropiați. Hărți pe țări, 16 trasee, planificator pe țară, experiențe de la parteneri, zboruri, sitemap-uri.' },
+        { v: '8 oct.', t: 'Monede, limbi, lansare', d: 'Vizitatorul își alege moneda. Toate textele trec printr-un strat de traducere, inclusiv panoul pentru operatori. Am automatizat trimiterea paginilor către motoarele de căutare și am deschis site-ul.' },
+        { v: '9-16 oct.', t: 'Viteză și indexare', d: 'Runde de PageSpeed, date de modificare reale în sitemap, cod 503 în loc de 404 când platforma din spate e ocupată, descrieri proprii pentru fiecare pagină.' },
+      ],
+    },
+    {
+      type: 'flow', label: '03 · Datele', h2: 'Doar date deschise, cu sursa scrisă pe pagină.',
+      ps: ['Nu am copiat poze și nu am cumpărat baze de date. Catalogul e construit offline din surse cu licență deschisă, apoi încărcat în platformă de un seeder care nu suprascrie niciodată o copertă aleasă manual.'],
+      nodes: [
+        { t: 'GeoNames', items: ['51 de țări, 585 de regiuni', '9.038 de orașe peste 10.000 de locuitori', 'Licență CC BY 4.0'] },
+        { t: 'Wikidata', items: ['113.093 de atracții în 50 de fișiere', 'Descrieri, coordonate, UNESCO', 'Licență CC0'] },
+        { t: 'Wikimedia Commons', items: ['Poze afișate de la sursă, la 960 px', 'Autorul și licența, păstrate', 'Pagină de credite foto'] },
+        { t: 'ePAS și site-ul', items: ['Seeder idempotent în platformă', '161 de fișiere statice pentru hărți și planificator', 'Pagini servite din cache'], accent: true },
+      ],
+      foot: 'Germania are cele mai multe atracții (16.834), urmată de Italia (15.471), Franța (12.428), Spania (12.302) și Regatul Unit (9.736).',
+    },
+    { type: 'pair', items: [
+      { src: 'map.jpg', alt: 'Harta atracțiilor din Italia pe Viaqui', cap: 'Harta unei țări: 15.471 de atracții în Italia, grupate pe zone.' },
+      { src: 'plan.jpg', alt: 'Planificatorul Viaqui: A trip through Italy', cap: 'Planificatorul pe țară: de unde pleci, câte zile, cu ce mergi.' },
+    ] },
+    {
+      type: 'parts', label: '04 · Componente', h2: 'Ce am adăugat peste bilete.online.',
+      items: [
+        { t: 'Monede', d: 'Prețul apare în moneda țării, iar filtrele compară în euro.', items: ['17 monede la alegerea vizitatorului', 'Cursuri zilnice, cu tabel de rezervă', 'Cache de pagină separat pentru fiecare monedă', 'Curs BCE în platformă pentru prețurile operatorilor'] },
+        { t: 'Limbi', d: 'Catalogul e deocamdată în engleză, dar codul e pregătit pentru oricare limbă.', items: ['Fiecare text trece prin funcția de traducere', 'Același strat și în JavaScript', 'Prefixul de limbă se adaugă la linkuri automat', 'Câmp de limbă pe fiecare marketplace din ePAS'] },
+        { t: 'Parteneri', d: 'Până apar operatorii, banii vin din recomandări către parteneri de călătorie.', items: ['Tururi audio, zboruri, transferuri, eSIM, mașini', 'Un singur punct de ieșire, cu listă de domenii permise', 'Scripturile partenerilor, doar după acordul de marketing', 'Atribuire pe tip de pagină și pe oraș'] },
+        { t: 'Indexare', d: 'Aproape 140.000 de pagini trebuie găsite de motoarele de căutare.', items: ['Sitemap-uri împărțite pe țări, sub limita de 50.000', 'Data reală a ultimei modificări, luată din git', 'IndexNow și Search Console, zilnic, automat', 'Categoriile goale nu se indexează'] },
+      ],
+    },
+    { type: 'fig', src: 'routes.jpg', alt: 'Traseele Viaqui prin Europa', cap: '17 trasee prin Europa, de la castelele Rinului la catedralele Siciliei.' },
+    {
+      type: 'metrics', label: '05 · Metrici', h2: 'Ce am numărat.',
+      note: 'Măsurat în repo și în sitemap-urile live, pe 5 noiembrie 2026. Paginile de atracție sunt informative: biletele se cumpără deocamdată prin parteneri.',
+      items: [
+        ['113.093', 'atracții, suma celor 50 de fișiere pe țări', 'măsurat'],
+        ['129.840', 'adrese în sitemap-urile de atracții și liste pe orașe', 'măsurat'],
+        ['9.087', 'pagini de locuri: țări, regiuni, orașe', 'măsurat'],
+        ['53', 'de sitemap-uri, cel mai mare cu circa 17.500 de adrese', 'măsurat'],
+        ['80', 'de commit-uri în 11 zile', 'git'],
+        ['0,24 s', 'timpul de răspuns al paginii principale, o singură măsurătoare', 'măsurat'],
+      ],
+      build: [['224', 'fișiere PHP'], ['68k', 'linii de PHP'], ['161', 'fișiere de date pentru hărți'], ['23 MB', 'date despre Europa'], ['17', 'trasee'], ['12', 'categorii']],
+    },
+    {
+      type: 'lessons', label: '06 · Ce am învățat', h2: 'Ce iau cu mine.',
+      items: [
+        ['Generalizează a doua oară, nu prima', 'bilete.online a fost scris pentru o singură țară. Abia când am avut nevoie de a doua am știut ce trebuie scos în configurare: moneda, limba, sursa de date.'],
+        ['Data falsă din sitemap strică totul', 'Dacă toate paginile spun că s-au schimbat azi, motorul de căutare nu mai crede niciuna. Data vine acum din istoricul git al fiecărui fișier.'],
+        ['Când platforma din spate nu răspunde, spune-o corect', 'Un 404 scoate pagina din index. Un 503 cere doar să revină mai târziu.'],
+        ['O decizie de produs se poate schimba de două ori în trei zile', 'Euro peste tot, apoi moneda țării, apoi la alegerea vizitatorului. Fiecare variantă a fost ieftin de testat pentru că prețul trece printr-un singur loc.'],
+      ],
+    },
+    {
+      label: '07 · Unde e acum', h2: 'Un catalog european, deocamdată în engleză.',
+      ps: ['Toate textele trec deja prin stratul de traducere, dar singura limbă publicată e engleza. Coșul, plata și panoul de operator sunt pregătite, însă pe 5 noiembrie 2026 sitemap-ul nu avea încă nicio experiență de vânzare directă. Până atunci, Viaqui câștigă din recomandările către parteneri.'],
+    },
+  ],
+};
+---
+<CaseStudy cs={cs} />

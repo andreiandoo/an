@@ -1,13 +1,13 @@
 export const products = [
   { name: 'Tixello', file: 'tixello', tag: 'SaaS ticketing', url: 'https://tixello.com', stat: '408.153 bilete' },
   { name: 'AmBilet', file: 'ambilet', tag: 'Bilete', url: 'https://ambilet.ro', stat: '+148% vânzări' },
-  { name: 'bilete.online', file: 'bilete-online', tag: 'Atracții', url: 'https://bilete.online', stat: '7.954 atracții' },
-  { name: 'TICS Radar', file: 'tics', tag: 'Comparator', url: 'https://tics.ro', stat: '20 de platforme' },
+  { name: 'bilete.online', file: 'bilete-online', tag: 'Atracții', url: 'https://bilete.online', cs: '/proiecte/bilete-online/', stat: '7.954 atracții' },
+  { name: 'TICS Radar', file: 'tics', tag: 'Comparator', url: 'https://tics.ro', cs: '/proiecte/tics/', stat: '20 de platforme' },
   { name: 'Dreams Atlas', file: 'dreamsatlas', tag: 'AI', url: 'https://dreamsatlas.com', stat: '3,22M afișări' },
-  { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com', stat: '113.093 atracții' },
+  { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com', cs: '/proiecte/viaqui/', stat: '113.093 atracții' },
   { name: 'e-test.ro', file: 'e-test', tag: 'Educație', url: 'https://e-test.ro' },
   { name: 'dubidu', file: 'dubidu', tag: 'Lansare 1 dec.', url: 'https://dubidu.net', cs: '/proiecte/dubidu/', stat: 'Studiu de caz' },
-  { name: 'eMUD', file: 'emud', tag: 'De vânzare', url: 'https://a-n.ro' },
+  { name: 'eMUD', file: 'emud', tag: 'De vânzare', url: 'https://a-n.ro', cs: '/proiecte/emud/', stat: 'Studiu de caz' },
   { name: 'ePAS', file: 'epas', tag: 'Prototip', url: 'https://epas.ro' },
 ];
 
@@ -58,12 +58,12 @@ export const clients = [
   c('D10E', 'https://d10e.biz', 'Corporate', 'Site'),
   c('The Entrepreneurship Academy', 'https://entrepreneurship-academy.ro', 'Educație', 'Site'),
   c('IUF World', 'https://iuf.world', 'Evenimente', 'Site'),
-  c('Edu-Start', 'https://edu-start.ro', 'Educație', 'Platformă și site'),
+  { ...c('Edu-Start', 'https://edu-start.ro', 'Educație', 'Platformă și site'), cs: '/proiecte/edustart/' },
   c('Reveal', 'https://reveal.ro', 'Corporate', 'Site'),
   c('SICAR Museum', 'https://sicarmuseum.ro', 'Cultură', 'Site de muzeu'),
   c('EuroSpirit', 'https://eurospirit.ro', 'Educație', 'Site de organizație'),
   c('ACS Arhivarul', 'https://acsarhivarul.ro', 'Sport', 'Site de club sportiv'),
-  c('Sportiv Educat', 'https://sportiveducat.ro', 'Sport', 'Platformă pentru cluburi sportive'),
+  { ...c('Sportiv Educat', 'https://sportiveducat.ro', 'Sport', 'Platformă pentru cluburi sportive'), cs: '/proiecte/sportiv-educat/' },
 ];
 
 export const numbers = [

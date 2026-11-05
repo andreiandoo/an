@@ -1,0 +1,118 @@
+---
+import CaseStudy from '../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of ticsapp and ticsapp-ext, the code, tics.ro and tics.ro/barometru.
+// The four counters at the top are refreshed live from tics.ro/api/public-stats by numbers.js.
+const cs = {
+  title: 'TICS Radar: studiu de caz | Andrei Năstase',
+  description: 'Cum am construit TICS Radar: un comparator neutru de bilete care urmărește 20 de platforme de ticketing din România, potrivește același eveniment între ele și arată prețul final, cu tot cu comisioane.',
+  path: '/proiecte/tics/',
+  shots: '/shots/tics',
+  label: 'Studiu de caz · 2026',
+  h1: 'TICS Radar: același concert, pe mai multe site-uri de bilete. Care e, de fapt, cel mai ieftin?',
+  lead: 'TICS urmărește platformele de ticketing din România, recunoaște același eveniment pe fiecare dintre ele și arată prețul final, cu taxele incluse. Nu vinde bilete și nu ia comision.',
+  facts: [
+    ['Rol', 'Fondator. Produs, design, cod, date'],
+    ['Perioadă', 'Iunie - octombrie 2026'],
+    ['Stare', 'Live pe tics.ro'],
+    ['Platforme', 'Site, panou de admin, extensie Chrome în test'],
+  ],
+  links: [{ href: 'https://tics.ro', text: 'tics.ro' }, { href: 'https://tics.ro/barometru', text: 'Barometrul TICS' }],
+  hero: { src: 'home.jpg', alt: 'Pagina principală TICS Radar: Cel mai bun preț la bilete, cu monitorul live al platformelor', domain: 'tics.ro' },
+  top: [
+    { value: 20, stat: 'platforms', label: 'platforme de ticketing urmărite' },
+    { value: 4813, stat: 'liveEvents', label: 'evenimente în vânzare acum' },
+    { value: 506, stat: 'cities', label: 'localități cu evenimente' },
+    { value: 391, label: 'commit-uri pe backend, în patru luni' },
+  ],
+  topNote: 'Primele trei cifre se citesc live din tics.ro când deschizi pagina. Valorile din cod sunt cele de pe 5 noiembrie 2026.',
+  blocks: [
+    {
+      label: '01 · Problema', h2: 'Prețul de pe afiș nu e prețul pe care îl plătești.',
+      ps: [
+        'În România, biletele la același concert se vând adesea pe mai multe platforme în paralel. Fiecare are comisioanele ei: taxă de platformă, taxă de procesare, uneori afișate abia în coș. Ca să afli unde e mai ieftin, deschizi patru site-uri și ajungi până la plată pe fiecare.',
+        'Pe 5 noiembrie 2026, Barometrul TICS arăta că <strong>două treimi din bilete au comision, în medie +6,5%</strong> peste prețul de bază. Pentru organizatori, aceeași lipsă de transparență înseamnă că nu știu cum se vinde piața în jurul lor.',
+      ],
+    },
+    {
+      label: '02 · Ce face', h2: 'Un singur loc pentru fiecare eveniment, cu toate prețurile alături.',
+      ps: [
+        'Pagina unui eveniment pune unul lângă altul biletele de pe fiecare platformă: prețul de bază, taxa platformei, taxa de procesare și totalul. Arată ce categorii mai au locuri și cum s-a mișcat prețul în ultimele 30 de zile.',
+        'Pentru organizatori și artiști există Radar Pro: alerte, istoric de prețuri și un raport lunar. Pentru presă, Barometrul TICS, un raport public despre piața de bilete.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'events.jpg', alt: 'Lista de evenimente TICS cu filtre pe tip, oraș și gen', cap: 'Toate evenimentele, cu filtre pe tip, oraș și gen și o recomandare personalizată.' },
+      { src: 'metodologie.jpg', alt: 'Pagina de metodologie a Barometrului TICS', cap: 'Metodologia e publică: surse, formule și ce nu poate măsura TICS.' },
+    ] },
+    {
+      type: 'flow', label: '03 · Cum funcționează', h2: 'De la pagina unei platforme la prețul comparat.',
+      ps: ['Totul rulează pe un planificator de sarcini, cu cozi Redis urmărite în Horizon. Fiecare pas e o comandă separată, cu ritmul ei.'],
+      nodes: [
+        { t: 'Descoperire', items: ['Sitemap-uri citite din oră în oră', 'Liste și API-uri pentru platformele fără sitemap', 'Respectă robots.txt, maximum 2 cereri deodată'] },
+        { t: 'Extragere', items: ['Date structurate JSON-LD, cu rezervă pe HTML', '17 extractoare dedicate', 'Selectori editabili din admin, fără deploy'] },
+        { t: 'Potrivire', items: ['Același eveniment, recunoscut între platforme', 'Scor pe titlu, sală, dată, artist și oraș', 'Audit al fuziunilor suspecte'], accent: true },
+        { t: 'Prețuri', items: ['Actualizare la 4 ore, 30 de zile înainte', 'Comisioanele aflate până la coș', 'Istoric și alerte orare'] },
+        { t: 'Piață', items: ['Instantaneu zilnic la 23:50', 'Grad de ocupare din hărțile de locuri', 'Barometrul public'] },
+      ],
+      foot: 'Pașii 1-4 rulează continuu. Instantaneul zilnic alimentează Barometrul și rapoartele Radar Pro.',
+    },
+    {
+      label: '04 · Partea grea', h2: 'Cum știi că două pagini sunt același concert?',
+      ps: [
+        'Titlurile diferă de la o platformă la alta („Concert X - Turneu 2026” față de „X live”), iar orele pot fi scrise diferit. Algoritmul caută candidați cu o zi în plus sau în minus și le dă un scor ponderat: titlul 30%, sala 22%, data și ora 20%, artistul 15%, orașul 13%. Peste 0,75, cele două pagini devin un singur eveniment.',
+        'Prima versiune lipea greșit spectacole diferite din aceeași sală și aceeași seară. Acum potrivirea pe sală și dată contează doar dacă titlurile au în comun un cuvânt de cel puțin patru litere care nu e nume de loc. O comandă separată verifică periodic fuziunile care arată suspect.',
+      ],
+    },
+    {
+      type: 'parts', label: '05 · Componente', h2: 'Ce am construit, piesă cu piesă.',
+      items: [
+        { t: 'Site-ul public', d: 'Laravel și Blade, cu Tailwind și Alpine. Rapid și ușor de indexat.', items: ['Pagini de eveniment, artist, sală și oraș', 'Comparație pe platforme, cu taxele separate', 'Grafic de preț pe 30 de zile', 'Calendar, căutare full-text în PostgreSQL', 'Șapte sitemap-uri, date structurate Event, IndexNow'] },
+        { t: 'Motorul de date', d: '32 de comenzi și un planificator care rulează de la fiecare 15 minute până o dată pe săptămână.', items: ['Extractoare pentru fiecare platformă', 'Normalizare de date românești, orașe și adrese', 'Potrivire între platforme și deduplicare', 'Poze convertite în WebP din timp', 'Detectarea evenimentelor încheiate'] },
+        { t: 'Radar Pro', d: 'Abonament pentru organizatori, agenții și artiști, cu plată prin Stripe.', items: ['Alerte de preț și de stoc, verificate din oră în oră', 'Raport lunar pe email', 'Mod pentru artiști, cu date de pe rețele sociale', 'Panou de analiză a pieței', 'Promovarea unui eveniment în rezultate'] },
+        { t: 'Panoul de administrare', d: 'Filament 4, cu 12 resurse și 9 pagini dedicate.', items: ['Platforme, cu selectorii lor editabili', 'Evenimente duble de verificat manual', 'Oportunități și rapoarte de vânzări', 'Statistici pe săli', 'Setări pentru șapte servicii externe, cu test de conexiune'] },
+      ],
+    },
+    {
+      label: '06 · Barometrul', h2: 'Un raport de piață pe care îl poate cita oricine.',
+      ps: ['Din datele zilnice iese Barometrul TICS: prețul median al unui bilet, cât adaugă comisioanele, cât de pline sunt sălile și câte evenimente s-au epuizat. Pagina e făcută pentru jurnaliști, cu cifre mari și metodologia la un clic distanță.'],
+    },
+    { type: 'pair', items: [
+      { src: 'barometru.jpg', alt: 'Barometrul TICS: un bilet la un eveniment din România costă, de obicei, 100 de lei', cap: 'Barometrul, 5 noiembrie 2026: biletul median costă 100 de lei.' },
+      { src: 'barometru-2.jpg', alt: 'Barometrul TICS: cât am urmărit până acum și distribuția prețurilor', cap: 'Ce acoperă datele: evenimente urmărite, zile de istoric, prețuri înregistrate.' },
+    ] },
+    {
+      type: 'metrics', label: '07 · Metrici', h2: 'Ce arată datele.',
+      note: 'Cifrele de piață vin de pe tics.ro și din Barometru, pe 5 noiembrie 2026, și se schimbă zilnic. Cele despre cod sunt numărate în repo.',
+      items: [
+        ['20', 'platforme de ticketing urmărite', 'de pe site'],
+        ['555.967', 'locuri urmărite în hărțile de sală', 'de pe site'],
+        ['100 lei', 'prețul median al unui bilet, cu taxe', 'Barometru'],
+        ['+6,5%', 'comisionul mediu, pe cele două treimi de bilete care au comision', 'Barometru'],
+        ['42%', 'ocuparea medie a sălilor, acolo unde platforma publică harta', 'Barometru'],
+        ['0,75', 'pragul de scor peste care două pagini devin același eveniment', 'în cod'],
+        ['100 / 15 min', 'evenimente reîmprospătate de coada de extragere', 'în cod'],
+        ['0,53 → 0', 'deplasarea vizuală a listei (CLS), după ce am rezervat spațiul grilei', 'măsurat'],
+      ],
+      build: [['38', 'modele de date'], ['67', 'migrații'], ['32', 'comenzi programate'], ['51', 'servicii'], ['127', 'șabloane Blade'], ['74', 'de teste']],
+    },
+    {
+      type: 'lessons', label: '08 · Ce am învățat', h2: 'Patru lucruri pe care le iau cu mine.',
+      items: [
+        ['Datele altora se schimbă fără să te anunțe', 'O platformă își schimbă pagina, alta trimite JSON invalid. De aceea selectorii stau în baza de date, editabili din admin, iar fiecare extractor are o rezervă.'],
+        ['Un comparator e corect doar dacă vede tot prețul', 'Fără comisioanele din coș, comparația ar fi fost pe prețul de bază, adică exact ce vede deja cumpărătorul.'],
+        ['Fuziunile greșite costă mai mult decât cele ratate', 'Două spectacole lipite într-unul arată prețuri false. Am preferat un prag strict și o listă de verificat manual.'],
+        ['Spune ce nu poți măsura', 'Planul pentru artiști spune clar ce nu pot arăta datele publice: venituri sau profilul cumpărătorilor. Metodologia Barometrului face la fel.'],
+      ],
+    },
+    {
+      label: '09 · Unde e acum', h2: 'Site-ul e live. Extensia așteaptă publicarea.',
+      ps: [
+        'Extensia Chrome arată comparația direct pe pagina platformei de pe care cumperi. Are 26 de fișiere sursă și acoperă 14 domenii de ticketing, dar pe 5 noiembrie 2026 încă nu era publicată în magazine.',
+        'TICS e susținut de Tixello, platforma mea de ticketing. Organizatorii care vor să vândă direct ajung la Tixello din pagina pentru organizatori.',
+      ],
+    },
+  ],
+};
+---
+<CaseStudy cs={cs} />

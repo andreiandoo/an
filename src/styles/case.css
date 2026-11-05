@@ -247,3 +247,27 @@
 .tts-translated span { font: 400 13px var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
 .tts-translated q { quotes: none; }
 .tts-no-translate { font-size: 14px; color: var(--muted); }
+
+/* Data flow: numbered boxes in a row, joined by arrows (CaseStudy flow block). */
+.cs-flow { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 34px; margin-top: clamp(24px, 3vh, 36px); counter-reset: f; }
+.cs-flow > li { position: relative; display: grid; gap: 10px; align-content: start; padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.cs-flow > li:not(:last-child)::after { content: ""; position: absolute; right: -27px; top: 50%; width: 20px; height: 2px; background: var(--ink); }
+.cs-flow > li:not(:last-child)::before { content: ""; position: absolute; right: -28px; top: calc(50% - 5px); width: 8px; height: 8px; border-top: 2px solid var(--ink); border-right: 2px solid var(--ink); transform: rotate(45deg); }
+.cs-flow > li.is-acc { border-color: var(--accent); }
+.cs-flow h3 { font-size: 19px; }
+.cs-flow ul { display: grid; gap: 6px; }
+.cs-flow ul li { font-size: 15px; color: #444; padding-left: 14px; position: relative; }
+.cs-flow ul li::before { content: ""; position: absolute; left: 0; top: .6em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.cs-flow-foot { margin-top: 12px; font-size: 15px; color: var(--muted); max-width: 80ch; }
+@media (max-width: 900px) {
+  .cs-flow { grid-auto-flow: row; gap: 30px; }
+  .cs-flow > li:not(:last-child)::after { right: auto; left: 50%; top: auto; bottom: -22px; width: 2px; height: 16px; }
+  .cs-flow > li:not(:last-child)::before { right: auto; left: calc(50% - 4px); top: auto; bottom: -24px; transform: rotate(135deg); }
+}
+
+/* Phone screens in a row. */
+.cs-phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: clamp(28px, 4vh, 44px); padding: clamp(20px, 3vw, 40px); background: var(--paper-2); border-radius: 14px; }
+.cs-phones figure { display: grid; gap: 10px; justify-items: center; }
+.cs-phones img { width: 100%; max-width: 240px; height: auto; }
+.cs-phones figcaption { font-size: 14px; color: var(--muted); text-align: center; }
+.cs-phones-cap { margin-top: 10px; font-size: 15px; color: var(--muted); max-width: 70ch; }

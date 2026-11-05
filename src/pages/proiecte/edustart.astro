@@ -1,0 +1,110 @@
+---
+import CaseStudy from '../../components/CaseStudy.astro';
+
+// Client project for Teach for Romania. Figures checked on 5 Nov 2026 in the local copy (theme, plugins, dev database
+// structure of 17 Sep 2026; no git history) and on the staging site. No pupil or teacher data is shown or counted
+// beyond reference data; the staging copy's usage figures are not repeated because they could not be verified.
+const cs = {
+  title: 'Edu-Start: studiu de caz | Andrei Năstase',
+  description: 'Cum am reconstruit Edu-Start pentru Teach for Romania: evaluarea competențelor socio-emoționale, a citirii și a matematicii la elevi, cu rapoarte pe elev, clasă și generație și integrare cu un partener extern.',
+  path: '/proiecte/edustart/',
+  shots: '/shots/edustart',
+  back: { href: '/#clienti', text: '← Lucrări pentru clienți' },
+  label: 'Studiu de caz · Client: Teach for Romania · 2025-2026',
+  h1: 'Edu-Start: profesorii măsoară cum progresează elevii, nu doar ce note iau.',
+  lead: 'O platformă pentru profesorii Teach for Romania din școlile vulnerabile. Evaluează elevii pe trei direcții, competențe socio-emoționale (SEL), citire (LIT) și matematică (NUM), la începutul, la mijlocul și la sfârșitul anului. Rapoartele arată progresul pe elev, clasă și generație de profesori.',
+  facts: [
+    ['Client', 'Teach for Romania'],
+    ['Rol', 'Reconstrucție completă: platformă, site, integrare'],
+    ['Perioadă', '2025 - 2026'],
+    ['Stare', 'Pe serverul de test'],
+  ],
+  links: [{ href: 'https://andreinastase.ro/edustart/', text: 'Versiunea nouă, pe serverul de test' }],
+  hero: { src: 'home.jpg', alt: 'Site-ul Edu-Start: Împărtășim opinii și experiențe din educație', domain: 'andreinastase.ro/edustart' },
+  top: [
+    { value: 3, label: 'domenii evaluate: SEL, LIT, NUM' },
+    { value: 3, label: 'momente pe an: T0, Ti, T1' },
+    { value: 18056, label: 'școli în nomenclatorul importat' },
+    { value: 41, label: 'de mii de linii de cod scrise pentru proiect' },
+  ],
+  topNote: 'Numărate în codul proiectului și în structura bazei de date de test, pe 5 noiembrie 2026. Școlile vin din nomenclatorul național, importat din CSV.',
+  blocks: [
+    {
+      label: '01 · Problema', h2: 'Ce nu se vede în catalog.',
+      ps: [
+        'Teach for Romania trimite profesori în școli din comunități vulnerabile. Acolo, progresul unui copil nu se vede doar în note: contează dacă reușește să-și gestioneze emoțiile, dacă înțelege ce citește, dacă se descurcă la calcule simple.',
+        'Vechea platformă Edu-Start măsura doar partea socio-emoțională. Programul avea nevoie de toate trei domeniile în același loc, cu rapoarte pe care un tutore să le poată folosi pentru o generație întreagă de profesori.',
+      ],
+    },
+    {
+      label: '02 · Ce face', h2: 'Evaluare la început, la mijloc și la final de an.',
+      ps: [
+        'Profesorul își creează clasa, adaugă elevii și completează chestionarele SEL și LIT la fiecare etapă: T0 la început, Ti la mijloc, T1 la final. Răspunsurile se salvează automat ca ciornă, cu procentul de completare, iar scorurile se calculează pe capitole. Rezultatele la matematică (NUM) vin automat de la un partener extern.',
+        'Tutorii văd toate clasele profesorilor pe care îi coordonează. Administratorii Teach for Romania pornesc și opresc modulele pentru fiecare generație și exportă datele.',
+      ],
+    },
+    { type: 'fig', src: 'lit.jpg', alt: 'Pagina LIT - Literație (citire) de pe noul site Edu-Start', cap: 'Pagina despre evaluarea citirii (LIT): comprehensiune și acuratețe, măsurate între etape.' },
+    {
+      type: 'flow', label: '03 · Cum circulă datele', h2: 'De la nomenclatorul școlilor la raportul pe generație.',
+      nodes: [
+        { t: 'Nomenclator', items: ['42 de județe, 7.467 de localități', '18.056 de școli, cu cod SIIIR', 'Import din CSV, din admin'] },
+        { t: 'Oameni și clase', items: ['Profesori, tutori, mentori', 'Generații și clase', 'Elevi adăugați de profesor'] },
+        { t: 'Evaluări', items: ['Chestionare SEL și LIT pe etape', 'Salvare automată ca ciornă', 'Scor pe capitole'], accent: true },
+        { t: 'Rapoarte', items: ['Pe elev, clasă, profesor, generație', 'Grafice cu Chart.js', 'Export PDF și CSV'] },
+      ],
+      foot: 'Rezultatele NUM intră separat, de la partenerul extern, prin webhook-uri semnate.',
+    },
+    {
+      label: '04 · Decizia principală', h2: 'Chestionarele sunt conținut, nu cod.',
+      ps: [
+        'Fiecare instrument de evaluare e un articol în WordPress, cu structura descrisă în câmpuri ACF: capitole, întrebări, variante, scoruri. Există variante pe niveluri, de exemplu pentru primar mic, primar mare și gimnaziu, și pe etape.',
+        'Echipa Teach for Romania poate schimba o întrebare sau poate adăuga un instrument nou fără un programator. Răspunsurile se păstrează ca JSON, cu scorurile pe capitole și procentul de completare, așa că rapoartele vechi rămân valide și după ce chestionarul se schimbă.',
+      ],
+    },
+    {
+      type: 'flow', label: '05 · Integrarea cu partenerul', h2: 'Construită să suporte căderi de rețea.',
+      ps: ['Evaluarea la matematică se face pe platforma unui partener. Edu-Start îi trimite profesorii, generațiile și elevii și primește înapoi rezultatele. Nicio parte nu are voie să piardă date dacă cealaltă e căzută.'],
+      nodes: [
+        { t: 'Coadă de ieșire', items: ['Tabel de mesaje cu reîncercări', 'Protecție la duplicate', 'Loturi de 25, la 2 minute'] },
+        { t: 'Identități opace', items: ['Chei de 26 de caractere, nu ID-uri interne', 'Rezolvare în ambele sensuri', 'Completare pentru datele vechi'], accent: true },
+        { t: 'Webhook-uri', items: ['Semnate HMAC-SHA256', 'Respinse după 5 minute', 'Fiecare apel jurnalizat, cu stare'] },
+        { t: 'Autentificare', items: ['OAuth2, client credentials', '9 rute REST', 'Verificare de sănătate'] },
+      ],
+      foot: 'Partenerul nu primește niciodată ID-urile interne ale elevilor, ci chei opace, generate o singură dată.',
+    },
+    {
+      type: 'parts', label: '06 · Componente', h2: 'Ce am construit.',
+      items: [
+        { t: 'Panoul pentru profesori', d: 'O aplicație în tema WordPress, cu rute proprii.', items: ['Clase, elevi, evaluări', 'Formulare SEL și LIT cu precompletare și progres', 'Profil cu școlile alese din județ, oraș, școală', 'Notificări în pagină', 'Raport pe elev, cu tab-uri SEL și LIT'] },
+        { t: 'Panoul pentru tutori și admini', d: '39 de vederi și 22 de fragmente de panou.', items: ['Generații, cu module pornite pe rând sau în bloc', 'Școli, profesori, tutori, elevi', 'Rapoarte și analiză pe generație', 'Exporturi CSV', 'Documentație pentru utilizatori'] },
+        { t: 'Pluginul de locații', d: 'Datele de referință și structura școlară.', items: ['Județe, localități pe trei niveluri, școli', 'Import CSV, cu cod SIIIR și regiune', 'Roluri: profesor, tutor, alumni, non-teach', 'Clase, elevi, generații'] },
+        { t: 'Site-ul de prezentare', d: 'În aceeași temă, cu blocuri de pagină editabile.', items: ['Pagini pentru SEL, LIT și NUM', 'Pagini pentru profesori, școli și programe', 'Blog', 'Construit pe Tailwind, Alpine.js și Flowbite'] },
+      ],
+    },
+    {
+      type: 'metrics', label: '07 · Metrici', h2: 'Ce am numărat.',
+      note: 'Proiectul nu are istoric git în copia pe care o am, așa că nu public numărul de commit-uri. Platforma e pe serverul de test, deci nu există încă cifre de utilizare. Nu număr și nu arăt date despre elevi.',
+      items: [
+        ['18.056', 'școli în nomenclatorul importat', 'măsurat'],
+        ['7.467', 'localități, pe trei niveluri: județ, oraș sau comună, sat', 'măsurat'],
+        ['42', 'de acțiuni AJAX pentru panou', 'în cod'],
+        ['9', 'rute REST pentru integrarea cu partenerul', 'în cod'],
+        ['5 min', 'fereastra în care un webhook semnat e acceptat', 'în cod'],
+        ['~41k', 'linii de PHP și JavaScript scrise pentru proiect', 'măsurat'],
+      ],
+      build: [['115', 'fișiere PHP în temă'], ['32k', 'linii în temă'], ['18', 'fișiere în pluginul de locații'], ['13', 'fișiere în pluginul de integrare'], ['9', 'tabele proprii'], ['39', 'vederi de panou']],
+    },
+    {
+      type: 'lessons', label: '08 · Ce am învățat', h2: 'Ce iau cu mine, inclusiv ce aș face altfel.',
+      items: [
+        ['Pune instrumentele în mâna clientului', 'Cu chestionarele editabile din admin, schimbarea unui instrument nu mai cere un programator. Programul se schimbă de la un an la altul, iar platforma ține pasul fără un nou proiect.'],
+        ['O integrare trebuie să presupună că partenerul cade', 'Coada cu reîncercări și cheile opace au făcut integrarea plictisitoare, adică exact ce trebuie.'],
+        ['Protejează datele reale și în dezvoltare', 'Copia locală are un plugin care blochează orice email și doar îl jurnalizează, ca nimeni să nu primească un mesaj de test.'],
+        ['Ce aș face altfel', 'Un singur fișier functions.php de peste 4.400 de linii și nicio suită de teste. Pentru următoarea versiune, logica de evaluare merită mutată în clase separate, cu teste.'],
+      ],
+    },
+  ],
+  end: { h2: 'Lucrezi la un program educațional care are nevoie de date?', p: 'Construiesc platforme de evaluare și raportare, cu integrări sigure între parteneri. Scrie-mi și vedem dacă se potrivește.' },
+};
+---
+<CaseStudy cs={cs} />

@@ -1,0 +1,135 @@
+---
+import CaseStudy from '../../components/CaseStudy.astro';
+
+// Client project for iGrowth. Figures checked on 5 Nov 2026: git history of igapp and igweb, the code, sportiveducat.ro
+// and the store listings. App screens are the HTML prototypes from igapp/design/public, with invented demo data.
+// The usage counters shown on sportiveducat.ro are not repeated here: they could not be verified.
+const cs = {
+  title: 'Sportiv Educat: studiu de caz | Andrei Năstase',
+  description: 'Cum am construit Sportiv Educat (iGROWth) pentru iGrowth: platformă de administrare pentru cluburi sportive, aplicații iOS și Android, plăți cu Stripe Connect, facturare cu e-Factura și un joc educativ pentru copii.',
+  path: '/proiecte/sportiv-educat/',
+  shots: '/shots/sportiveducat',
+  back: { href: '/#clienti', text: '← Lucrări pentru clienți' },
+  label: 'Studiu de caz · Client: iGrowth · 2025-2026',
+  h1: 'Sportiv Educat: clubul sportiv într-o aplicație, iar copiii învață jucându-se.',
+  lead: 'O platformă pentru cluburile sportive din România: echipe, antrenamente, prezență, evoluție fizică, plăți și facturi. Pentru copii, aplicația are un joc cu quiz-uri despre nutriție, somn, hidratare și mișcare. Am construit aplicația web, aplicațiile iOS și Android, serverul și site-ul de prezentare.',
+  facts: [
+    ['Client', 'iGrowth'],
+    ['Rol', 'Dezvoltare completă: server, web, mobil, site'],
+    ['Perioadă', 'Noiembrie 2025 - octombrie 2026'],
+    ['Stare', 'Live, în App Store și Google Play'],
+  ],
+  links: [
+    { href: 'https://sportiveducat.ro', text: 'sportiveducat.ro' },
+    { href: 'https://apps.apple.com/app/id6767212760', text: 'App Store' },
+    { href: 'https://play.google.com/store/apps/details?id=com.sportiveducat.app', text: 'Google Play' },
+  ],
+  hero: { src: 'cluburi.jpg', alt: 'Pagina pentru cluburi Sportiv Educat: Administrează-ți clubul sportiv, complet și profesionist', domain: 'sportiveducat.ro' },
+  top: [
+    { value: 5, label: 'roluri: admin, club, antrenor, părinte, sportiv' },
+    { value: 762, label: 'commit-uri în două repo-uri' },
+    { value: 109, label: 'modele de date' },
+    { value: 724, label: 'teste automate pe server' },
+  ],
+  topNote: 'Numărate în git și în cod, pe 5 noiembrie 2026.',
+  blocks: [
+    {
+      label: '01 · Problema', h2: 'Cluburile lucrează în caiete, tabele și grupuri de WhatsApp.',
+      ps: [
+        'Un club sportiv pentru copii ține evidența sportivilor, a antrenamentelor, a prezenței, a taxelor și a competițiilor. De obicei, fiecare dintre ele stă în alt loc. Antrenorul pierde timp cu hârtii, iar părinții află târziu ce face copilul.',
+        'iGrowth a mai pus o întrebare: cum faci un copil să revină, nu doar la antrenament, ci și la lucrurile din afara lui, ca alimentația și somnul? Răspunsul a fost un joc.',
+      ],
+    },
+    {
+      label: '02 · Ce face', h2: 'O singură aplicație, cinci feluri de a o folosi.',
+      ps: [
+        'Clubul are un panou cu echipe, antrenori, locații, calendar, încasări și rapoarte. Antrenorul face prezența de pe telefon și notează evoluția fizică. Părintele vede săptămâna copilului, evenimentele și plățile. Copilul joacă quiz-uri, strânge puncte, urcă în nivel și deblochează insigne.',
+        'Clubul plătește un abonament pe sportiv, cu 14 zile de probă. Taxele de la părinți ajung direct în contul clubului, prin Stripe Connect, iar platforma nu ia nimic din ele.',
+      ],
+    },
+    { type: 'phones', items: [
+      { src: 'app-home.jpg', alt: 'Aplicația pentru sportiv: ecranul de quiz-uri, pe categorii', cap: 'Sportivul: quiz-uri pe categorii' },
+      { src: 'app-badges.jpg', alt: 'Aplicația pentru sportiv: insignele de bronz, argint, aur și platină', cap: 'Insigne de deblocat' },
+      { src: 'coach-att.jpg', alt: 'Aplicația pentru antrenor: prezența la antrenament', cap: 'Antrenorul: prezența' },
+      { src: 'parent-dash.jpg', alt: 'Aplicația pentru părinte: săptămâna copilului', cap: 'Părintele: săptămâna copilului' },
+    ], cap: 'Ecrane din prototipurile interactive ale celor trei aplicații, cu date inventate. Aplicațiile reale arată la fel, cu datele clubului.' },
+    {
+      type: 'flow', label: '03 · Arhitectura', h2: 'Un singur cod pentru web, iPhone și Android.',
+      ps: ['Aplicațiile din magazine sunt aceeași aplicație React, împachetată cu Capacitor. Shell-ul nativ încarcă versiunea live, așa că o corectură ajunge pe telefoane imediat, fără o nouă aprobare în App Store.'],
+      nodes: [
+        { t: 'Site-ul de prezentare', items: ['Generator static fără dependențe', 'Înscriere și plată direct de pe site', 'Prețurile citite din aplicație la build'] },
+        { t: 'Aplicația React', items: ['React 19, pe Cloudflare Pages', 'Aceeași aplicație în iOS și Android', 'Română și engleză'] },
+        { t: 'API-ul', items: ['Node, Express 5, TypeScript', 'Prisma și PostgreSQL', 'Actualizări în timp real prin WebSocket'], accent: true },
+        { t: 'Servicii externe', items: ['Stripe: abonamente și Connect', 'Oblio: facturi și e-Factura', 'ANAF, Firebase, Brevo'] },
+      ],
+      foot: 'Înscrierea unui club verifică firma la ANAF înainte să creeze contul, ca să nu apară cluburi false.',
+    },
+    { type: 'pair', items: [
+      { src: 'parinti.jpg', alt: 'Pagina pentru părinți Sportiv Educat: Crește un copil sănătos și motivat, ca la joacă', cap: 'Pagina pentru părinți.' },
+      { src: 'antrenori.jpg', alt: 'Pagina pentru antrenori Sportiv Educat: Petrece timpul cu sportivii, nu cu hârtiile', cap: 'Pagina pentru antrenori.' },
+    ] },
+    {
+      type: 'parts', label: '04 · Componente', h2: 'Ce am construit, pe roluri.',
+      items: [
+        { t: 'Clubul', d: 'Panoul administratorului de club.', items: ['Echipe, antrenori, personal, sportivi, locații', 'Antrenamente unice sau recurente, cu alertă la suprapunerea sălilor', 'Încasări, facturi, plăți automate cu acord', 'Rapoarte și clasamente pe echipă, club și an', 'Brand propriu pe planul Premium'] },
+        { t: 'Antrenorul', d: '15 ecrane, făcute pentru telefon.', items: ['Prezență: prezent, întârziat, absent, motivat', 'Metrici fizice configurabile, cu grafice', 'Numerar predat clubului', 'Puncte și evenimente', 'Vizualizare 360 a fiecărui sportiv'] },
+        { t: 'Părintele și sportivul', d: 'Jocul și viața de club, în aceeași aplicație.', items: ['Quiz-uri săptămânale pe categorii și teme', 'Puncte, niveluri, insigne, vieți, clasamente', 'Mascota Growie', 'Abonamente de familie, cu reducere pentru frați', 'Evenimente: tabere, campionate, excursii'] },
+        { t: 'Platforma', d: '56 de ecrane pentru administratorii iGrowth.', items: ['Cluburi, planuri, facturare, venituri', 'Quiz-uri, categorii, teme, programare', 'Emailuri, CRM de marketing, campanii push', 'Contracte, tichete de suport, rapoarte', 'Program de afiliere'] },
+      ],
+    },
+    {
+      label: '05 · Banii', h2: 'Facturi corecte fiscal, fără să țin certificate pe server.',
+      ps: [
+        'Fiecare club primește o factură lunară, calculată pro rata când își schimbă planul. Factura fiscală și transmiterea în e-Factura merg prin Oblio, pe API. Platforma generează doar proforme în PDF: serverul rulează în containere care se pot reconstrui oricând, așa că nu e locul potrivit pentru certificatele digitale ale unei firme.',
+        'Plățile părinților către club trec prin Stripe Connect, cu plăți automate pe bază de acord, rambursări, reconciliere și export pentru contabilitate.',
+      ],
+    },
+    {
+      label: '06 · Jocul', h2: 'Reguli mici care fac jocul corect.',
+      ps: [
+        'Viețile se refac în funcție de timpul trecut, calculat când copilul deschide aplicația. Nu e nevoie de niciun proces care să ruleze în fundal. Experiența doar crește, așa că dacă un copil cheltuie puncte în magazin nu coboară niciodată de nivel. Pentru nivelul L e nevoie de 50 × (L−1) × L puncte de experiență.',
+        'Planul gratuit a scăzut de la cinci vieți la trei, ca diferența față de un abonament să se vadă. Conținutul urmează o metodă scrisă: categorie, temă, 10-15 capitole, câte o idee pe întrebare, cu o explicație după fiecare răspuns.',
+      ],
+    },
+    { type: 'phones', items: [
+      { src: 'app-lives.jpg', alt: 'Aplicația pentru sportiv: vieți și pachete de vieți', cap: 'Vieți și pachete' },
+      { src: 'coach-dash.jpg', alt: 'Aplicația pentru antrenor: programul zilei și ce e de rezolvat', cap: 'Antrenorul: ziua de azi' },
+    ] },
+    {
+      type: 'steps', label: '07 · Drumul', h2: 'Un an, șase etape.',
+      items: [
+        { v: 'Nov.-dec. 2025', t: 'Prima versiune', d: 'Roluri și permisiuni, module de administrare, quiz-uri cu video, facturare, primul deploy pe Railway și Cloudflare Pages.' },
+        { v: 'Ian.-feb. 2026', t: 'Evenimente și Android', d: 'Tabere, campionate și excursii, conturi de părinte, aplicația Android cu notificări push.' },
+        { v: 'Mar.-mai 2026', t: 'În magazine', d: 'Lansarea în Google Play, iOS prin Codemagic și TestFlight, conturi pentru recenzenții din magazine.' },
+        { v: 'Iun.-iul. 2026', t: 'Jocul', d: 'Antrenamente recurente, quiz-uri refăcute, niveluri, insigne, vederea părintelui asupra progresului.' },
+        { v: 'Aug.-sep. 2026', t: 'Planuri și facturi', d: 'Panou de club refăcut, planuri Demo, Basic și Premium, verificare ANAF, e-Factura, CRM de marketing, coordonatori.' },
+        { v: 'Oct. 2026', t: 'Banii clubului', d: 'Stripe Connect, plăți automate, rambursări, reconciliere, clasamente, vederi 360.' },
+      ],
+    },
+    {
+      type: 'metrics', label: '08 · Metrici', h2: 'Ce am numărat.',
+      note: 'Măsurat în git și în cod pe 5 noiembrie 2026. Cifrele de utilizare aparțin clientului și nu le public aici.',
+      items: [
+        ['762', 'commit-uri: 732 pe aplicație, 30 pe site', 'git'],
+        ['~519', 'rute API pe server', 'măsurat'],
+        ['123', 'de rute în aplicația web', 'măsurat'],
+        ['191', 'ecrane și componente React', 'măsurat'],
+        ['1.0.5', 'versiunea aplicației mobile', 'în cod'],
+        ['1 € / 2 €', 'abonamentul clubului pe sportiv pe lună, Basic și Premium, la data scrierii', 'de pe site'],
+      ],
+      build: [['109', 'modele de date'], ['79', 'migrații'], ['67', 'module de logică'], ['47', 'fișiere de teste'], ['~77k', 'linii pe server'], ['~96k', 'linii în aplicație']],
+    },
+    {
+      type: 'lessons', label: '09 · Ce am învățat', h2: 'Ce iau cu mine.',
+      items: [
+        ['Un shell nativ subțire scurtează orice corectură', 'Pentru că aplicația din magazine încarcă versiunea web live, o greșeală reparată azi ajunge pe telefoane azi. Prețul plătit: prima afișare depinde de rețea.'],
+        ['Lasă banii acolo unde le e locul', 'Taxele merg direct la club, prin Stripe Connect, iar facturile fiscale prin Oblio. Platforma nu ține bani și nu ține certificate.'],
+        ['Jocul are nevoie de reguli contabile', 'Viețile, punctele și nivelurile au aceleași probleme ca un sold: nu au voie să scadă din greșeală și nu au voie să depindă de un proces care poate să nu ruleze.'],
+        ['Testează logica de domeniu, nu doar ecranele', 'Regulile de planuri, pro rata, vieți și niveluri au teste dedicate. Acolo apar erorile scumpe.'],
+      ],
+    },
+  ],
+  end: { h2: 'Ai nevoie de o aplicație web și mobilă pentru organizația ta?', p: 'Construiesc platforma, aplicațiile și site-ul, cu plăți și facturare incluse. Scrie-mi și vedem dacă se potrivește.' },
+};
+---
+<CaseStudy cs={cs} />

@@ -1,0 +1,109 @@
+---
+import CaseStudy from '../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of andreiandoo/emud, the code, docs/ and a-n.ro (sitemap and pages).
+// The shop catalogue is pilot-scale; no sales, API customers or data licences are claimed.
+const cs = {
+  title: 'eMUD: studiu de caz | Andrei Năstase',
+  description: 'Cum am construit eMUD: magazin de piese 4x4 și off-road care pornește de la mașina clientului, catalog tehnic de compatibilități, API plătit și registrul național al service-urilor auto.',
+  path: '/proiecte/emud/',
+  shots: '/shots/emud',
+  label: 'Studiu de caz · 2026',
+  h1: 'eMUD: magazinul de piese off-road care te întreabă întâi ce mașină ai.',
+  lead: 'Un magazin online pentru piese și echipamente 4x4, cu marfa livrată direct de la furnizori. Alegi mașina, după marcă și model sau după seria de șasiu (VIN), iar magazinul îți arată doar ce se potrivește. Din aceeași aplicație au crescut un catalog tehnic cu API și un registru al service-urilor auto din România.',
+  facts: [
+    ['Rol', 'Fondator. Produs, design, cod, date'],
+    ['Perioadă', 'August - septembrie 2026'],
+    ['Stare', 'Live pe a-n.ro. Proiectul e de vânzare'],
+    ['Stack', 'Laravel 12, Livewire 4, PostgreSQL, Redis'],
+  ],
+  links: [{ href: 'https://a-n.ro', text: 'a-n.ro' }, { href: 'https://a-n.ro/service-auto', text: 'Directorul de service-uri' }],
+  hero: { src: 'home.jpg', alt: 'Pagina principală eMUD: Pentru locurile unde se termină asfaltul, cu selectorul de mașină', domain: 'a-n.ro' },
+  top: [
+    { value: 375, label: 'commit-uri în trei săptămâni' },
+    { value: 807, label: 'teste automate' },
+    { value: 105, label: 'modele de date' },
+    { value: 12974, label: 'service-uri auto în director' },
+  ],
+  topNote: 'Numărate în repo și pe a-n.ro, pe 5 noiembrie 2026.',
+  blocks: [
+    {
+      label: '01 · Problema', h2: '„Se potrivește pe mașina mea?”',
+      ps: [
+        'La piesele off-road, întrebarea nu e doar cât costă, ci dacă se potrivește. Un snorkel pentru Duster nu intră pe un Jimny, iar o suspensie diferă de la o generație la alta. Clientul vrea un răspuns clar înainte să plătească.',
+        'De partea cealaltă, un magazin care livrează direct de la furnizori primește fișiere de produse cu formate diferite, cu stoc și prețuri care se schimbă de mai multe ori pe zi. Ca să răspunzi la prima întrebare, trebuie întâi să faci ordine în fișierele furnizorilor.',
+      ],
+    },
+    {
+      label: '02 · Ce face', h2: 'Mașina ta e filtrul.',
+      ps: [
+        'Clientul își alege mașina din cascada marcă, model, generație, motor sau introduce VIN-ul. Fiecare produs primește apoi un verdict: se potrivește, nu se potrivește sau trebuie verificat. În cont, „Garajul meu” ține mai multe mașini, cu date tehnice și memento-uri pentru ITP, RCA, ulei și distribuție.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'collections.jpg', alt: 'Colecțiile eMUD pe model de mașină, cu cifrele catalogului', cap: 'Colecțiile pe model de mașină: 11.764 de colecții, 863 de mărci, 10.901 modele.' },
+      { src: 'home-m.jpg', w: 780, h: 1688, alt: 'eMUD pe telefon: selectorul de mașină', cap: 'Pe telefon: căutarea pornește tot de la mașină, VIN sau cod de piesă.' },
+    ] },
+    {
+      type: 'flow', label: '03 · Arhitectura', h2: 'Nicio sursă nu scrie direct în catalog.',
+      ps: ['Regula de bază a catalogului: orice informație intră întâi ca înregistrare brută, cu sursa ei, și ajunge în tabelele finale doar după normalizare, potrivire și validare. Fiecare sursă are și drepturile ei de folosire, așa că datele cu licență nu ajung niciodată în API-ul public.'],
+      nodes: [
+        { t: 'Surse', items: ['Fișiere de la furnizori, prin HTTP sau SFTP', 'Date despre vehicule: NHTSA, EEA, Wikidata', 'Cursuri valutare BCE'] },
+        { t: 'Înregistrări brute', items: ['Păstrate cu sursa și data', 'Normalizare și potrivire', 'Conflicte trimise la verificare'] },
+        { t: 'Catalog canonic', items: ['Piesa tehnică, separată de produsul de vânzare', 'Reguli de compatibilitate, nu rânduri pe VIN', 'Coduri OE, echivalențe, înlocuiri'], accent: true },
+        { t: 'Magazin și API', items: ['Cea mai bună ofertă după costul final', 'Prețul de vânzare cu adaos și TVA', 'API v1 cu sursele în fiecare răspuns'] },
+      ],
+      foot: 'Stocul furnizorilor se actualizează la 15 minute, prețurile din oră în oră, iar catalogul complet în fiecare noapte, la 02:10.',
+    },
+    {
+      type: 'parts', label: '04 · Componente', h2: 'Patru produse într-o singură aplicație.',
+      items: [
+        { t: 'Magazinul', d: '25 de componente Livewire pentru vizitatori și 11 pentru cont.', items: ['Selector de mașină și căutare după VIN', 'Coș, comandă, plată cu Stripe sau NETOPIA', 'AWB și urmărire prin FAN Courier', 'Garajul meu, cu memento-uri pentru fiecare mașină', 'Ghiduri și pagini optimizate pentru căutări'] },
+        { t: 'Catalogul tehnic', d: 'Explorer, panou de calitate și coadă de conflicte, toate în admin.', items: ['Surse, importuri și înregistrări brute', 'Potrivirea produselor de la furnizori cu piesele', 'Relații nerezolvate, de verificat manual', 'Model de drepturi pe fiecare sursă', 'Date demonstrative separate, cu prefixul DEMO-'] },
+        { t: 'API-ul plătit', d: 'Catalogul, vândut ca serviciu prin RapidAPI.', items: ['Marcă, model, generație, vehicul', 'VIN și coduri de piesă, până la 50 pe cerere', 'Flux de modificări cu cursor', 'Chei, cote lunare, patru niveluri de abonament', 'Contract OpenAPI publicat'] },
+        { t: 'Registrul de service-uri', d: 'Toate atelierele auto din România, din surse publice.', items: ['Autorizațiile RAR, firmele din ONRC, OpenStreetMap', 'Deduplicare cu scor pe perechi de candidați', 'Normalizare de adrese românești', 'Clasificator de servicii pe reguli', 'Scor de capabilitate off-road'] },
+      ],
+    },
+    {
+      label: '05 · Registrul național', h2: 'La prima rulare, toate cele 64 de fuziuni automate au fost greșite.',
+      ps: [
+        'Registrul pornește de la trei surse publice. RAR a dat circa 13.000 de autorizații de service, ONRC 105.010 firme cu cod CAEN de reparații auto, iar OpenStreetMap în jur de 1.800 de ateliere. Același service apare de mai multe ori, cu nume și adrese scrise diferit.',
+        'La prima rulare națională, sistemul a unit automat 64 de perechi. Toate erau greșite: două firme diferite la aceeași adresă. Am adăugat o regulă simplă, <strong>două coduri fiscale diferite înseamnă două service-uri</strong>, iar fuziunea automată se face doar când nu există nicio îndoială. Restul ajung într-o coadă de verificare.',
+        'Tot la primul import în producție, 282 de stații ITP n-au intrat: testele rulau pe SQLite, care nu verifică lungimea coloanelor, iar PostgreSQL o verifică. Am mărit coloanele și am învățat să testez pe aceeași bază de date ca în producție.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'service.jpg', alt: 'Directorul Service auto în România pe eMUD, cu 12974 de service-uri', cap: 'Directorul public: 12.974 de service-uri, căutare pe oraș, specialitate și tip de mașină.' },
+      { src: 'service-city.jpg', alt: 'Service-urile auto din Adjud pe eMUD', cap: 'Pagina unui oraș, una dintre cele peste 15.000 de pagini din sitemap.' },
+    ] },
+    {
+      type: 'metrics', label: '06 · Metrici', h2: 'Ce am numărat.',
+      note: 'Măsurat în repo, în documentele proiectului și pe a-n.ro. Magazinul e la scară de pilot, așa că nu public cifre de vânzări.',
+      items: [
+        ['375', 'commit-uri, între 24 august și 12 septembrie 2026', 'git'],
+        ['182', 'commit-uri într-o singură zi: platforma de catalog și API-ul', 'git'],
+        ['807', 'teste automate, plus 724 de verificări doar în modulul de service-uri', 'măsurat'],
+        ['105.010', 'firme de reparații auto din ONRC, analizate la prima rulare', 'măsurat'],
+        ['15.040', 'pagini de service-uri în sitemap', 'de pe site'],
+        ['76%', 'din coordonatele RAR, doar la nivel de localitate', 'măsurat'],
+      ],
+      build: [['105', 'modele de date'], ['95', 'componente Livewire'], ['39', 'comenzi'], ['18', 'joburi în cozi'], ['128', 'rute'], ['~77k', 'linii de cod']],
+    },
+    {
+      type: 'lessons', label: '07 · Ce am învățat', h2: 'Ce iau cu mine.',
+      items: [
+        ['Piesa, produsul și oferta sunt trei lucruri', 'Piesa tehnică e una, produsul pe care îl vinzi e altul, oferta furnizorului e a treia. Amestecate, nu mai poți schimba furnizorul fără să strici catalogul.'],
+        ['O fuziune automată greșită e mai rea decât un duplicat', 'Un duplicat se vede și se repară. Două firme unite pe tăcute pierd date reale.'],
+        ['Testează pe baza de date din producție', 'SQLite a ascuns limite de coloane pe care PostgreSQL le aplică. Testele merg acum pe PostgreSQL și în CI.'],
+        ['Furnizorii trebuie să eșueze zgomotos', 'Un fișier de furnizor care tace e mai periculos decât unul care dă eroare. Acum fiecare sincronizare raportează când nu primește ce aștepta.'],
+      ],
+    },
+    {
+      label: '08 · De vânzare', h2: 'Proiectul caută un nou proprietar.',
+      ps: ['eMUD e o bază completă pentru un magazin de piese auto construit pe compatibilități: magazin, catalog tehnic, API și registru de service-uri, cu teste și documentație. Dacă te interesează, scrie-mi.'],
+    },
+  ],
+  end: { h2: 'Vrei să preiei eMUD sau ai un proiect asemănător?', p: 'Scrie-mi și îți trimit detaliile tehnice și cum arată panoul de administrare.' },
+};
+---
+<CaseStudy cs={cs} />

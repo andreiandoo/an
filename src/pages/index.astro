@@ -195,7 +195,7 @@ const ledgerHtml = `<ol class="ledger reveal" id="ledger"><li class="ledger-head
           <li data-cat={c.cat} data-name={c.name} data-work={c.work}>
             {c.offline
               ? <div class="t-off"><img src={`/shots/clients/${c.file}.jpg`} alt={`Site-ul ${c.name}`} width="1280" height="800" loading="lazy" draggable="false"><span class="t-cap"><b>{c.name}</b>{c.work}</span></div>
-              : <a href={c.url} target="_blank" rel="noopener"><img src={`/shots/clients/${c.file}.jpg`} alt={`Site-ul ${c.name}`} width="1280" height="800" loading="lazy" draggable="false"><span class="t-cap"><b>{c.name}</b>{c.work}</span></a>}
+              : <a href={c.cs ?? c.url} target={c.cs ? undefined : '_blank'} rel={c.cs ? undefined : 'noopener'}><img src={`/shots/clients/${c.file}.jpg`} alt={`Site-ul ${c.name}`} width="1280" height="800" loading="lazy" draggable="false"><span class="t-cap"><b>{c.name}</b>{c.work}{c.cs && ' · studiu de caz'}</span></a>}
           </li>
         ))}
       </ul>
