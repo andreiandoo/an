@@ -1,4 +1,5 @@
 ---
+import { presets, modes } from '../../../data/dubnow-presets.js';
 import Layout from '../../../layouts/Layout.astro';
 import '../../../styles/case.css';
 
@@ -158,12 +159,17 @@ const maxP = Math.max(...parts.map(x => x.p));
           <p>The voice is generated on your computer, not on a server. The model downloads once, then runs in the browser, on the graphics card or on the processor. The times below are measured here.</p>
           <p class="tts-engine">Will run on: <b data-engine>…</b></p>
         </div>
-        <form class="tts-form" id="tts" data-samples={JSON.stringify(samples)}>
+        <form class="tts-form" id="tts" data-samples={JSON.stringify(samples)} data-presets={JSON.stringify(presets)}>
           <label class="tts-text">
             <span class="vh">Text to read</span>
-            <textarea name="text" rows="4" maxlength="300" dir="auto" required>{samples.en}</textarea>
-            <small><b data-count-chars>0</b> / 300</small>
+            <textarea name="text" rows="4" maxlength="1200" dir="auto" required>{samples.en}</textarea>
+            <small><b data-count-chars>0</b> / 1200</small>
           </label>
+          <div class="tts-modes" role="group" aria-label="Kind of text">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h10M4 18h13"/></svg>
+            {modes.en.map(([m, l], i) => <button type="button" data-mode={m} aria-pressed={i === 0 ? 'true' : 'false'}>{l}</button>)}
+          </div>
+          <p class="tts-script-hint" hidden>Each line starts with the character’s name and a colon. The first character speaks with the voice you chose; the second automatically gets a different one.</p>
           <div class="tts-row">
             <label class="tts-field">
               <span>I write in</span>
@@ -491,5 +497,5 @@ const maxP = Math.max(...parts.map(x => x.p));
     </div></section>
   </article>
   <script>import '../../../scripts/numbers.js';</script>
-  <script is:inline type="module" src="/dubnow/demo.js?v=4"></script>
+  <script is:inline type="module" src="/dubnow/demo.js?v=5"></script>
 </Layout>

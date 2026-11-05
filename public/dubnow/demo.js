@@ -40,6 +40,9 @@ const T = EN ? {
   synthFailed: m => `Synthesis failed. Press Generate again or try another text. (${m})`,
   startCached: 'Start the model (already downloaded)',
   inBrowser: 'The model is already in your browser. Start it.',
+  presetOnly: 'The example texts are in English and Romanian. For other languages, write your own text, or use Chrome or Edge on a computer, which translate it.',
+  lineProgress: (i, n) => `Generating line ${i} of ${n}…`,
+  cast: list => `Voices: ${list}.`,
 } : {
   packDownload: p => `Browserul descarcă pachetul de traducere: ${p}%…`,
   pairUnavailable: 'Browserul nu poate traduce între aceste limbi. Alege altă limbă.',
@@ -65,6 +68,9 @@ const T = EN ? {
   synthFailed: m => `Sinteza n-a mers. Apasă din nou Generează sau încearcă alt text. (${m})`,
   startCached: 'Pornește modelul (e deja descărcat)',
   inBrowser: 'Modelul e deja în browserul tău. Pornește-l.',
+  presetOnly: 'Textele de exemplu sunt în română și engleză. Pentru alte limbi, scrie textul tău sau folosește Chrome ori Edge pe calculator, care îl traduc.',
+  lineProgress: (i, n) => `Generez replica ${i} din ${n}…`,
+  cast: list => `Voci: ${list}.`,
 };
 
 setOrt(ort);
@@ -75,6 +81,12 @@ const form = document.getElementById('tts');
 const $ = sel => form.querySelector(sel);
 const text = form.elements.text, lang = form.elements.lang, from = form.elements.from;
 const samples = JSON.parse(form.dataset.samples);
+// Example texts (quote, paragraph, script) exist in Romanian and English; "free" uses the per-language sample sentence.
+const presets = JSON.parse(form.dataset.presets || '{}');
+const PAGE = EN ? 'en' : 'ro';
+const modeBtns = [...form.querySelectorAll('[data-mode]')], hint = $('.tts-script-hint');
+const VOICES = [...form.querySelectorAll('input[name=voice]')].map(i => ({ id: i.value, label: i.nextElementSibling?.textContent.trim() ?? i.value }));
+let mode = 'free';
 const loadBtn = $('[data-load]'), goBtn = $('button[type=submit]'), status = $('.tts-status'), audio = $('audio');
 const bar = $('.tts-bar'), engineEl = document.querySelector('[data-engine]');
 const times = Object.fromEntries([...form.querySelectorAll('[data-t]')].map(el => [el.dataset.t, el]));
@@ -84,13 +96,54 @@ const styles = {}, translators = {};
 
 const say = (msg, kind = '') => { status.textContent = msg; status.dataset.kind = kind; };
 const secs = s => `${s.toLocaleString(LOCALE, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
-const count = () => { $('[data-count-chars]').textContent = text.value.length; };
+// The counter, and a text box tall enough for the whole text (a script or a paragraph would be cut otherwise).
+const count = () => {
+  $('[data-count-chars]').textContent = text.value.length;
+  text.style.height = 'auto';
+  text.style.height = `${text.scrollHeight + 2}px`;
+};
 const progress = f => { bar.hidden = f == null; bar.firstElementChild.style.width = `${Math.round((f || 0) * 100)}%`; };
 count();
 
 text.addEventListener('input', () => { edited = true; count(); });
 // Until the visitor writes their own text, switching language swaps in a sample sentence in the language they write in.
-const resample = () => { if (!edited) { text.value = samples[from.value || lang.value] ?? ''; count(); } };
+// An example text is shown in the language the visitor writes in. When there is no example in that language, the
+// browser translates the page-language example (Chrome, Edge); without a translator the language's sample stays.
+function fill() {
+  const set = presets[mode];
+  if (!set) { text.value = samples[from.value || lang.value] ?? ''; count(); return; }
+  let w = from.value || lang.value;
+  if (!set[w]) {
+    if (set[lang.value]) { w = lang.value; from.value = ''; }
+    else if (!from.disabled) { w = PAGE; from.value = PAGE; prepare(); }
+    else { text.value = samples[lang.value] ?? ''; count(); say(T.presetOnly, ''); return; }
+  }
+  text.value = set[w];
+  count();
+}
+const resample = () => { if (!edited) fill(); };
+modeBtns.forEach(b => b.addEventListener('click', () => {
+  mode = b.dataset.mode;
+  modeBtns.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  if (hint) hint.hidden = mode !== 'script';
+  edited = false;
+  fill();
+}));
+
+// A script is two or more lines, each "Name: what they say". Each character gets its own voice: the first one the
+// voice the visitor chose, the next ones from the other gender first, so two speakers always sound different.
+function dialogue(value) {
+  const rows = value.split(/\n+/).map(r => r.trim()).filter(Boolean);
+  const lines = rows.map(r => r.match(/^([^:]{1,30}?)\s*:\s*(\S.*)$/)).filter(Boolean);
+  return lines.length >= 2 && lines.length === rows.length ? lines.map(m => ({ who: m[1], said: m[2] })) : null;
+}
+function cast(lines, first) {
+  const g = first[0];
+  const order = [first, ...VOICES.map(v => v.id).filter(v => v[0] !== g), ...VOICES.map(v => v.id).filter(v => v[0] === g && v !== first)];
+  const who = [...new Set(lines.map(l => l.who))];
+  return Object.fromEntries(who.map((w, i) => [w, order[i % order.length]]));
+}
+
 // Choosing a language is a user gesture too: the translator starts (and fetches its language pack) right then.
 const prepare = () => { if (from.value && from.value !== lang.value && 'Translator' in globalThis) translator().catch(() => {}); };
 lang.addEventListener('change', () => { resample(); prepare(); });
@@ -251,9 +304,17 @@ form.addEventListener('submit', async e => {
   if (busy || !tts || !text.value.trim()) return;
   busy = true;
   goBtn.disabled = true;
-  let said;
+  const value = text.value.trim();
+  const lines = mode === 'script' ? dialogue(value) : null;
+  let said, parts = null;
   try {
-    said = await inLanguage(text.value.trim());
+    if (lines) {
+      parts = [];
+      for (const l of lines) parts.push({ who: l.who, said: await inLanguage(l.said) });
+      said = parts.map(p => `${p.who}: ${p.said}`).join('\n');
+    } else {
+      said = await inLanguage(value);
+    }
   } catch (err) {
     console.error('[dubnow]', err);
     say(err.message, 'err');
@@ -261,7 +322,7 @@ form.addEventListener('submit', async e => {
     goBtn.disabled = false;
     return;
   }
-  translated.hidden = said === text.value.trim();
+  translated.hidden = said === value;
   translated.querySelector('q').textContent = said;
   try {
     const voice = form.elements.voice.value;
@@ -269,10 +330,25 @@ form.addEventListener('submit', async e => {
     await new Promise(r => setTimeout(r, 30)); // let the status paint before the main thread gets busy
     const t0 = performance.now();
     // One retry: a voice file that failed to download or a graphics card that stumbled once should not end the try.
-    const { wav } = await synth(said, voice).catch(err => {
+    const once = (line, v) => synth(line, v).catch(err => {
       console.warn('[dubnow] retrying', err);
-      return synth(said, voice);
+      return synth(line, v);
     });
+    let wav, roles = null;
+    if (parts) {
+      // Line by line, each with its character's voice, with a short pause between lines.
+      roles = cast(parts, voice);
+      const gap = new Array(Math.floor(0.35 * tts.sampleRate)).fill(0);
+      wav = [];
+      for (let i = 0; i < parts.length; i++) {
+        say(T.lineProgress(i + 1, parts.length), 'wait');
+        await new Promise(r => setTimeout(r, 30));
+        const out = await once(parts[i].said, roles[parts[i].who]);
+        wav = wav.length ? wav.concat(gap, out.wav) : out.wav;
+      }
+    } else {
+      ({ wav } = await once(said, voice));
+    }
     const spent = (performance.now() - t0) / 1000;
     const length = wav.length / tts.sampleRate;
     times.voice.textContent = secs(spent);
@@ -282,7 +358,9 @@ form.addEventListener('submit', async e => {
     audio.src = URL.createObjectURL(new Blob([writeWavFile(wav, tts.sampleRate)], { type: 'audio/wav' }));
     audio.hidden = false;
     audio.play().catch(() => {});
-    say(spent < length ? T.doneFast : T.doneSlow, 'ok');
+    const label = id => VOICES.find(v => v.id === id)?.label ?? id;
+    const castNote = roles ? ` ${T.cast(Object.entries(roles).map(([w, v]) => `${w}: ${label(v)}`).join(' · '))}` : '';
+    say((spent < length ? T.doneFast : T.doneSlow) + castNote, 'ok');
   } catch (err) {
     console.error('[dubnow]', err, said);
     say(T.synthFailed(err?.message ?? err), 'err');
