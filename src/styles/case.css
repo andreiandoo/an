@@ -246,3 +246,4 @@
 .tts-translated { font-size: 16px; padding: 10px 14px; border-left: 2px solid var(--accent); background: var(--paper-2); border-radius: 0 8px 8px 0; }
 .tts-translated span { font: 400 13px var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
 .tts-translated q { quotes: none; }
+.tts-no-translate { font-size: 14px; color: var(--muted); }

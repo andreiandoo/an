@@ -36,32 +36,49 @@ count();
 text.addEventListener('input', () => { edited = true; count(); });
 // Until the visitor writes their own text, switching language swaps in a sample sentence in the language they write in.
 const resample = () => { if (!edited) { text.value = samples[from.value || lang.value] ?? ''; count(); } };
-lang.addEventListener('change', resample);
-from.addEventListener('change', resample);
+// Choosing a language is a user gesture too: the translator starts (and fetches its language pack) right then.
+const prepare = () => { if (from.value && from.value !== lang.value && 'Translator' in globalThis) translator().catch(() => {}); };
+lang.addEventListener('change', () => { resample(); prepare(); });
+from.addEventListener('change', () => { resample(); prepare(); });
 // Chrome's on-device Translator API (desktop Chrome 138+, Edge 148+). Elsewhere the visitor writes in the voice's language.
 if (!('Translator' in globalThis)) {
   from.disabled = true;
-  from.title = 'Traducerea merge în Chrome și Edge pe calculator.';
+  document.querySelector('.tts-no-translate').hidden = false;
+}
+
+// One translator per language pair, kept as a promise so the click and the language change share it. A failed one is
+// forgotten, so the next attempt starts again. Translator.create() needs a user activation when a pack must be downloaded.
+function translator() {
+  const pair = { sourceLanguage: from.value, targetLanguage: lang.value };
+  const key = `${pair.sourceLanguage}>${pair.targetLanguage}`;
+  translators[key] ??= Translator.create({ ...pair, monitor(m) {
+    m.addEventListener('downloadprogress', e => { if (busy) say(`Browserul descarcă pachetul de traducere: ${Math.round(e.loaded * 100)}%…`, 'wait'); });
+  } }).catch(async e => {
+    delete translators[key];
+    console.warn('[dubnow] translator', key, e);
+    throw new Error(await Translator.availability(pair).catch(() => '') === 'unavailable'
+      ? 'Browserul nu poate traduce între aceste limbi. Alege altă limbă.'
+      : `Traducerea n-a pornit. Apasă din nou Generează. (${e.name}: ${e.message})`);
+  });
+  return translators[key];
 }
 
 // The text in the voice's language: translated in the browser when the visitor writes in another one.
-// Translator.create() needs the click's user activation when a language pack must be downloaded, so it runs first.
+// A translator the browser has dropped meanwhile (idle, memory) is created again once.
 async function inLanguage(value) {
   if (!from.value || from.value === lang.value) return value;
-  const pair = { sourceLanguage: from.value, targetLanguage: lang.value };
-  const key = `${pair.sourceLanguage}>${pair.targetLanguage}`;
-  if (!translators[key]) {
-    say('Pregătesc traducerea în browser…', 'wait');
-    translators[key] = await Translator.create({ ...pair, monitor(m) {
-      m.addEventListener('downloadprogress', e => say(`Browserul descarcă pachetul de traducere: ${Math.round(e.loaded * 100)}%…`, 'wait'));
-    } }).catch(async e => {
-      throw new Error(await Translator.availability(pair).catch(() => '') === 'unavailable'
-        ? 'Browserul nu poate traduce între aceste limbi. Alege altă limbă.'
-        : `Traducerea n-a pornit. Apasă din nou Generează. (${e.message})`);
-    });
+  say('Pregătesc traducerea în browser…', 'wait');
+  for (let attempt = 0; ; attempt++) {
+    const t = await translator();
+    say('Traduc textul…', 'wait');
+    try {
+      return await t.translate(value);
+    } catch (e) {
+      console.warn('[dubnow] translate', e);
+      delete translators[`${from.value}>${lang.value}`];
+      if (attempt) throw new Error(`Traducerea n-a mers. (${e.name}: ${e.message})`);
+    }
   }
-  say('Traduc textul…', 'wait');
-  return translators[key].translate(value);
 }
 document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => {
   lang.value = b.dataset.lang;
@@ -164,6 +181,15 @@ async function load() {
 
 loadBtn.addEventListener('click', load);
 
+async function synth(said, voice) {
+  try {
+    styles[voice] ??= await loadVoiceStyle([`${HF}/voice_styles/${voice}.json`]);
+  } catch (e) {
+    throw new Error(`vocea nu s-a descărcat: ${e.message}`);
+  }
+  return tts.call(said, lang.value, styles[voice], STEPS[ep], SPEED);
+}
+
 form.addEventListener('submit', async e => {
   e.preventDefault();
   if (busy || !tts || !text.value.trim()) return;
@@ -183,11 +209,14 @@ form.addEventListener('submit', async e => {
   translated.querySelector('q').textContent = said;
   try {
     const voice = form.elements.voice.value;
-    styles[voice] ??= await loadVoiceStyle([`${HF}/voice_styles/${voice}.json`]);
     say('Generez vocea pe calculatorul tău…', 'wait');
     await new Promise(r => setTimeout(r, 30)); // let the status paint before the main thread gets busy
     const t0 = performance.now();
-    const { wav } = await tts.call(said, lang.value, styles[voice], STEPS[ep], SPEED);
+    // One retry: a voice file that failed to download or a graphics card that stumbled once should not end the try.
+    const { wav } = await synth(said, voice).catch(err => {
+      console.warn('[dubnow] retrying', err);
+      return synth(said, voice);
+    });
     const spent = (performance.now() - t0) / 1000;
     const length = wav.length / tts.sampleRate;
     times.voice.textContent = secs(spent);
@@ -199,8 +228,8 @@ form.addEventListener('submit', async e => {
     audio.play().catch(() => {});
     say(spent < length ? 'Gata, mai repede decât timpul real. Schimbă textul, limba sau vocea și generează din nou.' : 'Gata. Pe acest calculator sinteza e mai lentă decât timpul real.', 'ok');
   } catch (err) {
-    console.error('[dubnow]', err);
-    say('Sinteza n-a mers. Încearcă un text mai scurt sau altă limbă.', 'err');
+    console.error('[dubnow]', err, said);
+    say(`Sinteza n-a mers. Apasă din nou Generează sau încearcă alt text. (${err?.message ?? err})`, 'err');
   } finally {
     busy = false;
     goBtn.disabled = false;
