@@ -40,7 +40,7 @@ export const clients = [
   c('Arhiserv', 'https://arhiserv.ro', 'Corporate', 'Site de companie'),
   { ...c('Wooba', '', 'E-commerce', 'Magazin online'), offline: true },
   c('Educativa', 'https://educativa.ro', 'Educație', 'Site'),
-  c('Optiuni.ro', 'https://optiuni.ro', 'Fintech', 'Dezvoltare full-stack'),
+  c('Optiuni.ro', 'https://optiuni.ro/cautare/', 'Fintech', 'Dezvoltare full-stack'),
   c('Edmundo', 'https://edmun.do', 'Educație', 'Dezvoltare WordPress multilingv'),
   { ...c('Glora.us', '', 'E-commerce', 'Magazin online'), offline: true },
   c('PerformanceHR', 'https://performancehr.com.au', 'Corporate', 'Site de companie'),
