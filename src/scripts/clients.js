@@ -2,6 +2,13 @@ const section = document.getElementById('clienti');
 const list = document.getElementById('tunnel');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// A new random order on every visit, so no client is always first.
+if (list) {
+  const items = [...list.children];
+  for (let i = items.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [items[i], items[j]] = [items[j], items[i]]; }
+  list.append(...items);
+}
+
 if (section && list && !reduced) {
   const SPACING = 560, FAR = 5 * SPACING, FADE_FAR = 1.4 * SPACING, NEAR = -420, SCROLL_VH = 30, EASE = .1;
   const touch = matchMedia('(hover: none)').matches;

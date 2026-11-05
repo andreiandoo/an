@@ -58,11 +58,14 @@ export const clients = [
   c('D10E', 'https://d10e.biz', 'Corporate', 'Site'),
   c('The Entrepreneurship Academy', 'https://entrepreneurship-academy.ro', 'Educație', 'Site'),
   c('IUF World', 'https://iuf.world', 'Evenimente', 'Site'),
-  { ...c('Edu-Start', 'https://edu-start.ro', 'Educație', 'Platformă și site'), cs: '/proiecte/edustart/' },
+  { ...c('Edu-Start', 'https://dev.edu-start.ro', 'Educație', 'Platformă și site'), cs: '/proiecte/edustart/' },
   c('Reveal', 'https://reveal.ro', 'Corporate', 'Site'),
   c('SICAR Museum', 'https://sicarmuseum.ro', 'Cultură', 'Site de muzeu'),
   c('EuroSpirit', 'https://eurospirit.ro', 'Educație', 'Site de organizație'),
   c('ACS Arhivarul', 'https://acsarhivarul.ro', 'Sport', 'Site de club sportiv'),
+  c('Spot Admissions', 'https://spotadmissions.ro', 'Educație', 'Site de admitere'),
+  c('AVE România', 'https://ave-romania.ro', 'Educație', 'Site de organizație'),
+  c('BISM', 'https://bism.ro', 'Educație', 'Site de școală de business'),
   { ...c('Sportiv Educat', 'https://sportiveducat.ro', 'Sport', 'Platformă pentru cluburi sportive'), cs: '/proiecte/sportiv-educat/' },
 ];
 

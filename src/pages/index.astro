@@ -7,9 +7,8 @@ import { products, inWork, roles, clients, numbers, skills, ai, aiUses, socials,
 import rest from '../partials/home-rest.html?raw';
 
 const has = path => fs.existsSync(`public/shots/${path}.jpg`);
-const first = ['Fiskl', 'SICAR Museum', 'PerformanceHR', 'EuroSpirit', 'ACS Arhivarul'];
-const rank = c => (first.includes(c.name) ? first.indexOf(c.name) : first.length);
-const list = clients.filter(c => has(`clients/${c.file}`)).sort((a, b) => rank(a) - rank(b));
+// Order is shuffled on every visit by scripts/clients.js.
+const list = clients.filter(c => has(`clients/${c.file}`));
 const older = clients.filter(c => !has(`clients/${c.file}`));
 const cats = [...new Set(list.map(c => c.cat))];
 const [restA, restB] = rest.split('<!--pricing-->');
