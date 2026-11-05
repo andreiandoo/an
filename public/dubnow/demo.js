@@ -2,7 +2,7 @@
 // Cache API), then speech is synthesised locally with onnxruntime-web, on the graphics card (WebGPU) or the CPU (WASM).
 // Nothing is sent to a server. Same approach as Dubnow Lab (dubnow repo, lab/lab.js).
 import * as ort from './ort/ort.all.min.mjs';
-import { setOrt, UnicodeProcessor, TextToSpeech, loadVoiceStyle, writeWavFile } from './helper.js';
+import { setOrt, UnicodeProcessor, TextToSpeech, loadVoiceStyle, writeWavFile } from './helper.js?v=2';
 
 const HF = 'https://huggingface.co/supertone-oss-archive/supertonic-3/resolve/aafc6e32416a594460b32413efc49d7fe4ce6d46';
 // File sizes in bytes, for the progress bar.
@@ -40,7 +40,6 @@ const T = EN ? {
   synthFailed: m => `Synthesis failed. Press Generate again or try another text. (${m})`,
   startCached: 'Start the model (already downloaded)',
   inBrowser: 'The model is already in your browser. Start it.',
-  presetOnly: 'The example texts are in English and Romanian. For other languages, write your own text, or use Chrome or Edge on a computer, which translate it.',
   lineProgress: (i, n) => `Generating line ${i} of ${n}…`,
   cast: list => `Voices: ${list}.`,
 } : {
@@ -68,7 +67,6 @@ const T = EN ? {
   synthFailed: m => `Sinteza n-a mers. Apasă din nou Generează sau încearcă alt text. (${m})`,
   startCached: 'Pornește modelul (e deja descărcat)',
   inBrowser: 'Modelul e deja în browserul tău. Pornește-l.',
-  presetOnly: 'Textele de exemplu sunt în română și engleză. Pentru alte limbi, scrie textul tău sau folosește Chrome ori Edge pe calculator, care îl traduc.',
   lineProgress: (i, n) => `Generez replica ${i} din ${n}…`,
   cast: list => `Voci: ${list}.`,
 };
@@ -107,18 +105,11 @@ count();
 
 text.addEventListener('input', () => { edited = true; count(); });
 // Until the visitor writes their own text, switching language swaps in a sample sentence in the language they write in.
-// An example text is shown in the language the visitor writes in. When there is no example in that language, the
-// browser translates the page-language example (Chrome, Edge); without a translator the language's sample stays.
+// Every example text (quote, paragraph, script) exists in all the voice languages and is shown in the language the
+// visitor writes in, so any pair of "I write in" and "The voice speaks in" works with any kind of text.
 function fill() {
-  const set = presets[mode];
-  if (!set) { text.value = samples[from.value || lang.value] ?? ''; count(); return; }
-  let w = from.value || lang.value;
-  if (!set[w]) {
-    if (set[lang.value]) { w = lang.value; from.value = ''; }
-    else if (!from.disabled) { w = PAGE; from.value = PAGE; prepare(); }
-    else { text.value = samples[lang.value] ?? ''; count(); say(T.presetOnly, ''); return; }
-  }
-  text.value = set[w];
+  const set = presets[mode], w = from.value || lang.value;
+  text.value = (set ? set[w] ?? set[PAGE] : null) ?? samples[w] ?? '';
   count();
 }
 const resample = () => { if (!edited) fill(); };

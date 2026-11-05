@@ -491,7 +491,9 @@ function chunkText(text, maxLen = 300) {
         
         // Split by sentence boundaries (period, question mark, exclamation mark followed by space)
         // But exclude common abbreviations like Mr., Mrs., Dr., etc. and single capital letters like F.
-        const sentences = paragraph.split(/(?<!Mr\.|Mrs\.|Ms\.|Dr\.|Prof\.|Sr\.|Jr\.|Ph\.D\.|etc\.|e\.g\.|i\.e\.|vs\.|Inc\.|Ltd\.|Co\.|Corp\.|St\.|Ave\.|Blvd\.)(?<!\b[A-Z]\.)(?<=[.!?])\s+/);
+        const sentences = paragraph.split(/(?<!Mr\.|Mrs\.|Ms\.|Dr\.|Prof\.|Sr\.|Jr\.|Ph\.D\.|etc\.|e\.g\.|i\.e\.|vs\.|Inc\.|Ltd\.|Co\.|Corp\.|St\.|Ave\.|Blvd\.)(?<!\b[A-Z]\.)(?<=[.!?])\s+/)
+            // Japanese, Chinese and Hindi end sentences with 。！？ or । and often no space after: split there too (Dubnow).
+            .flatMap(x => x.split(/(?<=[。！？।])\s*/)).filter(Boolean);
         
         let currentChunk = "";
         
