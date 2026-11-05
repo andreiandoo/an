@@ -1,0 +1,101 @@
+---
+// The case-study index: /proiecte/ and /en/projects/. Cards come from src/data/cases.js,
+// products without a case study come from the portfolio data of the same language.
+import Layout from '../layouts/Layout.astro';
+import { cases } from '../data/cases.js';
+import * as ro from '../data/portfolio.js';
+import * as en from '../data/portfolio.en.js';
+
+const { lang = 'ro' } = Astro.props;
+const data = lang === 'en' ? en : ro;
+const base = lang === 'en' ? '/en/projects/' : '/proiecte/';
+const T = {
+  ro: {
+    title: 'Proiecte și studii de caz | Andrei Năstase',
+    description: 'Studii de caz despre produsele mele și proiectele pentru clienți: ticketing, marketplace-uri, voce AI, platforme educaționale și aplicații mobile, cu cifre măsurate.',
+    label: 'Proiecte',
+    h1: 'Ce am construit și cum.',
+    lead: 'Fiecare studiu de caz arată problema, ce am construit, cifrele măsurate și ce aș face la fel data viitoare. Unde un proiect nu a ajuns încă unde voiam, scrie și asta.',
+    own: 'Produse proprii', client: 'Pentru clienți', more: 'Alte produse, fără studiu de caz încă',
+    allClients: 'Toate cele {n} de proiecte pentru clienți', read: 'Citește studiul de caz',
+    endH: 'Vreți ceva asemănător?', endP: 'Spuneți-mi ce vreți să rezolvați. Vă spun sincer dacă merită construit.', cta: 'Programați apelul gratuit', contact: '/#contact', clients: '/#clienti',
+  },
+  en: {
+    title: 'Projects and case studies | Andrei Năstase',
+    description: 'Case studies of my own products and client work: ticketing, marketplaces, AI voice, education platforms and mobile apps, with measured figures.',
+    label: 'Projects',
+    h1: 'What I built, and how.',
+    lead: 'Each case study shows the problem, what I built, the measured figures and what I would do the same way next time. Where a project is not yet where I want it, the page says so.',
+    own: 'My own products', client: 'Client work', more: 'Other products, no case study yet',
+    allClients: 'All {n} client projects', read: 'Read the case study',
+    endH: 'Want something similar?', endP: 'Tell me what you want to solve. I will tell you honestly whether it is worth building.', cta: 'Book the free call', contact: '/en/#contact', clients: '/en/#clienti',
+  },
+}[lang];
+const groups = [['own', T.own], ['client', T.client]];
+const others = data.products.filter(p => !p.cs);
+---
+<Layout title={T.title} description={T.description} path={base} lang={lang} image="/shots/tixello/home.jpg">
+  <section class="wrap px-head">
+    <p class="label">{T.label} · {cases.length}</p>
+    <h1>{T.h1}</h1>
+    <p class="lead">{T.lead}</p>
+  </section>
+
+  {groups.map(([kind, title]) => (
+    <section class="wrap px-group" aria-labelledby={`px-${kind}`}>
+      <h2 id={`px-${kind}`}>{title}</h2>
+      <ul class="px-grid">
+        {cases.filter(c => c.kind === kind).map(c => (
+          <li class="reveal">
+            <a href={`${base}${c.slug}/`}>
+              <span class="px-shot"><img src={c.img} alt="" width="1440" height="1000" loading="lazy"></span>
+              <span class="px-meta"><span>{c.years}</span><em>{c[lang].fact}</em></span>
+              <b>{c[lang].name}</b>
+              <span class="px-line">{c[lang].line}</span>
+              <span class="px-go" aria-hidden="true">{T.read} →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      {kind === 'client' && <p class="px-all"><a class="link" href={T.clients}>{T.allClients.replace('{n}', String(data.clients.length))} →</a></p>}
+    </section>
+  ))}
+
+  <section class="wrap px-group" aria-labelledby="px-more">
+    <h2 id="px-more">{T.more}</h2>
+    <ul class="px-more">
+      {others.map(p => <li><a href={p.url} target="_blank" rel="noopener"><b>{p.name}</b><span>{p.tag}</span>{p.stat && <em>{p.stat}</em>}</a></li>)}
+    </ul>
+  </section>
+
+  <section class="wrap px-end">
+    <h2>{T.endH}</h2>
+    <p class="lead">{T.endP}</p>
+    <div class="btn-row"><a class="btn btn-primary btn-lg" href={T.contact}>{T.cta}</a></div>
+  </section>
+</Layout>
+
+<style>
+  .px-head { padding-top: clamp(120px, 16vh, 180px); padding-bottom: 24px; max-width: 980px; }
+  .px-head h1 { margin: 12px 0 18px; }
+  .px-group { margin-top: clamp(40px, 7vh, 72px); }
+  .px-group h2 { font-size: clamp(24px, 3vw, 34px); margin-bottom: 20px; }
+  .px-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px 24px; }
+  .px-grid a { display: flex; flex-direction: column; gap: 8px; color: inherit; text-decoration: none; }
+  .px-shot { display: block; aspect-ratio: 1440 / 1000; overflow: hidden; border-radius: 12px; border: 1px solid var(--line); background: #0b0b10; }
+  .px-shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform .5s ease; }
+  .px-grid a:hover .px-shot img { transform: scale(1.03); }
+  .px-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 6px; font: 400 13px/1.5 var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .px-meta em { font-style: normal; color: var(--accent); text-align: right; }
+  .px-grid b { font-size: 22px; font-weight: 600; }
+  .px-line { color: var(--muted); line-height: 1.5; }
+  .px-go { font-size: 15px; color: var(--accent); }
+  .px-all { margin-top: 24px; }
+  .px-more { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); border-top: 1px solid var(--line); }
+  .px-more a { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; margin-right: 24px; }
+  .px-more b { font-size: 18px; font-weight: 600; }
+  .px-more span { font: 400 13px/1.5 var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .px-more em { font-style: normal; color: var(--accent); font-size: 15px; width: 100%; }
+  .px-end { margin: clamp(64px, 10vh, 110px) auto; text-align: center; max-width: 760px; }
+  .px-end .btn-row { justify-content: center; }
+</style>

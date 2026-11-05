@@ -1,0 +1,113 @@
+---
+import CaseStudy from '../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history and code of the ePAS repo (Tixello runs on it), and the public counter
+// on tixello.com. Code counts cover the whole repo, marketplaces included. The public counter is cumulative and was not
+// split by tenant, so it may include AmBilet and orders imported from AmBilet's previous site.
+const cs = {
+  title: 'Tixello: studiu de caz | Andrei Năstase',
+  description: 'Cum am construit Tixello: platformă de ticketing pentru organizatori, cu plăți, hărți de locuri, scanare la intrare, e-Factura și marketplace-uri pe același cod. 410.444 de bilete vândute.',
+  path: '/proiecte/tixello/',
+  shots: '/shots/tixello',
+  label: 'Studiu de caz · 2025-2026',
+  h1: 'Tixello: platforma de ticketing pe care rulează și marketplace-urile mele.',
+  lead: 'Un SaaS pentru organizatorii de evenimente: își pun evenimentul online, vând bilete pe site-ul lor sau pe marketplace-uri, scanează la intrare și primesc banii, cu facturile emise automat. Sub el stă ePAS, platforma pe care rulează și AmBilet, bilete.online și Viaqui.',
+  summary: [
+    'Un organizator mic sau mijlociu plătește comisioane mari și lucrează cu unelte separate pentru vânzare, intrare, facturare și marketing.',
+    'O singură platformă, cu panou de organizator, plăți, hărți de locuri, scanare, e-Factura și integrări. Tot codul servește și marketplace-urile.',
+    '410.444 de bilete și 5,2 milioane € procesate, după contorul public de pe tixello.com. Comisionul pornește de la 1%.',
+  ],
+  facts: [
+    ['Rol', 'Fondator. Produs, arhitectură, cod'],
+    ['Perioadă', 'Octombrie 2025 - prezent'],
+    ['Stare', 'Live pe tixello.com'],
+    ['Stack', 'Laravel 12, Filament 4, Livewire, PostgreSQL, Redis'],
+  ],
+  links: [{ href: 'https://tixello.com/ro/', text: 'tixello.com' }, { href: 'https://tixello.com/ro/functionalitati/', text: 'Funcționalitățile' }],
+  hero: { src: 'home.jpg', alt: 'Pagina principală Tixello: Tot ce ai nevoie. La prețul corect.', domain: 'tixello.com' },
+  top: [
+    { value: 410444, label: 'bilete vândute prin platformă' },
+    { value: 107255, label: 'clienți care au cumpărat' },
+    { value: 5016, label: 'evenimente' },
+    { value: 5.2, dec: 1, suffix: ' mil. €', label: 'procesate' },
+  ],
+  topNote: 'Contorul public de pe tixello.com, cumulat, citit pe 5 noiembrie 2026. Nu l-am împărțit pe organizatori sau pe marketplace-uri.',
+  blocks: [
+    {
+      label: '01 · Problema', h2: 'Organizatorul plătește mult și lucrează în cinci locuri.',
+      ps: [
+        'Un organizator de concerte, teatru sau stand-up are nevoie de mai multe lucruri deodată: pagina evenimentului, vânzarea biletelor, harta sălii, scanarea la intrare, facturile, raportul pentru casa de discuri sau pentru sală. De obicei le ia de la furnizori diferiți și plătește comision la fiecare.',
+        'Am pornit de la experiența AmBilet: aveam deja un marketplace de bilete și știam ce cer organizatorii. Am construit o platformă care să facă toate astea într-un singur loc, cu un comision care pornește de la 1% și fără costuri fixe.',
+      ],
+    },
+    {
+      label: '02 · Ce face', h2: 'De la evenimentul creat la banii primiți.',
+      ps: [
+        'Organizatorul își creează evenimentul, tipurile de bilete și, dacă are, harta sălii, desenată în editorul de locuri. Vinde pe site-ul lui, printr-un widget, sau pe marketplace-urile conectate. La intrare, echipa scanează biletele de pe telefon. După eveniment vede vânzările, participanții și decontul.',
+        'Pe lângă bilete, platforma are coduri de reducere, afiliați, carduri cadou, newslettere, vânzare la intrare (POS), plăți cashless la festivaluri și integrări cu unelte de marketing și CRM.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'features.jpg', alt: 'Pagina de funcționalități Tixello', cap: 'Funcționalitățile, grupate pe categorii, de la ticketing la analiză.' },
+      { src: 'pricing.jpg', alt: 'Pagina de costuri Tixello: plătești doar când vinzi', cap: 'Prețul: fără abonament, comision doar când se vinde un bilet.' },
+    ] },
+    {
+      type: 'flow', label: '03 · Arhitectura', h2: 'O singură bază de cod, mai multe feluri de clienți.',
+      ps: ['ePAS e o singură aplicație Laravel cu cinci panouri Filament: administrare, organizator, marketplace, operator și vânzător. Fiecare organizator e un client separat în aceeași bază de date, iar fiecare rând e filtrat după clientul căruia îi aparține.'],
+      nodes: [
+        { t: 'Organizatori', items: ['Panou cu 66 de secțiuni', 'Evenimente, comenzi, clienți, hărți de locuri', 'Facturi, rapoarte, echipă'] },
+        { t: 'Nucleul ePAS', items: ['Bilete, comenzi, plăți, deconturi', 'Rezervarea locurilor în Redis, cu expirare', 'Cozi pentru emailuri, facturi, solduri'], accent: true },
+        { t: 'Plăți și fiscal', items: ['Stripe, Netopia, PayU, EuPlatesc', 'e-Factura către ANAF', 'TVA pe data vânzării'] },
+        { t: 'Canale de vânzare', items: ['Widget pe site-ul organizatorului', 'Marketplace-uri: AmBilet, bilete.online, Viaqui', 'API și 21 de integrări'] },
+      ],
+      foot: 'Marketplace-urile sunt site-uri separate care vorbesc cu ePAS printr-un API cu cheie proprie. Un modul nou se pornește doar pentru clientul care îl folosește.',
+    },
+    {
+      type: 'parts', label: '04 · Componente', h2: 'Ce am construit.',
+      items: [
+        { t: 'Panoul organizatorului', d: 'Tot ce face un organizator, de la creare la decont.', items: ['Evenimente, bilete, prețuri dinamice', 'Editor de hărți de locuri, cu import SVG', 'Coduri de reducere, afiliați, rezervări de grup', 'Puncte, insigne și recompense pentru clienți', 'Blog, pagini și newslettere'] },
+        { t: 'La intrare și la eveniment', d: 'Ce se întâmplă în ziua evenimentului.', items: ['Aplicație web de scanare, făcută pentru iPhone', 'Vânzare la intrare (POS)', 'Plăți cashless și NFC la festivaluri', 'Aplicație mobilă pentru clienți și organizatori'] },
+        { t: 'Bani și fiscal', d: 'Partea care trebuie să iasă la leu.', items: ['Patru procesatori de plăți, după aceeași interfață', 'Facturi și e-Factura, cu un adaptor de test', 'Căutarea firmei după CUI la ANAF', 'Soldul organizatorului recalculat după fiecare vânzare sau retur'] },
+        { t: 'Integrări', d: '21 de conectori, fiecare pornit doar la cerere.', items: ['HubSpot, Salesforce, Zapier, Slack', 'GA4, Google Ads, TikTok Ads, Meta CAPI', 'WhatsApp, SMS, Zoom, Google Sheets', 'API public pentru dezvoltatori'] },
+      ],
+    },
+    {
+      label: '05 · Banii organizatorului', h2: 'Trei calcule pentru același decont.',
+      ps: [
+        'În vara lui 2026 am făcut un audit complet al deconturilor. Am găsit trei moduri diferite de a calcula cât primește un organizator: o defalcare salvată la momentul vânzării, un calcul refăcut la cerere și un serviciu de rapoarte. De cele mai multe ori dădeau aceeași cifră. Dar nu de fiecare dată.',
+        'Soluția a fost un singur adevăr: <strong>soldul organizatorului se recalculează în coadă după fiecare vânzare, retur sau ajustare</strong>, iar rapoartele citesc doar soldul acela. Când e vorba de banii altcuiva, două calcule care „de obicei” se potrivesc înseamnă o problemă.',
+      ],
+    },
+    { type: 'fig', src: 'organisers.jpg', alt: 'Pagina Tixello pentru organizatori: Vinde tot la fiecare eveniment', cap: 'Pagina pentru organizatori: concerte, conferințe, workshop-uri, petreceri, sport.' },
+    {
+      type: 'metrics', label: '06 · Metrici', h2: 'Ce am numărat.',
+      note: 'Contorul de vânzări e cel public de pe tixello.com. Cifrele de cod sunt numărate în tot repo-ul ePAS, deci includ și partea de marketplace.',
+      items: [
+        ['410.444', 'bilete vândute, cumulat', 'de pe site'],
+        ['5,21 mil. €', 'procesați prin platformă (27,8 milioane lei)', 'de pe site'],
+        ['6.521', 'commit-uri, din 28 octombrie 2025', 'git'],
+        ['230', 'de secțiuni de panou Filament, în patru panouri', 'în cod'],
+        ['843', 'migrații de bază de date', 'în cod'],
+        ['4', 'procesatori de plăți și 21 de integrări', 'în cod'],
+      ],
+      build: [['544', 'modele de date'], ['843', 'migrații'], ['230', 'resurse Filament'], ['5', 'panouri'], ['58', 'fișiere de teste'], ['~557k', 'linii PHP în app/']],
+      buildNote: 'Numărate pe 5 noiembrie 2026, în tot repo-ul, cu tot cu codul de marketplace.',
+    },
+    {
+      type: 'lessons', label: '07 · Ce am învățat', h2: 'Ce iau cu mine.',
+      items: [
+        ['Banii au nevoie de o singură sursă', 'Orice cifră despre bani se calculează într-un singur loc. Restul aplicației doar o citește.'],
+        ['Schimbă baza de date doar adăugând', 'Pe o platformă live, migrațiile adaugă coloane și nu le șterg sau redenumesc. Folosesc text în loc de tipuri enum, ca o valoare nouă să nu ceară o migrație riscantă.'],
+        ['Detaliile mici opresc coada de la intrare', 'Codurile QR primesc acum o margine albă. Fără ea, unele scanere nu citeau biletele de pe telefoanele cu tema întunecată.'],
+        ['O platformă comună face un marketplace nou ieftin', 'bilete.online și Viaqui au pornit pe plăți, bilete și panou deja existente. Am construit doar ce era nou pentru ele.'],
+      ],
+    },
+    {
+      label: '08 · Mai departe', h2: 'Marketplace-urile construite pe Tixello.',
+      ps: ['<a class="link" href="/proiecte/ambilet/">AmBilet</a>, marketplace-ul de bilete, mutat de pe WordPress pe ePAS. <a class="link" href="/proiecte/bilete-online/">bilete.online</a>, atracțiile din România. <a class="link" href="/proiecte/viaqui/">Viaqui</a>, aceeași idee pentru toată Europa.'],
+    },
+  ],
+  end: { h2: 'Ai nevoie de o platformă cu plăți și mulți clienți?', p: 'Construiesc SaaS-uri și marketplace-uri, cu plăți, facturare și panouri pentru fiecare rol. Scrie-mi și vedem dacă se potrivește.' },
+};
+---
+<CaseStudy cs={cs} />

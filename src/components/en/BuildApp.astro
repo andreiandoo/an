@@ -1,0 +1,74 @@
+---
+const stages = [
+  ['The idea', 'It all starts with one sentence and one person who has the problem.'],
+  ['The sketch', 'Together we decide what goes into the first version and what does not.'],
+  ['The design', 'The product gets its shape, colour and identity.'],
+  ['Real data', 'Accounts, payments, rules: the app starts doing real work.'],
+  ['First customers', 'You bring the customers. I stay in the product and we grow it together.'],
+];
+const kpis = [['Appointments today', 28, ''], ['Active clients', 412, ''], ['Revenue this month', 18640, ' RON']];
+const rows = [['Rex', 'Annual check-up', '09:30'], ['Luna', 'Vaccine', '10:15'], ['Bruno', 'Follow-up', '11:00'], ['Mia', 'Lab tests', '12:30']];
+---
+<section class="buildapp" id="construim" aria-labelledby="build-title">
+  <div class="ba-view">
+    <div class="ba-copy">
+      <h2 id="build-title">This is how we build a product together</h2>
+      <ol id="ba-stages">
+        {stages.map(([t, text], i) => <li><i>{String(i + 1).padStart(2, '0')}</i><b>{t}</b><span>{text}</span></li>)}
+      </ol>
+      <p class="ba-note">Illustrative example.</p>
+    </div>
+    <div class="ba-stage" aria-hidden="true">
+      <ul class="ba-notes">
+        <li>6 clinics in Prahova have the problem</li>
+        <li>3 want to test the first version</li>
+        <li>Appointments get lost on WhatsApp</li>
+      </ul>
+      <div class="ba-tokens">
+        <span class="label">Design</span>
+        <div class="ba-swatches"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="ba-type"><b>Aa</b><span>Headings and text</span></div>
+        <div class="ba-radii"><i></i><i></i><i></i></div>
+      </div>
+      <div class="ba-code">
+        <div class="ba-chrome"><i></i><i></i><i></i><em>AppointmentController.php</em></div>
+        <pre id="ba-code"></pre>
+      </div>
+      <div class="ba-term">
+        <div class="ba-chrome"><i></i><i></i><i></i><em>deploy</em></div>
+        <ol id="ba-term"></ol>
+        <span class="ba-progress"><i id="ba-progress"></i></span>
+      </div>
+      <div class="ba-phone"><div class="ba-phone-screen"><b>VetLoc</b><span>Appointment confirmed</span><strong>Rex, today at 09:30</strong><em>Reminder sent</em><u></u><u></u><u></u></div></div>
+      <span class="ba-cursor ba-you"><i></i>You</span>
+      <span class="ba-cursor ba-me"><i></i>Andrei</span>
+      <span class="ba-bubble">Clinics want reminders on WhatsApp</span>
+      <div class="ba-idea"><span id="ba-typed" data-text="An app for small veterinary clinics, with appointments, patient records and reminders in one place."></span><i></i></div>
+      <div class="ba-app" id="ba-app" data-s="0">
+        <div class="ba-url"><i></i><i></i><i></i><em>vetloc.ro</em><b>Live</b></div>
+        <aside class="ba-side">
+          <b class="ba-logo"><i></i><span>VetLoc</span></b>
+          <span class="ba-nav is-sel"><u>Today</u></span><span class="ba-nav"><u>Appointments</u></span><span class="ba-nav"><u>Patients</u></span><span class="ba-nav"><u>Payments</u></span>
+        </aside>
+        <div class="ba-main">
+          <div class="ba-top"><strong><u>Good morning, Ana</u></strong><em><u>New appointment</u></em></div>
+          <div class="ba-kpis">
+            {kpis.map(([label, value, suffix]) => <div class="ba-kpi"><span><u>{label}</u></span><b data-n={value} data-s={suffix}><u>0</u></b></div>)}
+          </div>
+          <div class="ba-chart">
+            <svg viewBox="0 0 400 110" preserveAspectRatio="none"><path class="ba-area" d="M0 96 C50 88 70 70 110 74 S180 52 220 56 S300 26 340 30 S385 14 400 10 V110 H0Z"/><path class="ba-curve" pathLength="1" d="M0 96 C50 88 70 70 110 74 S180 52 220 56 S300 26 340 30 S385 14 400 10"/></svg>
+          </div>
+          <div class="ba-rows">
+            {rows.map(([a, b, c]) => <div class="ba-row"><span><u>{a}</u></span><span><u>{b}</u></span><span><u>{c}</u></span></div>)}
+          </div>
+        </div>
+        <div class="ba-toasts">
+          <span>New client: Clinica Vet Plus</span>
+          <span>Payment received: 149 RON</span>
+          <span>Reminder sent to 32 clients</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>import '../../scripts/buildapp.js';</script>

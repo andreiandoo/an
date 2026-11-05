@@ -3,14 +3,16 @@
 // Block types: text, fig, pair, phones, steps, flow, parts, metrics, lessons, next. Paragraphs may hold inline HTML.
 import Layout from '../layouts/Layout.astro';
 import '../styles/case.css';
+import { words, num } from '../i18n.js';
 
-const { cs } = Astro.props;
+const { cs, lang = 'ro' } = Astro.props;
+const w = words[lang];
 const shot = (src) => (src.startsWith('/') ? src : `${cs.shots}/${src}`);
 ---
-<Layout title={cs.title} description={cs.description} path={cs.path}>
+<Layout title={cs.title} description={cs.description} path={cs.path} lang={lang} image={cs.hero ? shot(cs.hero.src) : undefined}>
   <article class="cs">
     <header class="wrap cs-hero">
-      <a class="cs-back" href={cs.back?.href ?? '/#proiecte'}>{cs.back?.text ?? '← Ce am construit'}</a>
+      <a class="cs-back" href={cs.back?.href ?? w.projects}>{cs.back?.text ?? w.back}</a>
       <p class="label">{cs.label}</p>
       <h1>{cs.h1}</h1>
       <p class="lead">{cs.lead}</p>
@@ -24,6 +26,12 @@ const shot = (src) => (src.startsWith('/') ? src : `${cs.shots}/${src}`);
       )}
     </header>
 
+    {cs.summary && (
+      <div class="wrap"><dl class="cs-summary reveal">
+        {cs.summary.map((text, i) => <div><dt>{w.summary[i]}</dt><dd set:html={text} /></div>)}
+      </dl></div>
+    )}
+
     {cs.hero && (
       <figure class="wrap cs-hero-shot reveal">
         <div class="browser"><span><i></i><i></i><i></i></span><b>{cs.hero.domain}</b></div>
@@ -32,11 +40,11 @@ const shot = (src) => (src.startsWith('/') ? src : `${cs.shots}/${src}`);
     )}
 
     {cs.top && (
-      <section class="wrap cs-top" aria-label="Pe scurt">
+      <section class="wrap cs-top" aria-label={w.short}>
         <ul>
           {cs.top.map(m => (
             <li class="reveal">
-              <b data-count={m.value} data-stat={m.stat} data-dec={m.dec ?? 0} data-prefix={m.prefix ?? ''} data-suffix={m.suffix ?? ''}>{(m.prefix ?? '') + m.value.toLocaleString('ro-RO') + (m.suffix ?? '')}</b>
+              <b data-count={m.value} data-stat={m.stat} data-dec={m.dec ?? 0} data-prefix={m.prefix ?? ''} data-suffix={m.suffix ?? ''}>{(m.prefix ?? '') + num(m.value, lang) + (m.suffix ?? '')}</b>
               <span>{m.label}</span>
             </li>
           ))}
@@ -137,12 +145,12 @@ const shot = (src) => (src.startsWith('/') ? src : `${cs.shots}/${src}`);
             {b.note && <p class="cs-note">{b.note}</p>}
             <ul class="cs-metrics">
               {b.items.map(([v, l, tag]) => (
-                <li class="reveal"><b>{v}</b><span>{l}</span><em class={tag === 'estimare' ? 'est' : undefined}>{tag}</em></li>
+                <li class="reveal"><b>{v}</b><span>{l}</span><em class={tag === w.estimate ? 'est' : undefined}>{tag}</em></li>
               ))}
             </ul>
             {b.build && (
               <>
-                <h3 class="cs-sub">{b.buildTitle ?? 'Cât cod'}</h3>
+                <h3 class="cs-sub">{b.buildTitle ?? w.code}</h3>
                 <dl class="cs-build">{b.build.map(([v, l]) => <div><dd>{v}</dd><dt>{l}</dt></div>)}</dl>
                 {b.buildNote && <p class="cs-note small">{b.buildNote}</p>}
               </>
@@ -154,11 +162,11 @@ const shot = (src) => (src.startsWith('/') ? src : `${cs.shots}/${src}`);
     })}
 
     <section class="wrap"><div class="cs-end">
-      <h2>{cs.end?.h2 ?? 'Ai un proiect asemănător?'}</h2>
-      <p class="lead">{cs.end?.p ?? 'Construiesc produse web de la idee la lansare, ca dezvoltator sau ca cofondator tehnic. Scrie-mi și vedem dacă se potrivește.'}</p>
+      <h2>{cs.end?.h2 ?? w.endH}</h2>
+      <p class="lead">{cs.end?.p ?? w.endP}</p>
       <div class="btn-row">
-        <a class="btn btn-primary btn-lg" href="/#contact">Scrie-mi</a>
-        <a class="btn btn-lg" href="/#proiecte">Alte proiecte</a>
+        <a class="btn btn-primary btn-lg" href={w.contact}>{w.write}</a>
+        <a class="btn btn-lg" href={w.projects}>{w.more}</a>
       </div>
     </div></section>
   </article>

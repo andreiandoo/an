@@ -1,0 +1,113 @@
+---
+import CaseStudy from '../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of resources/marketplaces/ambilet in the ePAS repo, its code and
+// MIGRATION_GUIDE.md, and ambilet.ro. Sales growth figures are not repeated here: no document in the repo backs them
+// yet. No organiser data, commissions or server addresses are shown.
+const cs = {
+  title: 'AmBilet: studiu de caz | Andrei Năstase',
+  description: 'Cum am mutat AmBilet de pe WordPress pe platforma mea de ticketing: bilete la concerte, stand-up, teatru și festivaluri, cu hărți de locuri, carduri cadou și panou pentru organizatori.',
+  path: '/proiecte/ambilet/',
+  shots: '/shots/ambilet',
+  label: 'Studiu de caz · 2025-2026',
+  h1: 'AmBilet: un marketplace de bilete mutat de pe WordPress fără să-și piardă clienții.',
+  lead: 'AmBilet vinde bilete la concerte, stand-up, teatru, festivaluri și evenimente pentru copii din toată România. În 2026 l-am reconstruit pe ePAS, platforma din spatele Tixello: site nou, cont de client nou, panou nou pentru organizatori. Clienții vechi au intrat în noul site cu aceeași parolă.',
+  summary: [
+    'Vechiul AmBilet rula pe WordPress, WooCommerce și un plugin de bilete, un sistem care nu fusese gândit pentru locuri, rezervări și deconturi.',
+    'Un site nou, rapid, legat de ePAS: hărți de locuri, coș cu rezervarea locului, carduri cadou, cont de client și un panou complet pentru organizatori.',
+    'Live pe ambilet.ro din aprilie 2026, cu evenimentele, comenzile, biletele și conturile vechi mutate în platforma nouă.',
+  ],
+  facts: [
+    ['Rol', 'Fondator. Produs, design, cod, migrare'],
+    ['Perioadă', 'Decembrie 2025 - prezent'],
+    ['Stare', 'Live pe ambilet.ro'],
+    ['Construit pe', 'ePAS, platforma din spatele Tixello'],
+  ],
+  links: [{ href: 'https://ambilet.ro', text: 'ambilet.ro' }, { href: 'https://ambilet.ro/evenimente', text: 'Evenimentele' }],
+  hero: { src: 'home.jpg', alt: 'Pagina principală AmBilet, cu evenimentul zilei și lista de evenimente', domain: 'ambilet.ro' },
+  top: [
+    { value: 1394, label: 'commit-uri în zece luni' },
+    { value: 7777, label: 'bilete mutate dintr-un singur import' },
+    { value: 3080, label: 'comenzi mutate, pentru 45 de evenimente' },
+    { value: 453, label: 'tipuri de bilete aduse din vechiul site' },
+  ],
+  topNote: 'Numărate în git și în fișierele de import, pe 5 noiembrie 2026.',
+  blocks: [
+    {
+      label: '01 · Problema', h2: 'Un magazin WordPress care vindea bilete.',
+      ps: [
+        'Vechiul AmBilet era un magazin WooCommerce cu un plugin pentru bilete. Pentru un magazin obișnuit e suficient. Pentru bilete, nu: locurile pe hartă, rezervarea locului cât timp clientul plătește, scanarea la intrare și decontul către organizator erau toate adăugate peste un sistem care nu fusese gândit pentru ele.',
+        'Aveam deja ePAS, platforma pe care rulează Tixello. Am mutat AmBilet pe ea, ca să primească tot ce aveau deja organizatorii Tixello.',
+      ],
+    },
+    {
+      label: '02 · Ce face', h2: 'Găsești evenimentul, alegi locul, intri cu telefonul.',
+      ps: [
+        'Cumpărătorul caută pe oraș, categorie, artist sau zi: azi, mâine, weekendul ăsta. Pe pagina evenimentului își alege locul pe hartă. Locul îi rămâne rezervat cât timp e în coș, iar biletul vine pe email și în cont.',
+        'Organizatorul are un panou al lui: evenimente create pas cu pas, vânzări, participanți, coduri de reducere, echipă, documente și deconturi. Pentru intrare are o aplicație web de scanare.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'events.jpg', alt: 'Lista de evenimente AmBilet, cu filtre pe categorii', cap: 'Toate evenimentele, cu filtre pe categorie: concerte, stand-up, teatru, festivaluri, copii.' },
+      { src: 'home-m.jpg', w: 780, h: 1688, alt: 'AmBilet pe telefon', cap: 'Pe telefon: aceeași pagină, așezată pentru ecranul mic.' },
+    ] },
+    {
+      type: 'flow', label: '03 · Arhitectura', h2: 'Un site PHP rapid în față, ePAS în spate.',
+      ps: ['AmBilet nu are bază de date proprie. E un site PHP separat, fără framework, care cere totul de la ePAS printr-un API de marketplace. ePAS are 35 de controlere doar pentru acest tip de clienți.'],
+      nodes: [
+        { t: 'Vizitatorul', items: ['Pagini HTML, prin Cloudflare', 'Hartă de locuri desenată cu Konva', 'Plată cu Netopia sau Stripe'] },
+        { t: 'Cache pe trei niveluri', items: ['Pagini întregi pe disc, la 5 minute', 'Răspunsuri API servite și după expirare', 'Golit de ePAS când se schimbă ceva'], accent: true },
+        { t: 'API de marketplace', items: ['Evenimente, comenzi, plăți, clienți', 'Organizatori, artiști, locații, căutare', 'Cereri de pe server direct, fără ocol'] },
+        { t: 'ePAS', items: ['Bilete, rezervări de locuri, deconturi', 'Facturi și e-Factura', 'Aceleași module ca Tixello'] },
+      ],
+      foot: 'Când un organizator schimbă un banner sau un eveniment în ePAS, platforma anunță site-ul, iar pagina se reface fără să aștepte expirarea cache-ului.',
+    },
+    {
+      label: '04 · Migrarea', h2: 'Clienții vechi au intrat cu aceeași parolă.',
+      ps: [
+        'La mijlocul lui aprilie 2026, AmBilet a trecut pe platforma nouă. Am scris un ghid care leagă fiecare tip de date din WordPress de echivalentul lui din ePAS: evenimente, tipuri de bilete, comenzi, bilete. Apoi am importat pe bucăți, din fișiere CSV, ca fiecare pas să poată fi verificat.',
+        'Conturile au venit cu tot cu parolele criptate din WordPress, așa că <strong>clienții s-au logat în site-ul nou cu parola veche</strong>. Linkurile din emailurile vechi duc spre o copie a vechiului site, ca nimeni să nu dea de o pagină goală.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'city.jpg', alt: 'Evenimentele din București pe AmBilet', cap: 'Pagina unui oraș: evenimentele lunii, cu locul și prețul de pornire.' },
+      { src: 'giftcard.jpg', alt: 'Cardurile cadou AmBilet', cap: 'Cardurile cadou, valabile la orice eveniment de pe site.' },
+    ] },
+    {
+      label: '05 · Viteza', h2: 'Vizitatorii din reclame primeau cea mai lentă pagină.',
+      ps: [
+        'Cache-ul de pagină folosea adresa completă ca cheie, cu tot cu parametrii pe care Facebook și Google îi adaugă la fiecare click. Fiecare vizitator venit dintr-o reclamă avea altă adresă, deci primea o pagină generată de la zero. Exact oamenii pentru care plăteam. Acum acești parametri sunt scoși din cheie.',
+        'Altă problemă a apărut în loguri: cereri către API care expirau după 3 secunde, deși serverul răspundea în circa 600 de milisecunde. Timpul se pierdea la conexiunea securizată prin Cloudflare. Cererile de la server la server merg acum direct.',
+      ],
+    },
+    {
+      type: 'metrics', label: '06 · Metrici', h2: 'Ce am numărat.',
+      note: 'Măsurat în repo și pe site, pe 5 noiembrie 2026. Cifrele de vânzări nu sunt aici, pentru că nu le-am verificat încă dintr-un export.',
+      items: [
+        ['1.394', 'commit-uri, între 27 decembrie 2025 și 5 noiembrie 2026', 'git'],
+        ['239', 'commit-uri în ianuarie 2026, cea mai intensă lună', 'git'],
+        ['7.777', 'bilete și 3.080 de comenzi mutate pentru 45 de evenimente', 'măsurat'],
+        ['5 min', 'cât stă o pagină în cache înainte să se refacă', 'în cod'],
+        ['0,15 s', 'timpul de răspuns al paginii principale, o singură măsurătoare', 'măsurat'],
+        ['35', 'de controlere în API-ul de marketplace din ePAS', 'în cod'],
+      ],
+      build: [['249', 'fișiere PHP'], ['~100k', 'linii PHP'], ['102', 'fișiere JavaScript'], ['~44k', 'linii JavaScript'], ['42', 'fișiere CSS'], ['27', 'commit-uri de migrare']],
+    },
+    {
+      type: 'lessons', label: '07 · Ce am învățat', h2: 'Ce iau cu mine.',
+      items: [
+        ['O migrare se face pe bucăți mici', 'Un import mare care pică la jumătate e greu de reluat. Importurile pe evenimente și pe tipuri de date se verifică unul câte unul.'],
+        ['Nu-i pune pe clienți să-și refacă parola', 'Fiecare cont pierdut la migrare e un client care poate nu mai revine. Parolele criptate se pot muta, dacă știi cum au fost criptate.'],
+        ['Cache-ul trebuie testat pe traficul adevărat', 'Pe adresele curate, cache-ul mergea perfect. Pe adresele din reclame nu mergea deloc.'],
+        ['Ascunde ce nu e gata', 'Recompensele și insignele au stat ascunse până au avut beneficii reale. Un buton care nu face nimic strică încrederea mai mult decât lipsa lui.'],
+      ],
+    },
+    {
+      label: '08 · Mai departe', h2: 'Platforma de sub AmBilet.',
+      ps: ['Totul rulează pe ePAS, platforma din spatele Tixello. <a class="link" href="/proiecte/tixello/">Studiul de caz Tixello</a>.'],
+    },
+  ],
+  end: { h2: 'Ai un magazin sau o platformă care a crescut peste WordPress?', p: 'Fac migrări fără pierderi de date sau de clienți, pe o platformă construită pentru ce vinzi. Scrie-mi și vedem dacă se potrivește.' },
+};
+---
+<CaseStudy cs={cs} />

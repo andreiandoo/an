@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Process from '../../components/Process.astro';
+import BuildApp from '../../components/en/BuildApp.astro';
+import { founderSteps } from '../../data/portfolio.en.js';
+import body from '../../partials/en/cofondator.html?raw';
+
+const [a, b] = body.split('<!--process-->');
+---
+<Layout
+  title="Technical cofounder for your product idea | Andrei Năstase"
+  description="You have a product idea and people waiting for it. What you lack is someone to build it. We start a new company together: I build the product for a share of it, or at a reduced price for a smaller share."
+  path="/en/cofounder/"
+  lang="en"
+  cta="#idee"
+  ctaLabel="Tell me your idea"
+>
+  <Fragment set:html={a} />
+  <BuildApp />
+  <Process lang="en" title="How it works" id="decurge" steps={founderSteps} />
+  <Fragment set:html={b} />
+</Layout>

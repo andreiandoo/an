@@ -1,0 +1,105 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of resources/marketplaces/viaqui in the ePAS repo, the data files,
+// viaqui.com and its sitemaps. The attraction pages are informational; booking goes through partners for now.
+const cs = {
+  title: 'Viaqui: case study | Andrei Năstase',
+  description: 'How I built Viaqui in 11 days: 113,093 attractions from 51 European countries, from open data, with 17 currencies, maps, routes and a trip planner.',
+  path: '/en/projects/viaqui/',
+  shots: '/shots/viaqui',
+  label: 'Case study · 2026',
+  h1: 'Viaqui: 113,093 attractions in Europe, started from a Romanian site, in 11 days.',
+  lead: 'An English-language site for travellers: what is worth seeing in each European city, on a map, in routes and in a trip plan. It started as a copy of bilete.online, generalised for several countries, currencies and languages.',
+  summary: ['I wanted to see how quickly bilete.online could become a product for all of Europe.', '113,093 attractions from 51 countries, from open data, with 17 currencies, maps, routes and a planner.', 'Public after three days, finished in 11, with 80 commits. For now it earns from referrals to partners.'],
+  facts: [
+    ['Role', 'Founder. Product, design, code, data'],
+    ['Period', '6 - 16 October 2026'],
+    ['Status', 'Live on viaqui.com since 8 October'],
+    ['Built on', 'ePAS, starting from the bilete.online code'],
+  ],
+  links: [{ href: 'https://viaqui.com', text: 'viaqui.com' }, { href: 'https://viaqui.com/map/italy', text: 'Map of Italy' }],
+  hero: { src: 'home.jpg', alt: 'Viaqui home page: Experiences begin before you arrive', domain: 'viaqui.com' },
+  top: [
+    { value: 113093, label: 'attractions in the catalogue' },
+    { value: 51, label: 'European countries' },
+    { value: 17, label: 'display currencies' },
+    { value: 11, label: 'days, from the first to the last commit' },
+  ],
+  topNote: 'Attractions are counted in the data files in the repo; the rest on the site and in git, on 5 November 2026.',
+  blocks: [
+    {
+      label: '01 · The idea', h2: 'The same product, but for all of Europe.',
+      ps: [
+        'bilete.online already had the map, the routes, the planner and the operator panel, but only for Romania and only in Romanian. I wanted to see how quickly the same code could become an international product.',
+        'The answer: 80 commits in 11 days. On 8 October the site was public and indexable.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'rome.jpg', alt: 'The Rome city page on Viaqui: Things to do in Rome', cap: 'A city page: attractions with infinite scroll, partner experiences, flights and travel services.' },
+      { src: 'colosseum.jpg', alt: 'The Colosseum attraction page on Viaqui', cap: 'An attraction page: description from Wikidata, photos from Wikimedia Commons, with author and licence.' },
+    ] },
+    {
+      type: 'steps', label: '02 · The 11 days', h2: 'How it grew, day by day.',
+      items: [
+        { v: '6 Oct', t: 'The copy and the English skeleton', d: 'I started from the bilete.online code: English interface, 12 categories, Europe’s places from GeoNames, country and city pages, prices in euros.' },
+        { v: '7 Oct', t: 'All the attractions', d: 'Attractions from Wikidata for 50 countries, with description, dates, UNESCO badge and nearest neighbours. Country maps, 16 routes, a planner per country, partner experiences, flights, sitemaps.' },
+        { v: '8 Oct', t: 'Currencies, languages, launch', d: 'The visitor picks the currency. All texts go through a translation layer, including the operator panel. I automated sending pages to search engines and opened the site.' },
+        { v: '9-16 Oct', t: 'Speed and indexing', d: 'Rounds of PageSpeed, real modification dates in the sitemap, a 503 code instead of 404 when the platform behind is busy, unique descriptions for each page.' },
+      ],
+    },
+    {
+      type: 'flow', label: '03 · The data', h2: 'Open data only, with the source written on the page.',
+      ps: ['I did not copy photos and did not buy databases. The catalogue is built offline from openly licensed sources, then loaded into the platform by a seeder that never overwrites a cover chosen by hand.'],
+      nodes: [
+        { t: 'GeoNames', items: ['51 countries, 585 regions', '9,038 cities over 10,000 inhabitants', 'CC BY 4.0 licence'] },
+        { t: 'Wikidata', items: ['113,093 attractions in 50 files', 'Descriptions, coordinates, UNESCO', 'CC0 licence'] },
+        { t: 'Wikimedia Commons', items: ['Photos shown from the source, at 960 px', 'Author and licence kept', 'Photo credits page'] },
+        { t: 'ePAS and the site', items: ['Idempotent seeder in the platform', '161 static files for maps and the planner', 'Pages served from cache'], accent: true },
+      ],
+      foot: 'Germany has the most attractions (16,834), followed by Italy (15,471), France (12,428), Spain (12,302) and the United Kingdom (9,736).',
+    },
+    { type: 'pair', items: [
+      { src: 'map.jpg', alt: 'Map of attractions in Italy on Viaqui', cap: 'A country map: 15,471 attractions in Italy, grouped by area.' },
+      { src: 'plan.jpg', alt: 'The Viaqui planner: A trip through Italy', cap: 'The planner per country: where you leave from, how many days, how you travel.' },
+    ] },
+    {
+      type: 'parts', label: '04 · Components', h2: 'What I added on top of bilete.online.',
+      items: [
+        { t: 'Currencies', d: 'The price appears in the country’s currency, and filters compare in euros.', items: ['17 currencies for the visitor to choose', 'Daily rates, with a fallback table', 'Separate page cache for each currency', 'ECB rate in the platform for operator prices'] },
+        { t: 'Languages', d: 'The catalogue is in English for now, but the code is ready for any language.', items: ['Every text goes through the translation function', 'The same layer in JavaScript', 'The language prefix is added to links automatically', 'Language field on each marketplace in ePAS'] },
+        { t: 'Partners', d: 'Until operators arrive, the money comes from referrals to travel partners.', items: ['Audio tours, flights, transfers, eSIM, cars', 'A single exit point, with a list of allowed domains', 'Partner scripts, only after marketing consent', 'Attribution by page type and by city'] },
+        { t: 'Indexing', d: 'Almost 140,000 pages need to be found by search engines.', items: ['Sitemaps split by country, under the 50,000 limit', 'Real last-modified date, taken from git', 'IndexNow and Search Console, daily, automatic', 'Empty categories are not indexed'] },
+      ],
+    },
+    { type: 'fig', src: 'routes.jpg', alt: 'Viaqui routes through Europe', cap: '17 routes through Europe, from the Rhine castles to the cathedrals of Sicily.' },
+    {
+      type: 'metrics', label: '05 · Metrics', h2: 'What I counted.',
+      note: 'Measured in the repo and in the live sitemaps, on 5 November 2026. The attraction pages are informational: tickets are bought through partners for now.',
+      items: [
+        ['113,093', 'attractions, the sum of the 50 country files', 'measured'],
+        ['129,840', 'URLs in the attraction sitemaps and city lists', 'measured'],
+        ['9,087', 'place pages: countries, regions, cities', 'measured'],
+        ['53', 'sitemaps, the largest with about 17,500 URLs', 'measured'],
+        ['80', 'commits in 11 days', 'git'],
+        ['0.24 s', 'home page response time, a single measurement', 'measured'],
+      ],
+      build: [['224', 'PHP files'], ['68k', 'lines of PHP'], ['161', 'data files for maps'], ['23 MB', 'data about Europe'], ['17', 'routes'], ['12', 'categories']],
+    },
+    {
+      type: 'lessons', label: '06 · What I learned', h2: 'What I take with me.',
+      items: [
+        ['Generalise the second time, not the first', 'bilete.online was written for a single country. Only when I needed a second one did I know what had to move into configuration: currency, language, data source.'],
+        ['A false date in the sitemap breaks everything', 'If every page says it changed today, the search engine stops believing any of them. The date now comes from the git history of each file.'],
+        ['When the platform behind does not respond, say so correctly', 'A 404 removes the page from the index. A 503 only asks the crawler to come back later.'],
+        ['A product decision can change twice in three days', 'Euros everywhere, then the country’s currency, then the visitor’s choice. Each option was cheap to test because the price goes through a single place.'],
+      ],
+    },
+    {
+      label: '07 · Where it is now', h2: 'A European catalogue, in English for now.',
+      ps: ['All texts already go through the translation layer, but the only published language is English. The cart, payment and operator panel are ready, but on 5 November 2026 the sitemap did not yet have any experience sold directly. Until then, Viaqui earns from referrals to partners.'],
+    },
+  ],
+};
+---
+<CaseStudy cs={cs} lang="en" />

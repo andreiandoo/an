@@ -1,5 +1,8 @@
 ---
-const { title = 'Cum lucrez', intro, steps, id = 'cum' } = Astro.props;
+import { words } from '../i18n.js';
+const { lang = 'ro', intro, steps, id = 'cum' } = Astro.props;
+const w = words[lang];
+const title = Astro.props.title ?? w.process;
 ---
 <section class="process" id={id} aria-labelledby={`${id}-title`}>
   <div class="wrap process-head">
@@ -15,8 +18,8 @@ const { title = 'Cum lucrez', intro, steps, id = 'cum' } = Astro.props;
           <p>{s.text}</p>
           <ul>{s.list.map(item => <li>{item}</li>)}</ul>
           <dl>
-            <div><dt>Durează</dt><dd>{s.time}</dd></div>
-            {s.you && <div><dt>Timpul vostru</dt><dd>{s.you}</dd></div>}
+            <div><dt>{w.lasts}</dt><dd>{s.time}</dd></div>
+            {s.you && <div><dt>{w.yourTime}</dt><dd>{s.you}</dd></div>}
           </dl>
         </div>
         <div class="pc-art" aria-hidden="true"><canvas></canvas></div>

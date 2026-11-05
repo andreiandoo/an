@@ -1,12 +1,12 @@
 export const products = [
-  { name: 'Tixello', file: 'tixello', tag: 'SaaS ticketing', url: 'https://tixello.com', stat: '408.153 bilete' },
-  { name: 'AmBilet', file: 'ambilet', tag: 'Bilete', url: 'https://ambilet.ro', stat: '+148% vânzări' },
+  { name: 'Tixello', file: 'tixello', tag: 'SaaS ticketing', url: 'https://tixello.com', cs: '/proiecte/tixello/', stat: '410.444 bilete' },
+  { name: 'AmBilet', file: 'ambilet', tag: 'Bilete', url: 'https://ambilet.ro', cs: '/proiecte/ambilet/', stat: '+148% vânzări' },
   { name: 'bilete.online', file: 'bilete-online', tag: 'Atracții', url: 'https://bilete.online', cs: '/proiecte/bilete-online/', stat: '7.954 atracții' },
   { name: 'TICS Radar', file: 'tics', tag: 'Comparator', url: 'https://tics.ro', cs: '/proiecte/tics/', stat: '20 de platforme' },
   { name: 'Dreams Atlas', file: 'dreamsatlas', tag: 'AI', url: 'https://dreamsatlas.com', stat: '3,22M afișări' },
   { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com', cs: '/proiecte/viaqui/', stat: '113.093 atracții' },
   { name: 'e-test.ro', file: 'e-test', tag: 'Educație', url: 'https://e-test.ro' },
-  { name: 'dubidu', file: 'dubidu', tag: 'Lansare 1 dec.', url: 'https://dubidu.net', cs: '/proiecte/dubidu/', stat: 'Studiu de caz' },
+  { name: 'dubidu', file: 'dubidu', tag: 'Dublaj AI', url: 'https://dubidu.net', cs: '/proiecte/dubidu/', stat: 'Studiu de caz' },
   { name: 'eMUD', file: 'emud', tag: 'De vânzare', url: 'https://a-n.ro', cs: '/proiecte/emud/', stat: 'Studiu de caz' },
   { name: 'ePAS', file: 'epas', tag: 'Prototip', url: 'https://epas.ro' },
 ];
@@ -40,7 +40,7 @@ export const clients = [
   c('Arhiserv', 'https://arhiserv.ro', 'Corporate', 'Site de companie'),
   { ...c('Wooba', '', 'E-commerce', 'Magazin online'), offline: true },
   c('Educativa', 'https://educativa.ro', 'Educație', 'Site'),
-  c('Optiuni.ro', 'https://optiuni.ro/cautare/', 'Fintech', 'Dezvoltare full-stack'),
+  c('Optiuni.ro', 'https://optiuni.ro/cautare/', 'Educație', 'Dezvoltare full-stack'),
   c('Edmundo', 'https://edmun.do', 'Educație', 'Dezvoltare WordPress multilingv'),
   { ...c('Glora.us', '', 'E-commerce', 'Magazin online'), offline: true },
   c('PerformanceHR', 'https://performancehr.com.au', 'Corporate', 'Site de companie'),
@@ -71,12 +71,12 @@ export const clients = [
 
 export const numbers = [
   {
-    name: 'Tixello', url: 'https://tixello.com', note: 'Procesate prin platformă.',
+    name: 'Tixello', url: 'https://tixello.com', note: 'Procesate prin platformă, cumulat, pe 5 noiembrie 2026.',
     metrics: [
-      { value: 4980, label: 'evenimente' },
-      { value: 106853, label: 'clienți' },
-      { value: 408153, label: 'bilete vândute' },
-      { value: 5184956, suffix: ' €', label: 'procesați' },
+      { value: 5016, label: 'evenimente' },
+      { value: 107255, label: 'clienți' },
+      { value: 410444, label: 'bilete vândute' },
+      { value: 5208961, suffix: ' €', label: 'procesați' },
     ],
   },
   {
@@ -117,7 +117,8 @@ export const numbers = [
   },
 ];
 
-export const skills = ['Laravel', 'PHP', 'Vue.js', 'Product design', 'Python', 'MVP-uri', 'Filament', 'Livewire', 'Animație', 'PostgreSQL', 'MySQL', 'Supabase', 'Strategie de marketing', 'Tailwind', 'Bootstrap', 'CSS', 'WordPress', 'Magento', 'CodeIgniter', 'Stripe', 'Aplicații mobile', 'AWS', 'Cloudflare', 'Vercel', 'Railway', 'Integrări AI', 'Claude', 'ChatGPT', 'Gemini', 'Grok', 'Extensii Chrome', 'Conducere de echipe'];
+// What I build, for the moving band on the home page. The technologies are listed once, under „Ce știu”.
+export const skills = ['Aplicații web', 'Aplicații iOS și Android', 'Platforme SaaS', 'Marketplace-uri', 'Panouri de administrare', 'Plăți și facturare', 'Integrări AI', 'Extensii Chrome', 'Portaluri pentru clienți', 'Rapoarte și date', 'MVP-uri', 'Site-uri de prezentare'];
 
 // Monochrome marks from @lobehub/icons-static-svg 1.102.0, 24×24 viewBox.
 export const ai = [

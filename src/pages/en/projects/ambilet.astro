@@ -1,0 +1,113 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of resources/marketplaces/ambilet in the ePAS repo, its code and
+// MIGRATION_GUIDE.md, and ambilet.ro. Sales growth figures are not repeated here: no document in the repo backs them
+// yet. No organiser data, commissions or server addresses are shown.
+const cs = {
+  title: 'AmBilet: case study | Andrei Năstase',
+  description: 'How I moved AmBilet from WordPress to my ticketing platform: tickets for concerts, stand-up, theatre and festivals, with seating maps, gift cards and a panel for organisers.',
+  path: '/en/projects/ambilet/',
+  shots: '/shots/ambilet',
+  label: 'Case study · 2025-2026',
+  h1: 'AmBilet: a ticket marketplace moved off WordPress without losing its customers.',
+  lead: 'AmBilet sells tickets for concerts, stand-up, theatre, festivals and children’s events across Romania. In 2026 I rebuilt it on ePAS, the platform behind Tixello: a new site, a new customer account, a new panel for organisers. Existing customers logged in to the new site with the same password.',
+  summary: [
+    'The old AmBilet ran on WordPress, WooCommerce and a ticketing plugin, a system that had not been designed for seats, holds and settlements.',
+    'A new, fast site connected to ePAS: seating maps, a cart that holds the seat, gift cards, a customer account and a full panel for organisers.',
+    'Live on ambilet.ro since April 2026, with the old events, orders, tickets and accounts moved into the new platform.',
+  ],
+  facts: [
+    ['Role', 'Founder. Product, design, code, migration'],
+    ['Period', 'December 2025 - present'],
+    ['Status', 'Live on ambilet.ro'],
+    ['Built on', 'ePAS, the platform behind Tixello'],
+  ],
+  links: [{ href: 'https://ambilet.ro', text: 'ambilet.ro' }, { href: 'https://ambilet.ro/evenimente', text: 'Events' }],
+  hero: { src: 'home.jpg', alt: 'AmBilet home page, with the event of the day and the event list', domain: 'ambilet.ro' },
+  top: [
+    { value: 1394, label: 'commits in ten months' },
+    { value: 7777, label: 'tickets moved in a single import' },
+    { value: 3080, label: 'orders moved, for 45 events' },
+    { value: 453, label: 'ticket types brought over from the old site' },
+  ],
+  topNote: 'Counted in git and in the import files, on 5 November 2026.',
+  blocks: [
+    {
+      label: '01 · The problem', h2: 'A WordPress shop that sold tickets.',
+      ps: [
+        'The old AmBilet was a WooCommerce shop with a ticketing plugin. For an ordinary shop that is enough. For tickets it is not: seats on a map, holding the seat while the customer pays, entry scanning and the settlement to the organiser were all added on top of a system that had not been designed for them.',
+        'I already had ePAS, the platform Tixello runs on. I moved AmBilet onto it, so it would get everything Tixello organisers already had.',
+      ],
+    },
+    {
+      label: '02 · What it does', h2: 'You find the event, pick your seat, get in with your phone.',
+      ps: [
+        'The buyer searches by city, category, artist or day: today, tomorrow, this weekend. On the event page they pick their seat on the map. The seat stays held while it is in the cart, and the ticket arrives by email and in the account.',
+        'The organiser has their own panel: events created step by step, sales, attendees, discount codes, team, documents and settlements. For the entrance they have a web scanning app.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'events.jpg', alt: 'The AmBilet event list, with category filters', cap: 'All events, with category filters: concerts, stand-up, theatre, festivals, children.' },
+      { src: 'home-m.jpg', w: 780, h: 1688, alt: 'AmBilet on a phone', cap: 'On a phone: the same page, laid out for the small screen.' },
+    ] },
+    {
+      type: 'flow', label: '03 · The architecture', h2: 'A fast PHP site in front, ePAS behind.',
+      ps: ['AmBilet has no database of its own. It is a separate PHP site, with no framework, that asks ePAS for everything through a marketplace API. ePAS has 35 controllers just for this type of client.'],
+      nodes: [
+        { t: 'The visitor', items: ['HTML pages, through Cloudflare', 'Seating map drawn with Konva', 'Payment with Netopia or Stripe'] },
+        { t: 'Three-level cache', items: ['Full pages on disk, for 5 minutes', 'API responses served even after expiry', 'Cleared by ePAS when something changes'], accent: true },
+        { t: 'Marketplace API', items: ['Events, orders, payments, customers', 'Organisers, artists, venues, search', 'Server-side requests go direct, with no detour'] },
+        { t: 'ePAS', items: ['Tickets, seat holds, settlements', 'Invoices and e-Factura (Romania’s national e-invoicing system)', 'The same modules as Tixello'] },
+      ],
+      foot: 'When an organiser changes a banner or an event in ePAS, the platform notifies the site, and the page is rebuilt without waiting for the cache to expire.',
+    },
+    {
+      label: '04 · The migration', h2: 'Existing customers logged in with the same password.',
+      ps: [
+        'In mid-April 2026, AmBilet switched to the new platform. I wrote a guide that maps each type of data in WordPress to its equivalent in ePAS: events, ticket types, orders, tickets. Then I imported in batches, from CSV files, so every step could be checked.',
+        'The accounts came over with their encrypted WordPress passwords, so <strong>customers logged in to the new site with their old password</strong>. Links in old emails lead to a copy of the old site, so nobody lands on an empty page.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'city.jpg', alt: 'Events in Bucharest on AmBilet', cap: 'A city page: the month’s events, with venue and starting price.' },
+      { src: 'giftcard.jpg', alt: 'AmBilet gift cards', cap: 'Gift cards, valid for any event on the site.' },
+    ] },
+    {
+      label: '05 · Speed', h2: 'Visitors from ads were getting the slowest page.',
+      ps: [
+        'The page cache used the full URL as its key, including the parameters that Facebook and Google add to every click. Every visitor coming from an ad had a different URL, so they got a page generated from scratch. Exactly the people I was paying for. Now these parameters are removed from the key.',
+        'Another problem showed up in the logs: API requests that timed out after 3 seconds, although the server responded in about 600 milliseconds. The time was lost on the secure connection through Cloudflare. Server-to-server requests now go direct.',
+      ],
+    },
+    {
+      type: 'metrics', label: '06 · Metrics', h2: 'What I counted.',
+      note: 'Measured in the repo and on the site, on 5 November 2026. Sales figures are not here, because I have not yet checked them against an export.',
+      items: [
+        ['1,394', 'commits, between 27 December 2025 and 5 November 2026', 'git'],
+        ['239', 'commits in January 2026, the busiest month', 'git'],
+        ['7,777', 'tickets and 3,080 orders moved for 45 events', 'measured'],
+        ['5 min', 'how long a page stays in cache before it is rebuilt', 'in code'],
+        ['0.15 s', 'home page response time, a single measurement', 'measured'],
+        ['35', 'controllers in the ePAS marketplace API', 'in code'],
+      ],
+      build: [['249', 'PHP files'], ['~100k', 'lines of PHP'], ['102', 'JavaScript files'], ['~44k', 'lines of JavaScript'], ['42', 'CSS files'], ['27', 'migration commits']],
+    },
+    {
+      type: 'lessons', label: '07 · What I learned', h2: 'What I take with me.',
+      items: [
+        ['A migration is done in small pieces', 'A large import that fails halfway is hard to restart. Imports by event and by data type are checked one at a time.'],
+        ['Do not make customers reset their password', 'Every account lost in a migration is a customer who may not come back. Encrypted passwords can be moved, if you know how they were encrypted.'],
+        ['Test the cache on real traffic', 'On clean URLs, the cache worked perfectly. On URLs from ads it did not work at all.'],
+        ['Hide what is not ready', 'Rewards and badges stayed hidden until they had real benefits. A button that does nothing hurts trust more than not having it.'],
+      ],
+    },
+    {
+      label: '08 · Further', h2: 'The platform under AmBilet.',
+      ps: ['Everything runs on ePAS, the platform behind Tixello. <a class="link" href="/en/projects/tixello/">The Tixello case study</a>.'],
+    },
+  ],
+  end: { h2: 'Has your shop or platform outgrown WordPress?', p: 'I do migrations without losing data or customers, onto a platform built for what you sell. Write to me and we will see if it fits.' },
+};
+---
+<CaseStudy cs={cs} lang="en" />

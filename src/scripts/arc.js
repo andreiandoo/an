@@ -1,3 +1,4 @@
+import { pick, locale } from './lang.js';
 const stage = document.getElementById('stage');
 if (stage) {
   const COPIES = 2, DRIFT = 34, PAN_SPEED = 90, DRAG_THRESHOLD = 6;
@@ -77,7 +78,7 @@ if (stage) {
   function setRunning(v) {
     running = v;
     path.setAttribute('d', v ? 'M7 5h4v14H7zM13 5h4v14h-4z' : 'M8 5l11 7-11 7z');
-    toggle.setAttribute('aria-label', v ? 'Oprește mișcarea' : 'Pornește mișcarea');
+    toggle.setAttribute('aria-label', v ? pick({ ro: 'Oprește mișcarea', en: 'Pause motion' }) : pick({ ro: 'Pornește mișcarea', en: 'Play motion' }));
     toggle.setAttribute('aria-pressed', String(!v));
   }
   toggle.onclick = () => setRunning(!running);

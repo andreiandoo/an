@@ -1,0 +1,136 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+// Client project for iGrowth. Figures checked on 5 Nov 2026: git history of igapp and igweb, the code, sportiveducat.ro
+// and the store listings. App screens are the HTML prototypes from igapp/design/public, with invented demo data.
+// The usage counters shown on sportiveducat.ro are not repeated here: they could not be verified.
+const cs = {
+  title: 'Sportiv Educat: case study | Andrei Năstase',
+  description: 'How I built Sportiv Educat (iGROWth) for iGrowth: a management platform for sports clubs, iOS and Android apps, payments with Stripe Connect, invoicing with e-Factura and an educational game for children.',
+  path: '/en/projects/sportiv-educat/',
+  shots: '/shots/sportiveducat',
+  back: { href: '/en/#clienti', text: '← Client work' },
+  label: 'Case study · Client: iGrowth · 2025-2026',
+  h1: 'Sportiv Educat: the sports club in one app, and children learn by playing.',
+  lead: 'A platform for sports clubs in Romania: teams, training sessions, attendance, physical progress, payments and invoices. For children, the app has a game with quizzes about nutrition, sleep, hydration and exercise. I built the web app, the iOS and Android apps, the server and the marketing site.',
+  summary: ['Children’s sports clubs keep athletes, attendance and fees in notebooks, spreadsheets and WhatsApp groups.', 'The web app, the iOS and Android apps and the site, for five roles, with payments through Stripe Connect, e-Factura and a game for children.', 'Live in the App Store and Google Play, after a year of development in six stages.'],
+  facts: [
+    ['Client', 'iGrowth'],
+    ['Role', 'Full development: server, web, mobile, site'],
+    ['Period', 'November 2025 - October 2026'],
+    ['Status', 'Live, in the App Store and Google Play'],
+  ],
+  links: [
+    { href: 'https://sportiveducat.ro', text: 'sportiveducat.ro' },
+    { href: 'https://apps.apple.com/app/id6767212760', text: 'App Store' },
+    { href: 'https://play.google.com/store/apps/details?id=com.sportiveducat.app', text: 'Google Play' },
+  ],
+  hero: { src: 'cluburi.jpg', alt: 'The Sportiv Educat page for clubs: run your sports club, completely and professionally', domain: 'sportiveducat.ro' },
+  top: [
+    { value: 5, label: 'roles: admin, club, coach, parent, athlete' },
+    { value: 762, label: 'commits in two repos' },
+    { value: 109, label: 'data models' },
+    { value: 724, label: 'automated tests on the server' },
+  ],
+  topNote: 'Counted in git and in the code, on 5 November 2026.',
+  blocks: [
+    {
+      label: '01 · The problem', h2: 'Clubs work in notebooks, spreadsheets and WhatsApp groups.',
+      ps: [
+        'A children’s sports club keeps track of athletes, training sessions, attendance, fees and competitions. Usually, each of these lives in a different place. The coach loses time on paperwork, and parents find out late what their child is doing.',
+        'iGrowth asked one more question: how do you get a child to come back, not only to training, but also to the things outside it, like food and sleep? The answer was a game.',
+      ],
+    },
+    {
+      label: '02 · What it does', h2: 'One app, five ways to use it.',
+      ps: [
+        'The club has a dashboard with teams, coaches, venues, calendar, payments received and reports. The coach takes attendance from the phone and records physical progress. The parent sees the child’s week, events and payments. The child plays quizzes, collects points, levels up and unlocks badges.',
+        'The club pays a subscription per athlete, with a 14-day trial. Fees from parents go straight into the club’s account, through Stripe Connect, and the platform takes nothing from them.',
+      ],
+    },
+    { type: 'phones', items: [
+      { src: 'app-home.jpg', alt: 'The athlete app: the quiz screen, by category', cap: 'The athlete: quizzes by category' },
+      { src: 'app-badges.jpg', alt: 'The athlete app: bronze, silver, gold and platinum badges', cap: 'Badges to unlock' },
+      { src: 'coach-att.jpg', alt: 'The coach app: training attendance', cap: 'The coach: attendance' },
+      { src: 'parent-dash.jpg', alt: 'The parent app: the child’s week', cap: 'The parent: the child’s week' },
+    ], cap: 'Screens from the interactive prototypes of the three apps, with invented data. The real apps look the same, with the club’s data.' },
+    {
+      type: 'flow', label: '03 · The architecture', h2: 'One codebase for web, iPhone and Android.',
+      ps: ['The store apps are the same React app, packaged with Capacitor. The native shell loads the live version, so a fix reaches phones immediately, without a new App Store review.'],
+      nodes: [
+        { t: 'The marketing site', items: ['Static generator with no dependencies', 'Sign-up and payment directly from the site', 'Prices read from the app at build time'] },
+        { t: 'The React app', items: ['React 19, on Cloudflare Pages', 'The same app on iOS and Android', 'Romanian and English'] },
+        { t: 'The API', items: ['Node, Express 5, TypeScript', 'Prisma and PostgreSQL', 'Real-time updates over WebSocket'], accent: true },
+        { t: 'External services', items: ['Stripe: subscriptions and Connect', 'Oblio: invoices and e-Factura', 'ANAF, Firebase, Brevo'] },
+      ],
+      foot: 'Club sign-up checks the company with ANAF, the Romanian tax authority, before creating the account, so that fake clubs do not appear.',
+    },
+    { type: 'pair', items: [
+      { src: 'parinti.jpg', alt: 'The Sportiv Educat page for parents: raise a healthy, motivated child, as if at play', cap: 'The page for parents.' },
+      { src: 'antrenori.jpg', alt: 'The Sportiv Educat page for coaches: spend time with your athletes, not with paperwork', cap: 'The page for coaches.' },
+    ] },
+    {
+      type: 'parts', label: '04 · Components', h2: 'What I built, by role.',
+      items: [
+        { t: 'The club', d: 'The club administrator’s dashboard.', items: ['Teams, coaches, staff, athletes, venues', 'One-off or recurring training sessions, with an alert when halls overlap', 'Payments received, invoices, automatic payments with consent', 'Reports and rankings by team, club and year', 'Own branding on the Premium plan'] },
+        { t: 'The coach', d: '15 screens, made for the phone.', items: ['Attendance: present, late, absent, excused', 'Configurable physical metrics, with charts', 'Cash handed over to the club', 'Points and events', '360 view of each athlete'] },
+        { t: 'The parent and the athlete', d: 'The game and club life, in the same app.', items: ['Weekly quizzes by category and theme', 'Points, levels, badges, lives, rankings', 'The Growie mascot', 'Family subscriptions, with a sibling discount', 'Events: camps, championships, trips'] },
+        { t: 'The platform', d: '56 screens for the iGrowth administrators.', items: ['Clubs, plans, billing, revenue', 'Quizzes, categories, themes, scheduling', 'Emails, marketing CRM, push campaigns', 'Contracts, support tickets, reports', 'Affiliate programme'] },
+      ],
+    },
+    {
+      label: '05 · The money', h2: 'Tax-compliant invoices, without keeping certificates on the server.',
+      ps: [
+        'Each club gets a monthly invoice, prorated when it changes plan. The tax invoice and its submission to e-Factura, Romania’s national e-invoicing system, go through Oblio, over its API. The platform only generates pro forma invoices as PDF: the server runs in containers that can be rebuilt at any time, so it is not the right place for a company’s digital certificates.',
+        'Payments from parents to the club go through Stripe Connect, with automatic payments based on consent, refunds, reconciliation and export for accounting.',
+      ],
+    },
+    {
+      label: '06 · The game', h2: 'Small rules that keep the game fair.',
+      ps: [
+        'Lives refill based on the time that has passed, calculated when the child opens the app. No process needs to run in the background. Experience only goes up, so if a child spends points in the shop, they never drop a level. Level L needs 50 × (L−1) × L experience points.',
+        'The free plan went down from five lives to three, so the difference from a subscription is visible. The content follows a written method: category, theme, 10-15 chapters, one idea per question, with an explanation after each answer.',
+      ],
+    },
+    { type: 'phones', items: [
+      { src: 'app-lives.jpg', alt: 'The athlete app: lives and life packs', cap: 'Lives and packs' },
+      { src: 'coach-dash.jpg', alt: 'The coach app: today’s schedule and what needs doing', cap: 'The coach: today' },
+    ] },
+    {
+      type: 'steps', label: '07 · The road', h2: 'One year, six stages.',
+      items: [
+        { v: 'Nov-Dec 2025', t: 'The first version', d: 'Roles and permissions, admin modules, quizzes with video, billing, the first deploy on Railway and Cloudflare Pages.' },
+        { v: 'Jan-Feb 2026', t: 'Events and Android', d: 'Camps, championships and trips, parent accounts, the Android app with push notifications.' },
+        { v: 'Mar-May 2026', t: 'In the stores', d: 'Launch on Google Play, iOS through Codemagic and TestFlight, accounts for the store reviewers.' },
+        { v: 'Jun-Jul 2026', t: 'The game', d: 'Recurring training sessions, reworked quizzes, levels, badges, the parent’s view of progress.' },
+        { v: 'Aug-Sep 2026', t: 'Plans and invoices', d: 'Reworked club dashboard, Demo, Basic and Premium plans, ANAF check, e-Factura, marketing CRM, coordinators.' },
+        { v: 'Oct 2026', t: 'The club’s money', d: 'Stripe Connect, automatic payments, refunds, reconciliation, rankings, 360 views.' },
+      ],
+    },
+    {
+      type: 'metrics', label: '08 · Metrics', h2: 'What I counted.',
+      note: 'Measured in git and in the code on 5 November 2026. The usage figures belong to the client and I do not publish them here.',
+      items: [
+        ['762', 'commits: 732 on the app, 30 on the site', 'git'],
+        ['~519', 'API routes on the server', 'measured'],
+        ['123', 'routes in the web app', 'measured'],
+        ['191', 'React screens and components', 'measured'],
+        ['1.0.5', 'mobile app version', 'in code'],
+        ['€1 / €2', 'club subscription per athlete per month, Basic and Premium, at the time of writing', 'from the site'],
+      ],
+      build: [['109', 'data models'], ['79', 'migrations'], ['67', 'logic modules'], ['47', 'test files'], ['~77k', 'lines on the server'], ['~96k', 'lines in the app']],
+    },
+    {
+      type: 'lessons', label: '09 · What I learned', h2: 'What I take with me.',
+      items: [
+        ['A thin native shell shortens every fix', 'Because the store app loads the live web version, a bug fixed today reaches phones today. The price paid: the first screen depends on the network.'],
+        ['Keep the money where it belongs', 'Fees go straight to the club, through Stripe Connect, and tax invoices through Oblio. The platform holds no money and no certificates.'],
+        ['A game needs accounting rules', 'Lives, points and levels have the same problems as a balance: they must not go down by mistake and must not depend on a process that might not run.'],
+        ['Test the domain logic, not just the screens', 'The rules for plans, proration, lives and levels have dedicated tests. That is where the expensive bugs show up.'],
+      ],
+    },
+  ],
+  end: { h2: 'Do you need a web and mobile app for your organisation?', p: 'I build the platform, the apps and the site, with payments and invoicing included. Write to me and we will see if it fits.' },
+};
+---
+<CaseStudy cs={cs} lang="en" />

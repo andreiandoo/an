@@ -12,6 +12,61 @@ const CACHE = 'dubnow-v1';
 const SPEED = 1.05;
 const STEPS = { webgpu: 10, wasm: 5 }; // 5 steps on the CPU: about twice as fast, slightly rougher
 
+// UI strings follow <html lang>: English on /en/ pages, Romanian everywhere else.
+const EN = document.documentElement.lang === 'en';
+const LOCALE = EN ? 'en-US' : 'ro-RO';
+const T = EN ? {
+  packDownload: p => `The browser is downloading the translation pack: ${p}%…`,
+  pairUnavailable: 'The browser cannot translate between these languages. Choose another language.',
+  translatorFailed: e => `Translation did not start. Press Generate again. (${e.name}: ${e.message})`,
+  preparingTranslation: 'Preparing the translation in the browser…',
+  translating: 'Translating the text…',
+  translateFailed: e => `Translation failed. (${e.name}: ${e.message})`,
+  downloadFailed: s => `The download failed (${s}).`,
+  downloading: (a, b) => `Downloading the model: ${a} of ${b} MB…`,
+  prepGpu: 'Preparing the model on the graphics card…',
+  prepCpu: 'Preparing the model on the processor…',
+  noStart: 'The browser could not start the model.',
+  engineGpu: 'graphics card (WebGPU)',
+  engineCpu: n => `processor, ${n} ${n === 1 ? 'thread' : 'threads'}`,
+  engineCpuMany: n => `processor, ${n} threads`,
+  readyGpu: 'The model is ready. Write a text and press Generate.',
+  readyCpu: 'The model is ready, on the processor. The first sentence may take a few seconds.',
+  noNet: 'Could not download the model. Check your internet connection and try again.',
+  voiceFailed: m => `the voice did not download: ${m}`,
+  generating: 'Generating the voice on your computer…',
+  doneFast: 'Done, faster than real time. Change the text, language or voice and generate again.',
+  doneSlow: 'Done. On this computer, synthesis is slower than real time.',
+  synthFailed: m => `Synthesis failed. Press Generate again or try another text. (${m})`,
+  startCached: 'Start the model (already downloaded)',
+  inBrowser: 'The model is already in your browser. Start it.',
+} : {
+  packDownload: p => `Browserul descarcă pachetul de traducere: ${p}%…`,
+  pairUnavailable: 'Browserul nu poate traduce între aceste limbi. Alege altă limbă.',
+  translatorFailed: e => `Traducerea n-a pornit. Apasă din nou Generează. (${e.name}: ${e.message})`,
+  preparingTranslation: 'Pregătesc traducerea în browser…',
+  translating: 'Traduc textul…',
+  translateFailed: e => `Traducerea n-a mers. (${e.name}: ${e.message})`,
+  downloadFailed: s => `Descărcarea a eșuat (${s}).`,
+  downloading: (a, b) => `Descarc modelul: ${a} din ${b} MB…`,
+  prepGpu: 'Pregătesc modelul pe placa video…',
+  prepCpu: 'Pregătesc modelul pe procesor…',
+  noStart: 'Browserul nu a putut porni modelul.',
+  engineGpu: 'placa video (WebGPU)',
+  engineCpu: n => `procesor, ${n} ${n === 1 ? 'fir' : 'fire'}`,
+  engineCpuMany: n => `procesor, ${n} fire`,
+  readyGpu: 'Modelul e gata. Scrie un text și apasă Generează.',
+  readyCpu: 'Modelul e gata, pe procesor. Prima frază poate dura câteva secunde.',
+  noNet: 'Nu am putut descărca modelul. Verifică internetul și încearcă din nou.',
+  voiceFailed: m => `vocea nu s-a descărcat: ${m}`,
+  generating: 'Generez vocea pe calculatorul tău…',
+  doneFast: 'Gata, mai repede decât timpul real. Schimbă textul, limba sau vocea și generează din nou.',
+  doneSlow: 'Gata. Pe acest calculator sinteza e mai lentă decât timpul real.',
+  synthFailed: m => `Sinteza n-a mers. Apasă din nou Generează sau încearcă alt text. (${m})`,
+  startCached: 'Pornește modelul (e deja descărcat)',
+  inBrowser: 'Modelul e deja în browserul tău. Pornește-l.',
+};
+
 setOrt(ort);
 ort.env.wasm.wasmPaths = new URL('./ort/', import.meta.url).href;
 ort.env.wasm.numThreads = crossOriginIsolated ? Math.min(navigator.hardwareConcurrency || 4, 8) : 1;
@@ -28,7 +83,7 @@ let tts = null, ep = null, edited = false, busy = false;
 const styles = {}, translators = {};
 
 const say = (msg, kind = '') => { status.textContent = msg; status.dataset.kind = kind; };
-const secs = s => `${s.toLocaleString('ro-RO', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
+const secs = s => `${s.toLocaleString(LOCALE, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
 const count = () => { $('[data-count-chars]').textContent = text.value.length; };
 const progress = f => { bar.hidden = f == null; bar.firstElementChild.style.width = `${Math.round((f || 0) * 100)}%`; };
 count();
@@ -42,6 +97,7 @@ lang.addEventListener('change', () => { resample(); prepare(); });
 from.addEventListener('change', () => { resample(); prepare(); });
 // Chrome's on-device Translator API (desktop Chrome 138+, Edge 148+). Elsewhere the visitor writes in the voice's language.
 if (!('Translator' in globalThis)) {
+  from.value = ''; // the EN page preselects English; without a translator, write in the voice's language
   from.disabled = true;
   document.querySelector('.tts-no-translate').hidden = false;
 }
@@ -52,13 +108,13 @@ function translator() {
   const pair = { sourceLanguage: from.value, targetLanguage: lang.value };
   const key = `${pair.sourceLanguage}>${pair.targetLanguage}`;
   translators[key] ??= Translator.create({ ...pair, monitor(m) {
-    m.addEventListener('downloadprogress', e => { if (busy) say(`Browserul descarcă pachetul de traducere: ${Math.round(e.loaded * 100)}%…`, 'wait'); });
+    m.addEventListener('downloadprogress', e => { if (busy) say(T.packDownload(Math.round(e.loaded * 100)), 'wait'); });
   } }).catch(async e => {
     delete translators[key];
     console.warn('[dubnow] translator', key, e);
     throw new Error(await Translator.availability(pair).catch(() => '') === 'unavailable'
-      ? 'Browserul nu poate traduce între aceste limbi. Alege altă limbă.'
-      : `Traducerea n-a pornit. Apasă din nou Generează. (${e.name}: ${e.message})`);
+      ? T.pairUnavailable
+      : T.translatorFailed(e));
   });
   return translators[key];
 }
@@ -67,16 +123,16 @@ function translator() {
 // A translator the browser has dropped meanwhile (idle, memory) is created again once.
 async function inLanguage(value) {
   if (!from.value || from.value === lang.value) return value;
-  say('Pregătesc traducerea în browser…', 'wait');
+  say(T.preparingTranslation, 'wait');
   for (let attempt = 0; ; attempt++) {
     const t = await translator();
-    say('Traduc textul…', 'wait');
+    say(T.translating, 'wait');
     try {
       return await t.translate(value);
     } catch (e) {
       console.warn('[dubnow] translate', e);
       delete translators[`${from.value}>${lang.value}`];
-      if (attempt) throw new Error(`Traducerea n-a mers. (${e.name}: ${e.message})`);
+      if (attempt) throw new Error(T.translateFailed(e));
     }
   }
 }
@@ -116,7 +172,7 @@ async function files() {
   let done = 0;
   for (const f of missing) {
     const r = await fetch(`${HF}/${f}`);
-    if (!r.ok) throw new Error(`Descărcarea a eșuat (${r.status}).`);
+    if (!r.ok) throw new Error(T.downloadFailed(r.status));
     const reader = r.body.getReader(), parts = [];
     for (;;) {
       const { done: end, value } = await reader.read();
@@ -124,7 +180,7 @@ async function files() {
       parts.push(value);
       done += value.length;
       progress(Math.min(1, done / total));
-      say(`Descarc modelul: ${Math.round(done / 1048576)} din ${Math.round(total / 1048576)} MB…`, 'wait');
+      say(T.downloading(Math.round(done / 1048576), Math.round(total / 1048576)), 'wait');
     }
     const blob = new Blob(parts);
     await c?.put(`${HF}/${f}`, new Response(blob)).catch(() => {});
@@ -146,7 +202,7 @@ async function load() {
     const gpu = await webgpu();
     for (const candidate of gpu ? ['webgpu', 'wasm'] : ['wasm']) {
       try {
-        say(candidate === 'webgpu' ? 'Pregătesc modelul pe placa video…' : 'Pregătesc modelul pe procesor…', 'wait');
+        say(candidate === 'webgpu' ? T.prepGpu : T.prepCpu, 'wait');
         const opts = { executionProviders: [candidate], graphOptimizationLevel: 'all' };
         const sessions = [];
         for (const n of nets) sessions.push(await ort.InferenceSession.create(new Uint8Array(bytes[`onnx/${n}.onnx`]), opts));
@@ -163,17 +219,17 @@ async function load() {
         console.warn('[dubnow]', candidate, e);
       }
     }
-    if (!tts) throw new Error('Browserul nu a putut porni modelul.');
+    if (!tts) throw new Error(T.noStart);
     const threads = ort.env.wasm.numThreads;
-    engineEl.textContent = ep === 'webgpu' ? 'placa video (WebGPU)' : `procesor, ${threads} ${threads === 1 ? 'fir' : 'fire'}`;
+    engineEl.textContent = ep === 'webgpu' ? T.engineGpu : T.engineCpu(threads);
     times.load.textContent = secs((performance.now() - t0) / 1000);
     loadBtn.hidden = true;
     goBtn.hidden = false;
-    say(ep === 'webgpu' ? 'Modelul e gata. Scrie un text și apasă Generează.' : 'Modelul e gata, pe procesor. Prima frază poate dura câteva secunde.', 'ok');
+    say(ep === 'webgpu' ? T.readyGpu : T.readyCpu, 'ok');
   } catch (err) {
     progress(null);
     loadBtn.disabled = false;
-    say(err instanceof TypeError ? 'Nu am putut descărca modelul. Verifică internetul și încearcă din nou.' : err.message, 'err');
+    say(err instanceof TypeError ? T.noNet : err.message, 'err');
   } finally {
     busy = false;
   }
@@ -185,7 +241,7 @@ async function synth(said, voice) {
   try {
     styles[voice] ??= await loadVoiceStyle([`${HF}/voice_styles/${voice}.json`]);
   } catch (e) {
-    throw new Error(`vocea nu s-a descărcat: ${e.message}`);
+    throw new Error(T.voiceFailed(e.message));
   }
   return tts.call(said, lang.value, styles[voice], STEPS[ep], SPEED);
 }
@@ -209,7 +265,7 @@ form.addEventListener('submit', async e => {
   translated.querySelector('q').textContent = said;
   try {
     const voice = form.elements.voice.value;
-    say('Generez vocea pe calculatorul tău…', 'wait');
+    say(T.generating, 'wait');
     await new Promise(r => setTimeout(r, 30)); // let the status paint before the main thread gets busy
     const t0 = performance.now();
     // One retry: a voice file that failed to download or a graphics card that stumbled once should not end the try.
@@ -221,15 +277,15 @@ form.addEventListener('submit', async e => {
     const length = wav.length / tts.sampleRate;
     times.voice.textContent = secs(spent);
     times.audio.textContent = secs(length);
-    times.rtf.textContent = `${(spent / length).toLocaleString('ro-RO', { maximumFractionDigits: 2 })}×`;
+    times.rtf.textContent = `${(spent / length).toLocaleString(LOCALE, { maximumFractionDigits: 2 })}×`;
     if (audio.src) URL.revokeObjectURL(audio.src);
     audio.src = URL.createObjectURL(new Blob([writeWavFile(wav, tts.sampleRate)], { type: 'audio/wav' }));
     audio.hidden = false;
     audio.play().catch(() => {});
-    say(spent < length ? 'Gata, mai repede decât timpul real. Schimbă textul, limba sau vocea și generează din nou.' : 'Gata. Pe acest calculator sinteza e mai lentă decât timpul real.', 'ok');
+    say(spent < length ? T.doneFast : T.doneSlow, 'ok');
   } catch (err) {
     console.error('[dubnow]', err, said);
-    say(`Sinteza n-a mers. Apasă din nou Generează sau încearcă alt text. (${err?.message ?? err})`, 'err');
+    say(T.synthFailed(err?.message ?? err), 'err');
   } finally {
     busy = false;
     goBtn.disabled = false;
@@ -238,9 +294,9 @@ form.addEventListener('submit', async e => {
 
 (async () => {
   const gpu = await webgpu();
-  engineEl.textContent = gpu ? 'placa video (WebGPU)' : crossOriginIsolated ? `procesor, ${ort.env.wasm.numThreads} fire` : 'procesor, 1 fir';
+  engineEl.textContent = gpu ? T.engineGpu : crossOriginIsolated ? T.engineCpuMany(ort.env.wasm.numThreads) : T.engineCpu(1);
   if (await cached()) {
-    loadBtn.textContent = 'Pornește modelul (e deja descărcat)';
-    say('Modelul e deja în browserul tău. Pornește-l.', '');
+    loadBtn.textContent = T.startCached;
+    say(T.inBrowser, '');
   }
 })();

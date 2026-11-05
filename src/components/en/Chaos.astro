@@ -1,0 +1,35 @@
+---
+const groups = [
+  ['Clients', [['Clients.xlsx', 'Client'], ['Email thread, 14 messages', 'Conversation'], ['WhatsApp: "did you send the quote?"', 'Message']]],
+  ['Quotes', [['quotes_final_v3.xlsx', 'Quote'], ['new_prices_FINAL.pdf', 'Price'], ['Order by phone', 'Order']]],
+  ['Invoices', [['Unpaid invoice', 'Invoice'], ['Payment confirmed by email', 'Payment'], ['Excel from the accountant', 'Report']]],
+  ['Stock', [['Stock, the blue notebook', 'Stock'], ['The list on the whiteboard', 'List'], ['Copy-paste into the ERP', 'Sync']]],
+  ['Appointments', [['Appointments in the planner', 'Appointment'], ['Phone reminder', 'Reminder'], ['Post-it: call Radu', 'Task']]],
+  ['Reports', [['Manual report, Mondays', 'Report'], ['Contract in Drive', 'Contract'], ['Who is handling this?', 'Owner']]],
+];
+---
+<section class="chaos" id="haos" aria-labelledby="chaos-title">
+  <div class="chaos-view">
+    <div class="chaos-copy">
+      <h2 id="chaos-title">From chaos to one place</h2>
+      <p>Today, your company's work lives in dozens of places.</p>
+      <p>The data gets cleaned, deduplicated and compacted.</p>
+      <p>Every piece of information lands exactly where it belongs.</p>
+    </div>
+    <svg class="chaos-lines" id="chaos-lines" aria-hidden="true"></svg>
+    <div class="chaos-proc" id="chaos-proc" aria-hidden="true">
+      <b>Processing</b>
+      <span>Clean</span><span>Deduplicate</span><span>Compact</span>
+    </div>
+    <div class="chaos-app" id="chaos-app" aria-hidden="true">
+      <div class="chaos-bar"><i></i><i></i><i></i><em>your-app.com</em></div>
+      <div class="chaos-tiles">
+        {groups.map(([name]) => <div class="chaos-tile"><b>{name}</b><span><i></i></span></div>)}
+      </div>
+    </div>
+    <ul class="chaos-cards" id="chaos-cards">
+      {groups.map(([, list], g) => list.map(([raw, clean]) => <li data-g={g} data-clean={clean}><i></i><span>{raw}</span></li>))}
+    </ul>
+  </div>
+</section>
+<script>import '../../scripts/chaos.js';</script>

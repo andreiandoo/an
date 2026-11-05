@@ -1,0 +1,27 @@
+---
+const layers = [
+  ['Interface', 'What people see: screens, buttons, forms.'],
+  ['Accounts and roles', 'Who is allowed to see and do each thing.'],
+  ['Rules', 'The engine that calculates by your company\'s rules.'],
+  ['Database', 'Where your data lives, safely.'],
+  ['Payments', 'Collections, invoices and subscriptions.'],
+  ['Notifications', 'Emails and messages that go out on their own, on time.'],
+];
+---
+<section class="exploded" id="explodat" aria-labelledby="exploded-title">
+  <div class="exploded-view">
+    <div class="exploded-copy">
+      <h2 id="exploded-title">What is actually inside an app</h2>
+      <p class="exploded-intro">You only see the screen. Five more layers work underneath it.</p>
+      <ol id="exploded-list">
+        {layers.map(([title, text], i) => <li data-title={title}><i>{String(i + 1).padStart(2, '0')}</i><b>{title}</b><span>{text}</span></li>)}
+      </ol>
+      <p class="exploded-end">All of them are included in the price.</p>
+    </div>
+    <div class="exploded-stage">
+      <canvas id="exploded-canvas" aria-hidden="true"></canvas>
+      <div class="exploded-calls" id="exploded-calls" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+<script>import '../../scripts/exploded.js';</script>

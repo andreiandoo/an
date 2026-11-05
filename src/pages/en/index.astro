@@ -1,0 +1,222 @@
+---
+import fs from 'node:fs';
+import Layout from '../../layouts/Layout.astro';
+import Pricing from '../../components/en/Pricing.astro';
+import Process from '../../components/Process.astro';
+import { products, inWork, roles, clients, numbers, skills, ai, aiUses, socials, stack, steps } from '../../data/portfolio.en.js';
+import rest from '../../partials/en/home-rest.html?raw';
+
+const has = path => fs.existsSync(`public/shots/${path}.jpg`);
+// Order is shuffled on every visit by scripts/clients.js.
+const list = clients.filter(c => has(`clients/${c.file}`));
+const older = clients.filter(c => !has(`clients/${c.file}`));
+const cats = [...new Set(list.map(c => c.cat))];
+const [restA, restB] = rest.split('<!--pricing-->');
+const [restC, restD] = restB.split('<!--process-->');
+const hero = [['tixello', 'a'], ['dreamsatlas', 'b'], ['tics', 'c']];
+const format = m => `${m.prefix ?? ''}${m.value.toLocaleString('en-US', { maximumFractionDigits: m.dec ?? 0, minimumFractionDigits: m.dec ?? 0 })}${m.suffix ?? ''}`;
+const metric = (name, label) => format(numbers.find(n => n.name === name).metrics.find(m => m.label === label));
+const ledger = [
+  ['#proiecte', String(products.length), 'products of my own'],
+  ['.nums li:nth-child(1)', metric('Tixello', 'processed'), 'processed through Tixello'],
+  ['.nums li:nth-child(2)', metric('AmBilet', '5-month average'), 'AmBilet sales, 5-month average'],
+  ['.nums li:nth-child(3)', metric('Dreams Atlas', 'organic impressions'), 'organic impressions, Dreams Atlas'],
+  ['.nums li:nth-child(4)', metric('TICS Radar', 'events'), 'live events, TICS Radar', 'liveEvents'],
+  ['#despre', '17 years', 'in software'],
+  ['#clienti', String(clients.length), 'client projects'],
+];
+const ledgerHtml = `<ol class="ledger reveal" id="ledger"><li class="ledger-head"><span>So far, in short</span></li>${ledger.map(([at, value, label, live]) => `<li data-at="${at}"${live ? ` data-live="${live}"` : ''}><b>${value}</b><span>${label}</span></li>`).join('')}<li class="ledger-next"><b>Next</b><span>your project</span></li></ol>`;
+---
+<Layout
+  title="Andrei Năstase | Web and mobile apps, technical co-founder"
+  description={`17 years in software, ${products.length} products of my own. I build web and mobile apps, and I am looking for founders with ideas and customers, for long-term partnerships.`}
+  path="/en/"
+  lang="en"
+>
+  <section class="home-hero">
+    <div class="hh-view">
+    <div class="wrap">
+      <div class="hh-copy">
+      <h1>Do you need an app? Or someone to build it <span class="hot">with you</span>?</h1>
+      <p class="lead">I am a senior full-stack developer, with 17 years in software and {products.length} products of my own behind me. I tell you honestly what is worth building. And if the idea is good and has customers waiting for it, I join as technical co-founder.</p>
+      <div class="paths">
+        <a class="go" href="#contact"><i></i><span>Book the free call</span></a>
+        <a class="go" href="/en/cofounder/"><i></i><span>I have an idea, I need a co-founder</span></a>
+      </div>
+      <ul class="stats label">
+        <li>17 years in software</li>
+        <li>{products.length} products of my own</li>
+        <li>{clients.length} client projects</li>
+        <li>Reply within one business day</li>
+      </ul>
+      </div>
+      <div class="hh-phones" aria-hidden="true">
+        {hero.map(([file, layer]) => <span class={`hh-phone hh-${layer}`}><img src={`/shots/${file}.jpg`} alt="" decoding="async" draggable="false"></span>)}
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <div class="work">
+    <section id="proiecte" aria-labelledby="work-title">
+      <div class="wrap head">
+        <div>
+          <h2 id="work-title">What I have built</h2>
+          <p>My own products, as founder or co-founder. On each one I did the design, the code and the launch.</p>
+        </div>
+        <div class="ctrl" id="ctrl">
+          <button id="prev" aria-label="Previous project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button id="toggle" aria-label="Stop the motion" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor"><path id="toggle-path" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+          <button id="next" aria-label="Next project"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+      <div class="stage" id="stage">
+        {products.map(p => (
+          <a class="item" href={p.cs ?? p.url} target={p.cs ? undefined : '_blank'} rel={p.cs ? undefined : 'noopener'}>
+            <span class="frame"><img src={`/shots/${p.file}.jpg`} alt={`The ${p.name} website on a phone`} width="780" height={p.h ?? 6000} loading="lazy" draggable="false"></span>
+            <span class="cap"><span>{p.name}</span><span>{p.tag}</span>{p.stat && <em>{p.stat}</em>}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="wrap sub nums" aria-labelledby="nums-title">
+      <h2 id="nums-title">The numbers behind them</h2>
+      <ul>
+        {numbers.map(n => (
+          <li class="reveal">
+            <div class="nums-name"><a href={n.url} target="_blank" rel="noopener">{n.name}</a>{n.note && <span>{n.note}</span>}</div>
+            <dl>
+              {n.metrics.map(m => (
+                <div>
+                  <dd data-count={m.value} data-dec={m.dec ?? 0} data-prefix={m.prefix ?? ''} data-suffix={m.suffix ?? ''} data-stat={m.key}>{format(m)}</dd>
+                  <dt>{m.label}</dt>
+                </div>
+              ))}
+            </dl>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+
+  <section class="cof" id="cofondator" aria-labelledby="cof-title">
+    <div class="wrap">
+      <div class="cof-main">
+        <p class="label kick"><i class="pulse"></i>At most 2 new founders at a time</p>
+        <h2 id="cof-title">You have the idea and people waiting for it? What you are missing is someone to build the product.</h2>
+        <p class="lead">I join you as technical co-founder and we start a new company together. I do not build and leave: I stay for the long term and I am responsible for the product, so you can focus on customers and sales.</p>
+        <div class="paths">
+          <a class="go" href="/en/cofounder/#idee"><i></i><span>Tell me your idea</span></a>
+          <a class="go" href="/en/cofounder/"><i></i><span>How it works</span></a>
+        </div>
+      </div>
+      <ul class="cof-deals">
+        <li class="reveal"><span class="label">Partnership only</span><strong>€0</strong><p>I cover the full development cost. We split the company equally, 50/50.</p></li>
+        <li class="reveal" data-delay="1"><span class="label">Reduced price and partnership</span><strong>from €3,000</strong><p>You pay part of the cost, I cover the rest. I get a smaller share of the company.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" aria-hidden="true"><div class="band-track" id="band">{[0, 1, 2].map(() => <span>{skills.map(s => <b>{s}</b>)}</span>)}</div></section>
+
+  <section class="about-new" id="despre" aria-labelledby="about-title">
+    <div class="wrap">
+      <aside class="about-side">
+        <div class="portrait reveal"><img src="/andrei.jpg" alt="Andrei Năstase" width="800" height="800" loading="lazy"></div>
+        <ul class="about-links">
+          {socials.map(s => <li><a href={s.url} target={s.url.startsWith('mailto:') ? undefined : '_blank'} rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={s.icon} /><b>{s.label}</b><span>{s.handle}</span></a></li>)}
+        </ul>
+      </aside>
+      <div>
+        <h2 id="about-title">Who I am</h2>
+        <p class="lead">I am Andrei Năstase, from Ploiești, Romania. I have been writing software for 17 years, as a senior full-stack developer: frontend, backend and mobile apps. Besides code, I do product design, animation and marketing strategy, because my products needed all of them.</p>
+        <p class="lead lead-2">I am also the father of two wonderful boys. That changes how I look at a product: I ask what a child sees on the screen, how much time the app asks of them, and whether a tired parent can use it in the evening, with one hand. Two of my products, dubidu and Story of WHO, are made for children and their parents.</p>
+        <div class="know">
+          <div class="reveal"><h3>What I do</h3><p>I build products from scratch, from idea to launch. I build them for companies, for myself and, more and more often, together with founders from other fields.</p></div>
+          <div class="reveal" data-delay="1"><h3>What I am good at</h3><p>Saying what is not worth building. Taking a product all the way to paying customers. Leading teams, as CTO or as festival director.</p></div>
+        </div>
+        <div class="stack reveal">
+          <h3>What I know</h3>
+          <dl>
+            {stack.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+          </dl>
+        </div>
+        <div class="ai-tools reveal">
+          <div>
+            <h3>I work with AI</h3>
+            <p>And I am not shy about saying it. Today it would be foolish not to use the best tools. I do not just ask things in a chat: I integrate them through APIs into the products I build, connect them to databases and other tools through MCP servers, and work every day with agents that write and test code alongside me. The decisions and the responsibility for the code stay with me.</p>
+          </div>
+          <ul class="ai-marks">
+            {ai.map(a => <li><svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d={a.d} /></svg>{a.name}</li>)}
+          </ul>
+          <ul class="ai-uses">
+            {aiUses.map(u => <li>{u}</li>)}
+          </ul>
+        </div>
+        <ul class="roles-mini">
+          {roles.map(r => <li class="reveal"><span>{r.years}</span><b>{r.url ? <a href={r.url} target="_blank" rel="noopener">{r.name}</a> : r.name}</b><em>{r.role}{r.editions && `, ${r.editions}`}</em></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="next-up" aria-labelledby="work-next">
+    <div class="wrap">
+      <h2 id="work-next">In progress and for sale</h2>
+      <div class="phones">
+        {inWork.map(p => (
+          <a class="phone" href={p.url} target={p.url && '_blank'} rel={p.url && 'noopener'}>
+            {has(`work/${p.file}`)
+              ? <span class="frame"><img src={`/shots/work/${p.file}.jpg`} alt={`The ${p.name} website on a phone`} width="780" height="1688" loading="lazy"></span>
+              : <span class="frame is-empty">{p.name}</span>}
+            <b>{p.name}</b>
+            <span class="label">{p.status}</span>
+            <p>{p.text}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="clients" id="clienti" aria-labelledby="clients-title">
+    <div class="t-view">
+      <div class="t-bar wrap">
+        <div class="filters" id="filters" role="group" aria-label="Filter by industry">
+          <button aria-pressed="true" data-cat="">All</button>
+          {cats.map(c => <button aria-pressed="false" data-cat={c}>{c}</button>)}
+        </div>
+      </div>
+      <div class="t-intro">
+        <h2 id="clients-title">Client work</h2>
+        <p>{list.length} websites, across {cats.length} industries. Scroll.</p>
+      </div>
+      <ul class="tunnel" id="tunnel">
+        {list.map(c => (
+          <li data-cat={c.cat} data-name={c.name} data-work={c.work}>
+            {c.offline
+              ? <div class="t-off"><img src={`/shots/clients/${c.file}.jpg`} alt={`The ${c.name} website`} width="1280" height="800" loading="lazy" draggable="false"><span class="t-cap"><b>{c.name}</b>{c.work}</span></div>
+              : <a href={c.cs ?? c.url} target={c.cs ? undefined : '_blank'} rel={c.cs ? undefined : 'noopener'}><img src={`/shots/clients/${c.file}.jpg`} alt={`The ${c.name} website`} width="1280" height="800" loading="lazy" draggable="false"><span class="t-cap"><b>{c.name}</b>{c.work}{c.cs && ' · case study'}</span></a>}
+          </li>
+        ))}
+      </ul>
+      <div class="t-now" aria-hidden="true"><b></b><span></span><i></i></div>
+      <a class="t-skip" href="#servicii">Skip</a>
+    </div>
+  </section>
+  {older.length > 0 && <p class="t-rest"><span class="wrap">Also by me: {older.map(c => c.name).join(', ')}.</span></p>}
+
+  <Fragment set:html={restA} />
+  <Pricing />
+  <Fragment set:html={restC} />
+  <Process lang="en" steps={steps} intro="From the first call to the app your team uses, you always know where we are." />
+  <Fragment set:html={restD.replace('<!--ledger-->', ledgerHtml)} />
+
+  <aside class="tally" id="tally" aria-label="The numbers so far" hidden>
+    <button class="tally-head" type="button" aria-expanded="false"><span>So far</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+    <button class="tally-x" type="button" aria-label="Hide the summary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <ol></ol>
+  </aside>
+
+  <script>import '../../scripts/hero.js'; import '../../scripts/arc.js'; import '../../scripts/clients.js'; import '../../scripts/numbers.js'; import '../../scripts/receipt.js';</script>
+</Layout>

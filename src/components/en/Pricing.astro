@@ -1,0 +1,107 @@
+---
+const { third = 'cofondator', contact = '#contact' } = Astro.props;
+
+const types = [
+  { name: 'Quotes', level: 1, price: 'around €3,000', text: 'Your team picks the products and the labour, the price is calculated automatically, and the quote goes to the client with one button.' },
+  { name: 'Bookings and subscriptions', level: 2, price: '€4,000–7,000', text: 'Clients pick their own time and pay online. You see the calendar, the subscriptions and the payments in one place.' },
+  { name: 'Client portal', level: 2, text: 'Clients see their orders, invoices and documents on their own, without calling you for every question.' },
+  { name: 'Admin panel', level: 2, text: 'All of your company’s data on one screen, with different roles for each person on the team.' },
+  { name: 'CRM', level: 3, text: 'Clients, conversations and quotes in one place, so nothing gets lost between emails and Excel.' },
+  { name: 'B2B online ordering', level: 3, text: 'Partners order on their own, at their own prices, and the order reaches you directly, with no manual data entry.' },
+  { name: 'ERP', level: 4, text: 'Stock, orders, invoices and production connected to each other, built around how you work, not the other way around.' },
+  { name: 'Marketplace or SaaS', level: 4, text: 'A platform used by many companies or thousands of people. Tixello is one example.' },
+];
+const included = ['Analysis', 'Design', 'Development', 'Testing', 'Launch', 'Instructions'];
+const drivers = ['How many roles the app has', 'How many integrations it needs', 'Whether it takes payments', 'How complicated the rules are', 'Whether it also has a mobile app'];
+const levels = ['Small', 'Medium', 'Large', 'Very large'];
+---
+<section class="pricing" id="preturi" aria-labelledby="pricing-title">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="pricing-title">Guide prices</h2>
+      <p>You know the exact, fixed price before any line of code. You pay in stages, and the first step is the analysis: if you do not like what I propose, you stop there.</p>
+    </div>
+
+    <div class="plans">
+      <article class="plan plan-web reveal">
+        <span class="label">Web app</span>
+        <strong>from €3,000</strong>
+        <p>Works on any phone and computer, with nothing to download.</p>
+        <a class="go" href={contact}><i></i><span>Ask for a quote</span></a>
+      </article>
+      <article class="plan plan-mobile reveal" data-delay="1">
+        <span class="label">Mobile app</span>
+        <strong>from €5,000</strong>
+        <p>iOS and Android, on the same backend as the web app. Publishing in the stores is included.</p>
+        <ul class="stores" aria-label="Publishing in the stores">
+          <li>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.54c-.03-2.74 2.24-4.06 2.34-4.12-1.28-1.87-3.26-2.12-3.96-2.15-1.69-.17-3.29.99-4.15.99-.85 0-2.17-.97-3.57-.94-1.84.03-3.53 1.07-4.48 2.71-1.91 3.31-.49 8.22 1.37 10.91.91 1.31 2 2.79 3.42 2.74 1.37-.05 1.89-.89 3.55-.89 1.65 0 2.13.89 3.58.86 1.48-.03 2.42-1.34 3.32-2.66 1.05-1.52 1.48-3 1.5-3.08-.03-.01-2.89-1.11-2.92-4.37zM14.35 4.52c.75-.91 1.26-2.18 1.12-3.44-1.08.04-2.39.72-3.17 1.63-.7.8-1.31 2.09-1.14 3.33 1.21.09 2.44-.61 3.19-1.52z"/></svg>
+            <span>App Store</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 1.8c-.3.3-.5.8-.5 1.4v17.6c0 .6.2 1.1.5 1.4l.1.1L13.5 12v-.2L3.7 1.7l-.1.1zM16.8 15.3l-3.3-3.3v-.2l3.3-3.3.1.1 3.9 2.2c1.1.6 1.1 1.7 0 2.3l-3.9 2.2h-.1zM16.9 15.2L13.5 12 3.6 22.2c.4.4 1 .4 1.7 0l11.6-7zM16.9 8.8L5.3 2.1c-.7-.4-1.3-.3-1.7.1l9.9 9.8 3.4-3.2z"/></svg>
+            <span>Google Play</span>
+          </li>
+        </ul>
+      </article>
+      {third === 'cofondator'
+        ? (
+          <article class="plan plan-hot reveal" data-delay="2">
+            <span class="label">Technical co-founder</span>
+            <strong>€0</strong>
+            <p>I build at my own cost, for a share of the company. For ideas with people waiting for them.</p>
+            <a class="go" href="/en/cofounder/"><i></i><span>All the details</span></a>
+          </article>
+        )
+        : (
+          <article class="plan plan-hot reveal" data-delay="2">
+            <span class="label">Audit for an app built with AI</span>
+            <strong>Free</strong>
+            <p>I tell you what is solid, what needs to be redone and how much it would cost to get it into production.</p>
+            <a class="go" href="/en/ai-app-audit/"><i></i><span>Ask for the free audit</span></a>
+          </article>
+        )}
+    </div>
+
+    <div class="why-price">
+      <div class="reveal">
+        <h3>Why from €3,000?</h3>
+        <p>Because an app is not a company website. It has accounts, data, rules and payments that must work every day, for the whole team. The price covers the whole road, not just the code.</p>
+        <ol class="chain">{included.map(i => <li>{i}</li>)}</ol>
+      </div>
+      <div class="reveal" data-delay="1">
+        <h3>What makes the price go up?</h3>
+        <ul class="drivers">{drivers.map(d => <li>{d}</li>)}</ul>
+      </div>
+    </div>
+
+    <div class="types" id="types">
+      <h3>What is a web app, in practice?</h3>
+      <div class="types-grid">
+        <div class="types-tabs" role="tablist" aria-label="Types of apps">
+          {types.map((t, i) => <button role="tab" id={`type-tab-${i}`} aria-controls={`type-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{t.name}</button>)}
+        </div>
+        <div class="types-panels">
+          {types.map((t, i) => (
+            <div role="tabpanel" id={`type-${i}`} aria-labelledby={`type-tab-${i}`} hidden={i !== 0}>
+              <strong>{t.name}</strong>
+              <p>{t.text}</p>
+              <div class="types-meta">
+                <span class="meter" aria-label={`Complexity: ${levels[t.level - 1]}`}>{[1, 2, 3, 4].map(n => <i class={n <= t.level ? 'on' : undefined}></i>)}<em>{levels[t.level - 1]}</em></span>
+                <span>{t.price ?? 'Fixed price, after the analysis'}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <ul class="terms reveal">
+      <li>No commission per booking or per user.</li>
+      <li>The app runs on your company’s accounts, usually around €40 a month, paid directly to the providers, with no markup.</li>
+      <li>After launch, changes cost from €150 or go into a monthly subscription you can stop at any time.</li>
+      <li><a class="link" href="/en/ai-app-audit/">Audit for an app built with AI</a>: free, no obligation.</li>
+    </ul>
+  </div>
+</section>
+<script>import '../../scripts/pricing.js';</script>

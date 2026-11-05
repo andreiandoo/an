@@ -1,0 +1,114 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of resources/marketplaces/bileteonline in the ePAS repo, the code,
+// the two attraction CSVs and bilete.online. The 7,954 attractions are an informational catalogue, not bookable stock.
+const cs = {
+  title: 'bilete.online: case study | Andrei Năstase',
+  description: 'How I built bilete.online: attractions, museums and experiences from all over Romania, with an interactive map, routes and a trip planner, on the same platform as Tixello and AmBilet.',
+  path: '/en/projects/bilete-online/',
+  shots: '/shots/bileteonline',
+  label: 'Case study · 2026',
+  h1: 'bilete.online: 7,954 places to see in Romania, on a map, with a ticket on your phone.',
+  lead: 'A marketplace for attractions, museums, parks and experiences from all over the country. You pick the day, pay online and get in with the QR code on your phone. Besides tickets, the site helps you choose: a map, routes and a trip planner.',
+  summary: ['Tickets to museums and attractions are sold in many places, and information about what is worth seeing is scattered.', 'A marketplace on ePAS, with 7,954 attractions on a map, 37 routes, a trip planner and a panel for operators.', 'Live on bilete.online. The catalogue is complete, but tickets are for now sold only for a few experiences added by operators.'],
+  facts: [
+    ['Role', 'Founder. Product, design, code'],
+    ['Period', 'May - October 2026'],
+    ['Status', 'Live on bilete.online'],
+    ['Built on', 'ePAS, the platform behind Tixello'],
+  ],
+  links: [{ href: 'https://bilete.online', text: 'bilete.online' }, { href: 'https://bilete.online/harta', text: 'Attractions map' }],
+  hero: { src: 'home.jpg', alt: 'bilete.online home page: experiences start before you get in', domain: 'bilete.online' },
+  top: [
+    { value: 7954, label: 'Romanian attractions in the catalogue' },
+    { value: 341, label: 'cities' },
+    { value: 37, label: 'themed routes' },
+    { value: 321, label: 'commits on the site, in five months' },
+  ],
+  topNote: 'Counted in the repo and on the site, on 5 November 2026. The attractions form an informational catalogue. Tickets are sold only for experiences added by operators.',
+  blocks: [
+    {
+      label: '01 · The problem', h2: 'You know you want to get out of town. You do not know where yet.',
+      ps: [
+        'Tickets to museums and attractions in Romania are sold in many different places, often only at the ticket desk. Information about what is worth seeing is scattered too: town hall websites, blogs, old lists.',
+        'I wanted one place where a family starts from a simple question, “what do we do this weekend?”, and ends up with a plan, ticket included where one can be bought.',
+      ],
+    },
+    {
+      label: '02 · What it does', h2: 'From the map to a plan, then to a ticket.',
+      ps: [
+        'Each attraction has its own page, with a description, photos and its place on the map. The interactive map shows all 7,954 points and filters them by type, region and county. Themed routes link attractions along a real road, with distances and travel times.',
+        'The planner starts from your city, the number of days and the people you travel with, then suggests a day-by-day itinerary. It is built on rules, not on a language model, and says openly that visit durations are estimated.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'harta.jpg', alt: 'Map of attractions in Romania on bilete.online, with clusters of points for each area', cap: 'The map: all attractions, loaded from a single static file, without one request for each point.' },
+      { src: 'traseu.jpg', alt: 'The Transylvanian castles route on the map, with the stops in order', cap: 'A route: the road of Transylvanian castles, with stops, distances and travel time.' },
+    ] },
+    { type: 'pair', items: [
+      { src: 'atractie.jpg', alt: 'The Peleș Castle attraction page, with photo, description and map', cap: 'An attraction page: what it is, where it is, what else is nearby.' },
+      { src: 'plan.jpg', alt: 'The bilete.online trip planner: let’s go somewhere', cap: 'The planner: where you leave from, how many days, who with. The plan stays in the address, so you can send it.' },
+    ] },
+    {
+      type: 'flow', label: '03 · The architecture', h2: 'A fast site in front, a ticketing platform behind.',
+      ps: ['bilete.online has no database of its own. It is a separate PHP site that talks to ePAS, my ticketing platform (the same one under Tixello and AmBilet), through an API with its own key. In ePAS, each marketplace is a client with its own domain, currency and modules.'],
+      nodes: [
+        { t: 'ePAS (Laravel)', items: ['Attractions, experiences, venues', 'Orders, QR tickets, payments', 'Filament panel shared by all sites'] },
+        { t: 'Marketplace API', items: ['Separate key for each site', 'Modules switched on only for their client', 'Limit of 120 requests per minute'] },
+        { t: 'Two-level cache', items: ['API responses, served even after they expire', 'Whole pages, generated ahead', 'Parallel requests with curl_multi'], accent: true },
+        { t: 'The visitor', items: ['Fast HTML pages, behind Cloudflare', 'Map and planner from static files', 'Payment sent back to ePAS'] },
+      ],
+      foot: 'New modules, like activities with time slots, are switched on only for bilete.online. AmBilet, which runs on the same platform, does not see them.',
+    },
+    {
+      type: 'parts', label: '04 · Components', h2: 'What I built, piece by piece.',
+      items: [
+        { t: 'The visitor site', d: '55 page types, all redesigned in September 2026.', items: ['City, category, attraction, experience, venue', 'Map by type and by region, 37 routes', 'Deterministic trip planner', 'Cart, payment, gift card, voucher, order recovery', 'Customer account: family, 2FA, data export'] },
+        { t: 'The operator panel', d: '41 pages for the museums and companies that sell their experiences here.', items: ['Sales, attendees, analytics', 'Team, invoices, payouts to the operator', 'Point of sale (POS) for selling at the entrance', 'Booking widget for their own site', 'API documentation'] },
+        { t: 'The activities module in ePAS', d: '14 new services in the platform, now also used by Viaqui.', items: ['Time slots and bookings with a payment deadline', 'Automatic release of unpaid seats', 'Commission with a minimum per ticket', 'Three-level recommendations, nearby places', 'Attraction import from CSV'] },
+        { t: 'Data and SEO', d: 'The catalogue and the search pages.', items: ['7,275 attractions from one import, plus 681 monuments from Wikidata', 'City × intent pages for searches', 'SEO text and FAQs from the admin', 'WebSite, Organization, FAQPage structured data', 'Thumbnails generated on the server, at 3% of the photo size'] },
+      ],
+    },
+    {
+      label: '05 · The data', h2: 'Fifteen county capitals were missing from the catalogue.',
+      ps: [
+        'The initial attractions file had no rows for cities like Brașov, Sibiu, Iași or Constanța. I filled them in from Wikidata, with a search over the city area: 680 monuments, compared with 253 from a search by administrative unit. The bulk extraction timed out, so I rewrote it to go city by city and add to what already existed.',
+        'The original photos were up to 18 MB and were shown in 300-pixel cards. Now the server generates a thumbnail once, at about 3% of the size, and keeps it on disk.',
+      ],
+    },
+    { type: 'fig', src: 'categorie.jpg', alt: 'The Museums and exhibitions in Romania category on bilete.online', cap: 'A category: museums and exhibitions, with filters, text for searches and a map.' },
+    {
+      type: 'metrics', label: '06 · Metrics', h2: 'What I counted.',
+      note: 'All figures are measured in the repo or on the site, on 5 November 2026. The site does not yet have traffic or sales I can publish.',
+      items: [
+        ['7,954', 'attractions in the catalogue: 7,275 from the initial import and 681 monuments from Wikidata', 'measured'],
+        ['341', 'cities, in 8 regions', 'from the site'],
+        ['12', 'experience categories', 'from the site'],
+        ['~3%', 'size of a thumbnail compared with the original photo', 'measured'],
+        ['0.3 s', 'home page response time, a single measurement', 'measured'],
+        ['55 + 41', 'pages for visitors and for operators', 'in code'],
+      ],
+      build: [['205', 'PHP files'], ['52k', 'lines of PHP'], ['89', 'CSS files'], ['191', 'design mockups'], ['14', 'new services in ePAS'], ['~25', 'migrations in ePAS']],
+    },
+    {
+      type: 'lessons', label: '07 · What I learned', h2: 'What I take with me.',
+      items: [
+        ['A shared platform shortens the launch', 'Payments, tickets, emails and the admin panel already existed in ePAS. I built only what was new: activities, the map and the planner.'],
+        ['New modules must not touch existing clients', 'Each new feature is switched on only for the client that uses it, and the platform refuses requests from the others.'],
+        ['Static data beats the API at high volume', 'The map with almost 8,000 points loads from a single JSON file, generated at build time. It does not make one request for each point.'],
+        ['Say what is estimated', 'The planner does not have the opening hours of each museum. It uses durations per attraction type and says so right on the page.'],
+      ],
+    },
+    {
+      label: '08 · Where it is now', h2: 'The catalogue is large. Tickets on sale are still few.',
+      ps: ['All 7,954 attractions have a page, photos and a place on the map, but tickets can be bought only for experiences added by operators, and for now there are only a few of those. The attraction pages are not yet in the sitemap. The operator panel, payment and QR tickets work and are waiting for more partners.'],
+    },
+    {
+      label: '09 · Next', h2: 'I cloned the site for Europe in 11 days.',
+      ps: ['In October 2026, I started from bilete.online and built Viaqui: 113,093 attractions in 51 countries, with currencies and languages. <a class="link" href="/en/projects/viaqui/">The Viaqui case study</a>.'],
+    },
+  ],
+};
+---
+<CaseStudy cs={cs} lang="en" />

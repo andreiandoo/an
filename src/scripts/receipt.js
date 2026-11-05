@@ -1,3 +1,4 @@
+import { pick, locale } from './lang.js';
 const panel = document.getElementById('tally');
 const ledger = document.getElementById('ledger');
 if (panel && ledger) {
@@ -15,7 +16,7 @@ if (panel && ledger) {
   const refresh = row => {
     const stat = row.dataset.live;
     const cell = stat && document.querySelector(`[data-stat="${stat}"]`);
-    if (cell) row.querySelector('b').textContent = (+cell.dataset.count).toLocaleString('ro-RO');
+    if (cell) row.querySelector('b').textContent = (+cell.dataset.count).toLocaleString(locale);
   };
   const place = () => {
     panel.hidden = hidden || added.size === 0;

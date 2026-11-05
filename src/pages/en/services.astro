@@ -1,0 +1,32 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Pricing from '../../components/en/Pricing.astro';
+import Process from '../../components/Process.astro';
+import Chaos from '../../components/en/Chaos.astro';
+import Exploded from '../../components/en/Exploded.astro';
+import { steps } from '../../data/portfolio.en.js';
+import body from '../../partials/en/servicii.html?raw';
+
+const cut = body.indexOf('</section>') + '</section>'.length;
+const [a, rest] = body.slice(cut).split('<!--pricing-->');
+const [b, c] = rest.split('<!--process-->');
+---
+<Layout
+  title="Web and mobile apps for companies | Andrei Năstase"
+  description="I tell you honestly what is worth building in your company: a web or mobile app, an automation, or nothing new. Web from €3,000, mobile from €5,000."
+  path="/en/services/"
+  lang="en"
+  cta="#cerere"
+  ctaLabel="Free call"
+>
+  <Fragment set:html={body.slice(0, cut)} />
+  <section class="ribbon" id="ribbon" aria-hidden="true"><canvas></canvas></section>
+  <Fragment set:html={a} />
+  <Chaos />
+  <Exploded />
+  <Pricing third="audit" contact="#cerere" />
+  <Fragment set:html={b} />
+  <Process lang="en" steps={steps} intro="From the first call to the app your team uses, you always know where we are." />
+  <Fragment set:html={c} />
+  <script>import '../../scripts/ribbon.js';</script>
+</Layout>

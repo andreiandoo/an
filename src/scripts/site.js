@@ -1,10 +1,11 @@
+import { pick, locale } from './lang.js';
 const toggle = document.querySelector('.nav-toggle');
 const nav = document.querySelector('.site-header .nav');
 if (toggle && nav) {
   const set = open => {
     nav.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.textContent = open ? 'Închide' : 'Meniu';
+    toggle.textContent = open ? toggle.dataset.open : toggle.dataset.closed;
   };
   toggle.addEventListener('click', () => set(!nav.classList.contains('is-open')));
   nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => set(false)));
@@ -15,7 +16,7 @@ if (calc) {
   const MAX_SLABS = 34, LEI_PER_SLAB = 6000, WEEKS = 48, HOURS_PER_DAY = 8;
   const q = s => calc.querySelector(s);
   const hours = q('[name="ore"]'), rate = q('[name="tarif"]'), out = q('[data-out]'), stack = q('[data-stack]');
-  const fmt = n => Math.round(n).toLocaleString('ro-RO');
+  const fmt = n => Math.round(n).toLocaleString(locale);
   const slabs = Array.from({ length: MAX_SLABS }, (_, i) => {
     const s = document.createElement('i');
     s.style.setProperty('--n', i);
@@ -26,14 +27,14 @@ if (calc) {
   const tick = () => {
     shown += (target - shown) * .16;
     if (Math.abs(target - shown) < 1) shown = target;
-    out.textContent = `${fmt(shown)} lei`;
+    out.textContent = `${fmt(shown)} ${pick({ ro: "lei", en: "RON" })}`;
     raf = shown === target ? 0 : requestAnimationFrame(tick);
   };
   const update = () => {
     const h = +hours.value, r = +rate.value;
     target = h * r * WEEKS;
     q('[data-show="ore"]').textContent = h;
-    q('[data-show="tarif"]').textContent = `${r} lei`;
+    q('[data-show="tarif"]').textContent = `${r} ${pick({ ro: "lei", en: "RON" })}`;
     q('[data-days]').textContent = fmt(h * WEEKS / HOURS_PER_DAY);
     const count = Math.max(1, Math.min(MAX_SLABS, Math.round(target / LEI_PER_SLAB)));
     slabs.forEach((s, i) => s.classList.toggle('is-on', i < count));
@@ -44,9 +45,9 @@ if (calc) {
   update();
 }
 
-const FAIL_TEXT = 'Mesajul nu a putut fi trimis. Scrieți-mi direct la salut@andreinastase.ro.';
-const FILES_TOO_BIG = 'Fișierele sunt prea mari. Trimite cel mult 5 fișiere și 10 MB în total, sau pune un link.';
-const FILES_BAD_TYPE = 'Pot primi doar imagini (PNG, JPG, WebP, GIF) și PDF.';
+const FAIL_TEXT = pick({ ro: 'Mesajul nu a putut fi trimis. Scrieți-mi direct la salut@andreinastase.ro.', en: 'The message could not be sent. Please write to me at salut@andreinastase.ro.' });
+const FILES_TOO_BIG = pick({ ro: 'Fișierele sunt prea mari. Trimite cel mult 5 fișiere și 10 MB în total, sau pune un link.', en: 'The files are too large. Send at most 5 files and 10 MB in total, or add a link.' });
+const FILES_BAD_TYPE = pick({ ro: 'Pot primi doar imagini (PNG, JPG, WebP, GIF) și PDF.', en: 'I can only accept images (PNG, JPG, WebP, GIF) and PDF.' });
 
 // "name=a|b": true when the checked radio called name has one of the values.
 const matches = (form, rule) => {

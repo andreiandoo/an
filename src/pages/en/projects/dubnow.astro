@@ -1,0 +1,495 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import '../../../styles/case.css';
+
+// Our measurements: mivo/analysis/SUPERTONIC-EVALUATION-2026-10-30.md and the server load test (2026-10-30).
+// Reading accuracy across languages: published by the authors of the base model (Minimax-MLS-test), labelled as such.
+const facts = [
+  ['Role', 'Founder. Integration, testing, servers'],
+  ['Used in', 'dubidu, dubbing from subtitles'],
+  ['Output', 'WAV 44.1 kHz, 16-bit'],
+  ['Runs on', 'An ordinary processor or in the browser'],
+];
+
+const top = [
+  { value: 31, label: 'languages, from a single model' },
+  { value: 99, label: 'million parameters' },
+  { value: 20, label: 'viewers on a 10-thread server' },
+  { value: 44.1, dec: 1, label: 'kHz, the sound quality' },
+];
+
+const versus = [
+  ['Size', '0.7 - 2 billion parameters', 'about 99 million'],
+  ['Where it runs', 'Graphics cards in the vendor\'s data centre', 'An ordinary processor on the server, or the graphics card in the browser'],
+  ['How you pay', 'Per character or per minute, on every call', 'Only the server. In the browser, almost nothing'],
+  ['Your text', 'Goes to the vendor', 'Stays on our server or on your computer'],
+  ['Offline', 'No', 'Yes, in the browser, after the first download'],
+  ['First start', 'Instant, the model is at the vendor', '398 MB to download, once'],
+  ['Languages', 'Depends on the vendor', '31, with no separate model per language'],
+  ['New voices', 'Cloning from a few seconds of voice', 'Voice styles; actor voices are in progress'],
+];
+
+// List prices read on the vendors' pricing pages on 2026-11-05 (USD per 1M characters, pay as you go).
+// Hour of speech = 40 320 characters (11.2 characters/s, our Romanian measurement).
+// Dubnow server: Hetzner AX42 at EUR 99/month (founder's order page), 16 threads = 4 jobs of 4 threads at RTF 0.347,
+// fully loaded all month: ~8 400 h of speech, so about EUR 0.29 (~$0.35) per 1M characters. An estimate, not a bill.
+const CHARS_PER_HOUR = 11.2 * 3600;
+const costs = [
+  { n: 'ElevenLabs v3 / Multilingual v2', usd: 80 },
+  { n: 'ElevenLabs Flash / Turbo', usd: 40 },
+  { n: 'OpenAI tts-1-hd', usd: 30 },
+  { n: 'Amazon Polly, generative voices', usd: 30 },
+  { n: 'Amazon Polly, neural voices', usd: 16 },
+  { n: 'OpenAI tts-1', usd: 15 },
+  { n: 'Dubnow on a CPU server', usd: 0.35, us: true, est: true },
+  { n: 'Dubnow in the browser', usd: 0, us: true },
+];
+const maxCost = Math.max(...costs.map(c => c.usd));
+const usd = v => v === 0 ? '$0' : `$${v.toLocaleString('en-US', { minimumFractionDigits: v < 1 ? 2 : 0, maximumFractionDigits: v < 0.1 ? 3 : 2 })}`;
+
+const parts = [
+  { name: 'Vector estimator', p: 64.0, mb: 257, d: 'Builds the sound in 5-16 steps. This is where 90% of the time goes.' },
+  { name: 'Vocoder', p: 25.3, mb: 101, d: 'Turns the internal representation into a 44.1 kHz audio wave.' },
+  { name: 'Text encoder', p: 9.0, mb: 36, d: 'Reads the text letter by letter, with no pronunciation dictionary.' },
+  { name: 'Duration predictor', p: 0.86, mb: 4, d: 'Estimates how long the line lasts. We calculate the speed from this.' },
+];
+
+const tiers = [
+  { tag: 'In production', t: 'Server, processor', hw: 'Intel i7-6700K, 4 threads, Python and ONNX Runtime', v: '0.35×', sub: 'real time at 10 steps; 0.20× at 5 steps', note: 'One second of speech in 0.35 seconds.' },
+  { tag: 'In testing', t: 'Browser, WebGPU', hw: 'Chrome, Radeon RX 570 card', v: '0.20×', sub: 'real time at 10 steps; 0.14-0.22 in Dubnow Lab', note: 'The user\'s computer does the synthesis. The server no longer costs anything.' },
+  { tag: 'Load test', t: 'Several viewers', hw: 'Xeon E5-2630 v4, 10 threads, simulation', v: '20', sub: 'simultaneous viewers, no line delayed', note: 'At 30 viewers, 76% of lines were late. The limit is between 20 and 30.' },
+  { tag: 'Not real time', t: 'Browser without a graphics card', hw: 'WebAssembly, a single thread', v: '2.86×', sub: 'real time at 10 steps', note: 'Too slow. The multi-threaded version is not tested yet.' },
+];
+
+const accuracy = [
+  ['Romanian', '2.19'], ['English', '2.06'], ['German', '0.86'], ['Spanish', '1.13'], ['Turkish', '1.00'], ['Ukrainian', '1.23'],
+  ['Dutch', '1.47'], ['Polish', '1.63'], ['Italian', '1.75'], ['Czech', '3.02'], ['Greek', '3.54'], ['French', '4.89'],
+];
+
+const romanian = [
+  ['VoxCPM2', 22.39], ['OmniVoice', 2.29], ['Dubnow (the base model)', 2.19],
+];
+
+const added = [
+  ['Spelling rules for Romanian', 'Numbers, abbreviations and words the model read wrongly, rewritten before synthesis.'],
+  ['Each line fits its time slot exactly', 'The speed is calculated from the estimated duration and the subtitle window. The sound no longer needs stretching.'],
+  ['Child voices', 'Pitch and formants of the voice, changed after synthesis. Two child voices passed the listening test.'],
+  ['Voice blends', 'Two styles combined give a new voice, with a different pitch.'],
+  ['One shared server for many viewers', 'Each process takes the most urgent line among all viewers. Lines arrive 45 seconds ahead.'],
+  ['Dubnow Studio and Dubnow Lab', 'Actors record lines for new voices. Lab measures speed on real laptops before we move synthesis into the browser.'],
+];
+
+const uses = [
+  { s: 'In the product', t: 'Film dubbing', d: 'dubidu reads the Romanian subtitles and gives each character its own voice, in sync with the film.' },
+  { s: 'Demo', t: 'Products in several languages', d: 'The same scene, in 18 languages, on the investor page. A new country means voices and spelling rules, not another model.' },
+  { s: 'Planned', t: 'Podcasts and interviews', d: 'Two or three speakers, each with their own voice, translated from one language into another.' },
+  { s: 'Possible', t: 'Accessibility and education', d: 'Texts read aloud for children who cannot read yet and for people with poor eyesight. In the browser, the text never leaves the computer.' },
+  { s: 'Possible', t: 'Video narration', d: 'A voice for tutorials, presentations and ads, with no per-character fees.' },
+  { s: 'In testing', t: 'Apps that work offline', d: 'The model downloads once, then speaks directly on the device.' },
+];
+
+// Language code, name in English, own name, demo sentence.
+const languages = [
+  ['ar', 'Arabic', 'العربية', 'مرحبًا! أنا دَبناو، ويمكنني قراءة أي نص بصوت عالٍ.'],
+  ['bg', 'Bulgarian', 'Български', 'Здравейте! Аз съм Dubnow и мога да прочета на глас всеки текст.'],
+  ['hr', 'Croatian', 'Hrvatski', 'Bok! Ja sam Dubnow i mogu naglas pročitati bilo koji tekst.'],
+  ['cs', 'Czech', 'Čeština', 'Ahoj! Jsem Dubnow a umím nahlas přečíst jakýkoli text.'],
+  ['da', 'Danish', 'Dansk', 'Hej! Jeg hedder Dubnow og kan læse enhver tekst højt.'],
+  ['nl', 'Dutch', 'Nederlands', 'Hallo! Ik ben Dubnow en ik kan elke tekst voorlezen.'],
+  ['en', 'English', 'English', "Hello! I'm Dubnow, and I can read any text aloud."],
+  ['et', 'Estonian', 'Eesti', 'Tere! Mina olen Dubnow ja oskan iga teksti ette lugeda.'],
+  ['fi', 'Finnish', 'Suomi', 'Hei! Olen Dubnow, ja osaan lukea minkä tahansa tekstin ääneen.'],
+  ['fr', 'French', 'Français', "Bonjour ! Je suis Dubnow et je peux lire n'importe quel texte à voix haute."],
+  ['de', 'German', 'Deutsch', 'Hallo! Ich bin Dubnow und kann jeden Text vorlesen.'],
+  ['el', 'Greek', 'Ελληνικά', 'Γεια σας! Είμαι ο Dubnow και μπορώ να διαβάσω δυνατά οποιοδήποτε κείμενο.'],
+  ['hi', 'Hindi', 'हिन्दी', 'नमस्ते! मैं डबनाउ हूँ, और मैं कोई भी पाठ ज़ोर से पढ़ सकता हूँ।'],
+  ['hu', 'Hungarian', 'Magyar', 'Szia! Dubnow vagyok, és bármilyen szöveget fel tudok olvasni.'],
+  ['id', 'Indonesian', 'Bahasa Indonesia', 'Halo! Saya Dubnow, dan saya bisa membacakan teks apa pun.'],
+  ['it', 'Italian', 'Italiano', 'Ciao! Sono Dubnow e posso leggere ad alta voce qualsiasi testo.'],
+  ['ja', 'Japanese', '日本語', 'こんにちは！私はダブナウです。どんな文章でも読み上げることができます。'],
+  ['ko', 'Korean', '한국어', '안녕하세요! 저는 더브나우입니다. 어떤 글이든 소리 내어 읽을 수 있어요.'],
+  ['lv', 'Latvian', 'Latviešu', 'Sveiki! Es esmu Dubnow, un es varu skaļi nolasīt jebkuru tekstu.'],
+  ['lt', 'Lithuanian', 'Lietuvių', 'Labas! Aš esu Dubnow ir galiu garsiai perskaityti bet kokį tekstą.'],
+  ['pl', 'Polish', 'Polski', 'Cześć! Jestem Dubnow i mogę przeczytać na głos dowolny tekst.'],
+  ['pt', 'Portuguese', 'Português', 'Olá! Sou o Dubnow e consigo ler qualquer texto em voz alta.'],
+  ['ro', 'Romanian', 'Română', 'Bună! Sunt Dubnow și pot citi cu voce tare orice text. Scrie-mi ceva și ascultă.'],
+  ['ru', 'Russian', 'Русский', 'Привет! Я Dubnow, и я могу прочитать вслух любой текст.'],
+  ['sk', 'Slovak', 'Slovenčina', 'Ahoj! Som Dubnow a viem nahlas prečítať akýkoľvek text.'],
+  ['sl', 'Slovenian', 'Slovenščina', 'Živjo! Sem Dubnow in znam na glas prebrati katero koli besedilo.'],
+  ['es', 'Spanish', 'Español', '¡Hola! Soy Dubnow y puedo leer en voz alta cualquier texto.'],
+  ['sv', 'Swedish', 'Svenska', 'Hej! Jag heter Dubnow och kan läsa upp vilken text som helst.'],
+  ['tr', 'Turkish', 'Türkçe', 'Merhaba! Ben Dubnow, her metni sesli okuyabilirim.'],
+  ['uk', 'Ukrainian', 'Українська', 'Привіт! Я Dubnow, і я можу прочитати вголос будь-який текст.'],
+  ['vi', 'Vietnamese', 'Tiếng Việt', 'Xin chào! Tôi là Dubnow, và tôi có thể đọc to bất kỳ văn bản nào.'],
+];
+// Languages Chrome's built-in Translator API lists (developer.chrome.com/docs/ai/translator-api, read 2026-11-05).
+const translatable = ['ar', 'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'fi', 'fr', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'lt', 'nl', 'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'vi'];
+const samples = Object.fromEntries(languages.map(([c, , , s]) => [c, s]));
+const voices = [['F1', 'Woman, warm'], ['F3', 'Woman, young'], ['M1', 'Man, calm'], ['M3', 'Man, deep']];
+const maxP = Math.max(...parts.map(x => x.p));
+---
+<Layout
+  title="Dubnow: case study | Andrei Năstase"
+  description="Dubnow, the voice engine behind dubidu: 31 languages, a 99-million-parameter model that runs on an ordinary processor or in the browser. Live demo, diagrams and measured numbers."
+  path="/en/projects/dubnow/"
+  lang="en"
+  image="/shots/dubidu/inv-tech.jpg"
+>
+  <article class="cs">
+    <header class="wrap cs-hero">
+      <a class="cs-back" href="/en/projects/dubidu/">← dubidu, the case study</a>
+      <p class="label">Case study · 2026</p>
+      <h1>Dubnow: a voice engine that speaks 31 languages, without graphics cards.</h1>
+      <p class="lead">Dubnow turns text into speech. It is the engine behind dubidu: it reads the subtitle lines with each character's voice, on an ordinary server or directly in the browser.</p>
+      <dl class="cs-facts">
+        {facts.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#demo">Try the demo</a>
+        <a class="btn" href="#limbi">The 31 languages</a>
+      </div>
+    </header>
+
+    <section class="wrap" id="demo" aria-labelledby="demo-title">
+      <div class="tts">
+        <div class="tts-head">
+          <p class="label">Live demo</p>
+          <h2 id="demo-title">Write a text, choose the language, listen.</h2>
+          <p>The voice is generated on your computer, not on a server. The model downloads once, then runs in the browser, on the graphics card or on the processor. The times below are measured here.</p>
+          <p class="tts-engine">Will run on: <b data-engine>…</b></p>
+        </div>
+        <form class="tts-form" id="tts" data-samples={JSON.stringify(samples)}>
+          <label class="tts-text">
+            <span class="vh">Text to read</span>
+            <textarea name="text" rows="4" maxlength="300" dir="auto" required>{samples.en}</textarea>
+            <small><b data-count-chars>0</b> / 300</small>
+          </label>
+          <div class="tts-row">
+            <label class="tts-field">
+              <span>I write in</span>
+              <select name="from">
+                <option value="">Same language as the voice</option>
+                {languages.filter(([c]) => translatable.includes(c)).map(([c, name]) => <option value={c} selected={c === 'en'}>{name}, translated</option>)}
+              </select>
+            </label>
+            <label class="tts-field">
+              <span>The voice speaks</span>
+              <select name="lang">
+                {languages.map(([c, name, own]) => <option value={c} selected={c === 'en'}>{name}{own !== name ? ` · ${own}` : ''}</option>)}
+              </select>
+            </label>
+            <fieldset class="tts-voices">
+              <legend>Voice</legend>
+              {voices.map(([v, l], i) => <label><input type="radio" name="voice" value={v} checked={i === 0}><span>{l}</span></label>)}
+            </fieldset>
+            <button class="btn btn-primary btn-lg" type="button" data-load>Download the model (398 MB)</button>
+            <button class="btn btn-primary btn-lg" type="submit" hidden>Generate voice</button>
+          </div>
+          <p class="tts-no-translate" hidden>Translation only works in Chrome and Edge on desktop. Here, write directly in the voice's language.</p>
+          <div class="tts-bar" hidden><i></i></div>
+          <p class="tts-translated" hidden><span>Translated in the browser:</span> <q></q></p>
+          <p class="tts-status" role="status" aria-live="polite">Start the model to generate a voice. On mobile data, download it over Wi-Fi.</p>
+          <audio controls hidden></audio>
+          <dl class="tts-times">
+            <div><dt>Model start</dt><dd data-t="load">-</dd></div>
+            <div><dt>Synthesis time</dt><dd data-t="voice">-</dd></div>
+            <div><dt>Voice length</dt><dd data-t="audio">-</dd></div>
+            <div><dt>Ratio (RTF)</dt><dd data-t="rtf">-</dd></div>
+          </dl>
+        </form>
+        <p class="tts-note">You can write in one language and listen in another, for example write in English and hear the voice in Russian. The browser does the translation, with the translation model built into Chrome 138+ and Edge 148+, on desktop. For the first language pair, the browser downloads its translation pack. Your text never leaves your computer. The model stays saved in the browser, so a second visit starts without a download. On a graphics card the voice comes faster than real time; on the processor alone, it may take longer than the sentence. The voices in the demo are the model's generic styles; dubidu adds character voices and, soon, voices recorded with actors.</p>
+      </div>
+    </section>
+
+    <section class="wrap cs-top" aria-label="In short">
+      <ul>
+        {top.map(m => (
+          <li class="reveal">
+            <b data-count={m.value} data-dec={m.dec ?? 0} data-prefix="" data-suffix="">{m.value.toLocaleString('en-US')}</b>
+            <span>{m.label}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">01 · Why</p></div>
+      <div class="cs-body">
+        <h2>A dubbed film needs thousands of lines. At API prices, the numbers do not work.</h2>
+        <p>A film has around a thousand lines. With a cloud voice service, you pay for every character on every viewing, because the dub is not stored: it is generated on the spot, for each family. I tested several engines and chose by ear. I kept a small one, with open weights, that runs on an ordinary processor. I built Dubnow on it.</p>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">02 · Comparison</p></div>
+      <div class="cs-body">
+        <h2>A large cloud model or Dubnow.</h2>
+        <p>The comparison is general: "large model" means the class of voice engines with 0.7-2 billion parameters, run by a vendor.</p>
+      </div>
+    </section>
+    <div class="wrap">
+      <div class="vs reveal" role="table" aria-label="A large cloud model compared with Dubnow">
+        <div class="vs-row vs-head" role="row"><span role="columnheader"></span><span role="columnheader">Large cloud model</span><span role="columnheader">Dubnow</span></div>
+        {versus.map(([k, a, b]) => <div class="vs-row" role="row"><span role="rowheader">{k}</span><span role="cell">{a}</span><span role="cell">{b}</span></div>)}
+      </div>
+
+      <div class="cost reveal">
+        <h3 class="cs-sub">What the voice costs: one million characters, about 25 hours of speech</h3>
+        <div class="cost-head" aria-hidden="true"><span>Model</span><span></span><span>1M characters</span><span>One hour of speech</span></div>
+        <ul>
+          {costs.map(c => (
+            <li class={c.us ? 'is-us' : undefined}>
+              <span>{c.n}{c.est && <small> · estimate</small>}</span>
+              <i style={`--w:${c.usd / maxCost * 100}%`}></i>
+              <b>{usd(c.usd)}</b>
+              <b>{usd(Math.round(c.usd * CHARS_PER_HOUR / 1e6 * 1000) / 1000)}</b>
+            </li>
+          ))}
+        </ul>
+        <p class="cs-note small">List prices, pay as you go, read on the vendors' pricing pages on 5 November 2026, without volume discounts and without free tiers. OpenAI marks tts-1 as deprecated. One hour of speech means 40,320 characters, the pace we measured in Romanian. Dubnow on a server is an estimate: a 16-thread Hetzner server at €99 per month, fully loaded all the time, at the speed measured on 4 threads. In the browser, synthesis runs on the visitor's computer, so it costs us nothing per hour.</p>
+      </div>
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">03 · How it works</p></div>
+      <div class="cs-body">
+        <h2>Four small networks, chained one after another.</h2>
+        <p>The text goes in letter by letter, with no pronunciation dictionary. One network estimates how long the line lasts, another builds the sound in a few steps, and the last turns it into an audio wave. The voice comes from a style: a small file that describes a speaker's timbre and rhythm.</p>
+      </div>
+    </section>
+
+    <div class="wrap"><figure class="cs-arch reveal" aria-label="Dubnow synthesis diagram">
+      <svg viewBox="0 0 1000 470" role="img" aria-labelledby="pipe-t">
+        <title id="pipe-t">Text, spelling rules, text encoder, duration predictor, vector estimator, vocoder, 44.1 kHz audio. The voice style feeds the predictor and the estimator.</title>
+        <g class="a-box">
+          <rect x="20" y="40" width="180" height="96" rx="12"/>
+          <rect x="230" y="40" width="200" height="96" rx="12"/>
+          <rect x="460" y="40" width="200" height="96" rx="12"/>
+          <rect x="690" y="40" width="290" height="96" rx="12"/>
+          <rect x="460" y="230" width="200" height="110" rx="12"/>
+          <rect x="690" y="230" width="290" height="110" rx="12"/>
+          <rect x="20" y="230" width="410" height="110" rx="12" class="a-soft"/>
+        </g>
+        <g class="a-head">
+          <text x="40" y="78">Text</text>
+          <text x="250" y="78">Spelling rules</text>
+          <text x="480" y="78">Text encoder</text>
+          <text x="710" y="78">Duration predictor</text>
+          <text x="480" y="268">Vector estimator</text>
+          <text x="710" y="268">Vocoder</text>
+          <text x="40" y="268">Voice style</text>
+        </g>
+        <g class="a-txt">
+          <text x="40" y="110">"Hi! How are you?"</text>
+          <text x="250" y="110">numbers, abbreviations (RO)</text>
+          <text x="480" y="110">9.0M parameters</text>
+          <text x="710" y="110">0.86M · line speed</text>
+          <text x="480" y="300">64.0M · 5-16 steps</text>
+          <text x="480" y="324">90% of the time</text>
+          <text x="710" y="300">25.3M parameters</text>
+          <text x="710" y="324">wave at 44.1 kHz</text>
+          <text x="40" y="300">JSON file: timbre and rhythm</text>
+          <text x="40" y="324">F1, M3, child voice, blend</text>
+        </g>
+        <g class="a-line">
+          <path d="M200 88 H230"/><path d="M430 88 H460"/><path d="M660 88 H690"/>
+          <path d="M835 136 V185 H560 V230"/>
+          <path d="M660 285 H690"/>
+          <path d="M835 340 V400"/>
+        </g>
+        <g class="a-line a-dash">
+          <path d="M430 285 H460"/>
+          <path d="M330 230 V170 H760 V136"/>
+        </g>
+        <g class="a-out">
+          <rect x="690" y="400" width="290" height="50" rx="25"/>
+          <text x="835" y="431" text-anchor="middle">WAV audio, 16-bit</text>
+        </g>
+        <g class="a-lbl"><text x="572" y="214">per-letter durations</text><text x="560" y="160" text-anchor="middle">the style feeds both</text></g>
+      </svg>
+    </figure></div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">04 · Size</p></div>
+      <div class="cs-body">
+        <h2>99 million parameters, 398 MB.</h2>
+        <p>Most of it is the estimator that builds the sound. That is where speed is won: fewer steps mean faster synthesis, at a small cost in quality.</p>
+        <ul class="bars">
+          {parts.map(x => (
+            <li class="reveal">
+              <div class="bars-top"><b>{x.name}</b><span>{x.p.toLocaleString('en-US')}M · {x.mb} MB</span></div>
+              <i style={`--w:${Math.max(2, x.p / maxP * 100)}%`}></i>
+              <p>{x.d}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">05 · Where it runs</p></div>
+      <div class="cs-body">
+        <h2>On the server today. In the browser, tomorrow.</h2>
+        <p>In dubidu, the extension sends the lines 45 seconds ahead. Servers start when viewers appear and stop when they leave. On a computer with a graphics card, synthesis can run right inside Chrome, through WebGPU, and the server is no longer needed.</p>
+      </div>
+    </section>
+
+    <div class="wrap"><figure class="cs-arch reveal" aria-label="Where Dubnow runs">
+      <svg viewBox="0 0 1000 380" role="img" aria-labelledby="run-t">
+        <title id="run-t">The dubidu extension sends the lines to a pool of Dubnow CPU servers or synthesises them locally in the browser through WebGPU.</title>
+        <g class="a-box">
+          <rect x="20" y="130" width="250" height="120" rx="14"/>
+          <rect x="400" y="30" width="270" height="150" rx="14"/>
+          <rect x="400" y="210" width="270" height="140" rx="14" class="a-soft"/>
+          <rect x="770" y="30" width="210" height="150" rx="14"/>
+        </g>
+        <g class="a-head">
+          <text x="44" y="172">dubidu extension</text>
+          <text x="424" y="72">Dubnow server · CPU</text>
+          <text x="424" y="252">Browser · WebGPU</text>
+          <text x="794" y="72">Server pool</text>
+        </g>
+        <g class="a-txt">
+          <text x="44" y="204">lines 45 s ahead</text>
+          <text x="44" y="228">played on the video clock</text>
+          <text x="424" y="104">the most urgent line</text>
+          <text x="424" y="128">among all viewers</text>
+          <text x="424" y="152">20 viewers / 10 threads</text>
+          <text x="424" y="284">synthesis on the user's</text>
+          <text x="424" y="308">graphics card, 0.20×</text>
+          <text x="424" y="332">being tested on laptops</text>
+          <text x="794" y="104">starts on demand</text>
+          <text x="794" y="128">stops when idle</text>
+          <text x="794" y="152">cost follows usage</text>
+        </g>
+        <g class="a-line">
+          <path d="M270 170 H335 V105 H400"/>
+          <path d="M670 105 H770"/>
+        </g>
+        <g class="a-line a-dash"><path d="M270 210 H335 V280 H400"/></g>
+        <g class="a-lbl">
+          <text x="300" y="92">today</text>
+          <text x="300" y="304">in testing</text>
+        </g>
+      </svg>
+    </figure></div>
+
+    <section class="cs-night" id="performanta">
+      <div class="wrap">
+        <p class="label">06 · Performance</p>
+        <h2>How fast it speaks, on which hardware.</h2>
+        <p class="cs-note">All the numbers below were measured by us, on Romanian lines, with the hardware shown. RTF means compute time divided by the length of the voice: below 1 is faster than real time.</p>
+        <ul class="tiers">
+          {tiers.map(x => (
+            <li class="reveal">
+              <em>{x.tag}</em>
+              <h3>{x.t}</h3>
+              <p class="tiers-hw">{x.hw}</p>
+              <b>{x.v}</b>
+              <span>{x.sub}</span>
+              <p>{x.note}</p>
+            </li>
+          ))}
+        </ul>
+
+        <div class="acc">
+          <div>
+            <h3 class="cs-sub">How accurately it reads Romanian</h3>
+            <dl class="cs-build acc-ro">
+              <div><dd>2.89%</dd><dt>wrong words at 10 steps, diacritics ignored</dt></div>
+              <div><dd>4.13%</dd><dt>including diacritics</dt></div>
+              <div><dd>11.2</dd><dt>characters per second, at normal speed</dt></div>
+            </dl>
+            <p class="cs-note small">Measured by us: 24 lines, 4 voices, read back with Whisper. Some of the errors are Whisper's own.</p>
+          </div>
+          <div>
+            <h3 class="cs-sub">Compared with other models, in Romanian</h3>
+            <ul class="vs-bars">
+              {romanian.map(([n, v]) => (
+                <li class={n.startsWith('Dubnow') ? 'is-us' : undefined}>
+                  <span>{n}</span><i style={`--w:${Math.min(100, v / 22.39 * 100)}%`}></i><b>{v.toLocaleString('en-US')}%</b>
+                </li>
+              ))}
+            </ul>
+            <p class="cs-note small">Word error rate on the Minimax-MLS test, published by the authors of the base model. Lower is better.</p>
+          </div>
+        </div>
+
+        <h3 class="cs-sub">Word error rate, by language</h3>
+        <dl class="cs-build acc-langs">
+          {accuracy.map(([l, v]) => <div><dd>{v}%</dd><dt>{l}</dt></div>)}
+        </dl>
+        <p class="cs-note small">Same source: the Minimax-MLS test, published by the authors of the base model. We did not rerun it.</p>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">07 · What we added</p></div>
+      <div class="cs-body">
+        <h2>What Dubnow does beyond the model it started from.</h2>
+        <div class="cs-lessons">
+          {added.map(([t, d]) => <div class="reveal"><h3>{t}</h3><p>{d}</p></div>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">08 · Uses</p></div>
+      <div class="cs-body">
+        <h2>Where it fits.</h2>
+        <p>Where speed, cost per hour and the place where the text stays all matter. Each use says how far we have got.</p>
+      </div>
+    </section>
+    <div class="wrap cs-uses">
+      {uses.map((u, i) => (
+        <section class="reveal" data-delay={String(i % 3)}>
+          <em class={u.s === 'In the product' ? 'is-live' : undefined}>{u.s}</em>
+          <h3>{u.t}</h3>
+          <p>{u.d}</p>
+        </section>
+      ))}
+    </div>
+
+    <section class="wrap cs-sec" id="limbi">
+      <div class="cs-side"><p class="label">09 · Languages</p></div>
+      <div class="cs-body">
+        <h2>31 languages, a single model.</h2>
+        <p>There are no separate models per language. Romanian is tuned by ear, with its own spelling rules; the other languages work as they were published. You can try all of them in the demo.</p>
+      </div>
+    </section>
+    <div class="wrap">
+      <ul class="langs reveal">
+        {languages.map(([c, name, own]) => (
+          <li class={c === 'ro' ? 'is-tuned' : undefined}>
+            <button type="button" data-lang={c}><code>{c}</code><span>{name}</span>{own !== name && <small lang={c}>{own}</small>}</button>
+          </li>
+        ))}
+      </ul>
+      <p class="small muted langs-note">Click a language to choose it in the demo.</p>
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">10 · Limits</p></div>
+      <div class="cs-body">
+        <h2>What it does not do well yet.</h2>
+        <ul class="cs-next">
+          <li><b>Emotion.</b> The voice is clear, but it does not shout or whisper convincingly. We are working on emotion styles, chosen from the text of the line.</li>
+          <li><b>Child voices.</b> We get them by modifying adult voices. Voices recorded with actors will solve this.</li>
+          <li><b>Training on Romanian.</b> The base model's training code is not public, so it has to be rebuilt. This is the biggest technical risk.</li>
+          <li><b>The browser.</b> Without a graphics card, synthesis in the browser is too slow. We are testing on at least 8 laptops before moving it there.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="wrap"><div class="cs-end">
+      <h2>Do you need voice in your product?</h2>
+      <p class="lead">I can integrate Dubnow or another voice engine into a web app, a mobile app or a browser extension.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary btn-lg" href="/en/#contact">Write to me</a>
+        <a class="btn btn-lg" href="/en/projects/dubidu/">See the dubidu case study</a>
+      </div>
+    </div></section>
+  </article>
+  <script>import '../../../scripts/numbers.js';</script>
+  <script is:inline type="module" src="/dubnow/demo.js?v=4"></script>
+</Layout>

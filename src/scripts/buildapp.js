@@ -1,3 +1,4 @@
+import { pick, locale } from './lang.js';
 const section = document.getElementById('construim');
 if (section) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -19,7 +20,7 @@ if (section) {
     ['k', '  Reminder::whatsapp'], ['t', '($visit);'], ['n', ''],
     ['k', '  return '], ['t', '$visit;'], ['n', ''], ['p', '}'],
   ];
-  const TERM = ['Baza de date migrată', 'Conturi și roluri', 'Plăți conectate', 'Reminder pe WhatsApp', '142 de teste trecute', 'Publicat pe vetloc.ro'];
+  const TERM = pick({ ro: ['Baza de date migrată', 'Conturi și roluri', 'Plăți conectate', 'Reminder pe WhatsApp', '142 de teste trecute', 'Publicat pe vetloc.ro'], en: ['Database migrated', 'Accounts and roles', 'Payments connected', 'WhatsApp reminders', '142 tests passed', 'Published on vetloc.ro'] });
   const spans = CODE.map(([kind, value]) => {
     if (kind === 'n') { const br = document.createElement('br'); codeBox.append(br); return br; }
     const s = document.createElement('span');
@@ -37,7 +38,7 @@ if (section) {
   const numbers = [...section.querySelectorAll('[data-n]')].map(el => ({ el: el.querySelector('u'), n: +el.dataset.n, s: el.dataset.s }));
   const text = typed.dataset.text;
   const clamp = n => Math.min(1, Math.max(0, n));
-  const fmt = n => Math.round(n).toLocaleString('ro-RO');
+  const fmt = n => Math.round(n).toLocaleString(locale);
   let current = -1, visible = false, eased = 0, count = 0;
 
   const setStage = s => {

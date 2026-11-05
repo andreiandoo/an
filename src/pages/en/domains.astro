@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const featured = [
+  { name: 'bine.ro', price: 15000, note: 'One positive word that everyone in Romania says ("bine" means "good").' },
+  { name: 'epas.ro', price: 6500, note: 'Four letters, easy to remember in any language.' },
+  { name: 'cautbilet.ro', price: 3000, note: 'Exactly what someone types when they want to go to an event ("I am looking for a ticket").' },
+];
+const groups = [
+  ['Events and theatre', [['bilete-teatru.ro', 800], ['hailateatru.ro', 800], ['teatru-copii.ro', 900], ['livetributes.com', 1500]]],
+  ['Business and digital', [['roplati.ro', 3000], ['agentiaweb.ro', 2500], ['x-x.ro', 2000], ['e-a.ro', 1800], ['suntonline.ro', 1500]]],
+  ['Education and careers', [['e-test.ro', 2500], ['eduplan.ro', 2500], ['actoria.ro', 2500], ['cinesunt.ro', 2000], ['cursdecariera.ro', 1200], ['nastasia.ro', 1200]]],
+];
+const count = featured.length + groups.reduce((n, [, list]) => n + list.length, 0);
+const price = n => `€${n.toLocaleString('en-US')}`;
+const mail = name => `mailto:salut@andreinastase.ro?subject=${encodeURIComponent(`Domain: ${name}`)}`;
+const split = name => { const i = name.lastIndexOf('.'); return [name.slice(0, i), name.slice(i)]; };
+---
+<Layout
+  title="Domains for sale | Andrei Năstase"
+  description="Short .ro and .com domains, available directly from the owner, from €800."
+  path="/en/domains/"
+  lang="en"
+  theme="night"
+>
+  <section class="shop">
+    <div class="wrap">
+      <header class="shop-head">
+        <span class="label">{count} domains · directly from the owner</span>
+        <h1>The good name is already taken. Some of them are here.</h1>
+        <p>Short domains, easy to say over the phone. Write to me about the one you want, and the transfer happens directly, with no middleman.</p>
+      </header>
+
+      <ul class="shop-top">
+        {featured.map(d => {
+          const [base, ext] = split(d.name);
+          return (
+            <li>
+              <a href={mail(d.name)}>
+                <strong>{base}<small>{ext}</small></strong>
+                <p>{d.note}</p>
+                <span class="row"><span>{price(d.price)}</span><i>I want this domain</i></span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+
+      {groups.map(([title, list]) => (
+        <section class="shop-group">
+          <h2 class="label">{title}</h2>
+          <ul>
+            {list.map(([name, value]) => {
+              const [base, ext] = split(name);
+              return (
+                <li>
+                  <a href={mail(name)}>
+                    <b>{base}<small>{ext}</small></b>
+                    <span>{price(value)}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </section>
+</Layout>

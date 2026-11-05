@@ -1,0 +1,391 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import '../../../styles/case.css';
+
+// Figures checked on 4 Nov 2026: git history of the three repos, the code, dubidu.net and dubidu.net/investors.
+const facts = [
+  ['Role', 'Founder. Product, design, code, data'],
+  ['Period', 'October 2026 - present'],
+  ['Status', 'Beta. Launch on 1 December 2026'],
+  ['Platforms', 'Chrome extension, web, voice server'],
+];
+
+const top = [
+  { value: 8, label: 'days of intensive work, from v0.7 to v0.19' },
+  { value: 429, label: 'commits across 3 repos' },
+  { value: 237, label: 'automated tests on the backend' },
+  { value: 31, label: 'languages in the voice engine' },
+];
+
+const pivots = [
+  {
+    v: 'v0.1 - v0.7',
+    t: 'Live translation, audio to audio',
+    d: 'The first version sent the tab audio to Gemini Live and played back the translation. I heard Romanian on YouTube and Netflix, but with about 3 seconds of delay. The English could still be heard underneath, and when I turned the whole mix down, the music disappeared too.',
+    r: 'It works, but it sounds like an interpreter, not a film.',
+  },
+  {
+    v: 'v0.8',
+    t: 'Remove only the dialogue from the mix',
+    d: 'An audio filter in the browser (2048-sample STFT, 150-7,000 Hz band) removes what sits in the stereo centre, where the voice usually is. Music and ambience, which are wide, stay. On test signals the voice drops by 20 dB, while the ambience changes by 0.13 dB.',
+    r: 'The music stays. On real films, the test is done by ear.',
+  },
+  {
+    v: 'v0.14',
+    t: 'Dubbing from subtitles',
+    d: 'I changed the approach. The Romanian subtitles already exist on the platform, so we know the lines in advance. A language model works out who says each line, and each character gets a voice. The pilot on Sintel showed 1.4-4.2 seconds of synthesis per line, so the voices are prepared 45 seconds ahead.',
+    r: 'The delay goes away. Each character gets a voice.',
+  },
+  {
+    v: 'v0.15 - v0.19',
+    t: 'Our own voice engine: Dubnow',
+    d: 'I tested several voice engines and chose by ear. The winner, an open model, became Dubnow. It runs on ordinary processors, so I moved the servers from rented graphics cards to CPUs.',
+    r: 'The cost per dubbed hour drops to a fraction of a cent (estimate).',
+  },
+];
+
+const parts = [
+  {
+    n: '01',
+    t: 'The Chrome extension',
+    d: 'A discreet bar on the video that appears when you move the mouse, like in Meet. It starts the dubbing, sets the Romanian voice and the film sound separately, and shows the time left.',
+    items: ['Reads the subtitles on screen and finds the Romanian track on its own', 'Captures the tab audio and removes 85% of the original dialogue', 'Plays the lines on the video clock: pause, seek, speed', 'In-page settings with tabs; Alt+Shift+D shortcut', 'Consent screen and a separate package for the Chrome Web Store'],
+  },
+  {
+    n: '02',
+    t: 'The dubidu.net platform',
+    d: 'Laravel 13 and PostgreSQL. Everything that is not sound: accounts, payments, catalog, content. It never sits in the audio path.',
+    items: ['Family accounts, devices, history, recommendations', 'Stripe subscriptions by hours, automatic invoices', 'Minute counter with a ledger, like in accounting', 'Ed25519-signed session tickets for the voice servers', 'Film catalog, parents\' guide, articles, help'],
+  },
+  {
+    n: '03',
+    t: 'Dubnow, the voice engine',
+    href: '/en/projects/dubnow/',
+    d: 'Our voice engine, built on an open-weight model. It synthesises one second of speech in 0.35 seconds on four processor threads.',
+    items: ['31 languages from a single model', '72 voices in the palette, cast across characters', 'Also runs in the browser, through WebGPU (0.20× real time, measured on one PC)', 'Dubnow Studio: actors record lines for new voices', 'Servers start on demand and stop when nobody is left'],
+  },
+  {
+    n: '04',
+    t: 'The admin panel',
+    d: 'Filament 5, with 87 resource and page files. This is where films are prepared and costs are tracked.',
+    items: ['Catalog with the status of every title', 'Lines assigned to characters with AI, then checked by a person', 'Voice casting: children never get adult voices', 'Dubbing requests from customers, with a 24-hour deadline', 'The cost of every model call, at the day\'s ECB exchange rate'],
+  },
+];
+
+const metrics = [
+  ['39%', 'of 244 Netflix family titles checked in Romania have no Romanian audio', 'measured'],
+  ['693', 'titles in the public catalog, 376 of them ready for dubbing with dubidu', 'measured'],
+  ['536 / 19', 'lines and characters with their own voice for Ice Age', 'measured'],
+  ['0.35×', 'real time for synthesis on CPU: 1 second of speech in 0.35 seconds', 'measured'],
+  ['20', 'simultaneous viewers on a 10-thread server, none falling behind', 'simulated test'],
+  ['−20 dB', 'the centre voice, on test signals; the ambience stays almost untouched', 'measured'],
+  ['45 s', 'lines prepared ahead of the moment they are spoken', 'in the code'],
+  ['~3 s → 0', 'voice delay behind the picture: live translation versus lines prepared in advance', 'by design'],
+  ['93%', 'contribution margin on the Start plan, after payments and servers', 'estimate'],
+  ['41.2M', 'children aged 3-9 in the 25 countries whose language Dubnow speaks', 'Eurostat'],
+];
+
+const build = [
+  ['34', 'data models'],
+  ['47', 'migrations'],
+  ['35', 'backend services'],
+  ['87', 'files in the admin panel'],
+  ['28', 'test files'],
+  ['77', 'analysis documents'],
+];
+
+const lessons = [
+  ['Change the problem, not just the solution', 'At first I tried to make live translation faster. The Romanian subtitles already existed. Once I started from them, the delay disappeared completely.'],
+  ['The ear decides, not the benchmark', 'I dropped voice engines that looked good on paper. Every voice passed a listening test before it reached the product.'],
+  ['Write down what is measured and what is estimated', 'Every number in the analyses has a label: measured, estimated, untested. The investor page keeps the same rule.'],
+  ['Plan for thousands of customers from day one', 'The voice servers hold no state and can be replaced at any time. The web platform stays outside the audio path, and minutes are kept in a ledger, like money.'],
+];
+
+const shots = '/shots/dubidu';
+---
+<Layout
+  title="dubidu: case study | Andrei Năstase"
+  description="How I built dubidu: real-time Romanian dubbing for the films children cannot follow with subtitles. Chrome extension, web platform and our own voice engine."
+  path="/en/projects/dubidu/"
+  lang="en"
+  image="/shots/dubidu/home-hero.jpg"
+>
+  <article class="cs">
+    <header class="wrap cs-hero">
+      <a class="cs-back" href="/en/projects/">← Projects</a>
+      <p class="label">Case study · 2026</p>
+      <h1>dubidu: films dubbed into Romanian, in real time, for children who cannot read subtitles yet.</h1>
+      <p class="lead">A Chrome extension turns the subtitles on Netflix or YouTube into Romanian voices, one for each character. The film's music and effects stay.</p>
+      <dl class="cs-facts">
+        {facts.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://dubidu.net" target="_blank" rel="noopener">dubidu.net</a>
+        <a class="btn" href="https://dubidu.net/investors#demo" target="_blank" rel="noopener">Live demo in 18 languages</a>
+      </div>
+    </header>
+
+    <figure class="wrap cs-hero-shot reveal">
+      <div class="browser"><span><i></i><i></i><i></i></span><b>dubidu.net</b></div>
+      <img src={`${shots}/home-hero.jpg`} alt="The dubidu.net home page: any film or cartoon, dubbed into Romanian" width="1424" height="996">
+    </figure>
+
+    <section class="wrap cs-top" aria-label="In short">
+      <ul>
+        {top.map(m => (
+          <li class="reveal">
+            <b data-count={m.value} data-dec="0" data-prefix="" data-suffix="">{m.value}</b>
+            <span>{m.label}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="small muted">The numbers come from the git history of the three repos and from the code, on 4 November 2026. The 8 days are 28 October - 4 November; I had built the first versions before that.</p>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">01 · The problem</p></div>
+      <div class="cs-body">
+        <h2>"Mum, what is he saying?"</h2>
+        <p>In Romania, foreign films on streaming platforms come with subtitles. A child under 8 or 9 cannot read fast enough to keep up. The parent has two options: translate the whole film out loud, or turn it off after ten minutes.</p>
+        <p>I counted. Of 244 Netflix family titles available in Romania, <strong>39% have no Romanian audio track</strong>. Platforms dub the big titles into the big languages. The rest only get subtitles.</p>
+        <p>I am the father of two boys, so I also looked at the problem as a parent.</p>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">02 · What it does</p></div>
+      <div class="cs-body">
+        <h2>One button on the video. The characters speak Romanian.</h2>
+        <p>The parent opens the film on the platform they already pay for and presses the dubidu button. The lines come in Romanian, each character with its own voice, while the music and effects stay the original ones.</p>
+      </div>
+    </section>
+
+    <figure class="wrap cs-fig reveal">
+      <img src={`${shots}/bar.jpg`} alt="The dubidu extension bar over a film, with the Stop button, voice and film volume, the time and the hours left" width="1440" height="810" loading="lazy">
+      <figcaption>The extension bar, over the film Sintel. The start and stop button, the Romanian voice volume, the music and effects volume, the session time and the hours left in the subscription.</figcaption>
+    </figure>
+    <figure class="wrap cs-fig cs-zoom reveal">
+      <img src={`${shots}/bar-zoom.jpg`} alt="The dubidu bar, enlarged" width="1250" height="100" loading="lazy">
+      <figcaption>The bar, enlarged. The buttons are flat, with SVG icons, and the styles are isolated in a closed shadow DOM, so the site's CSS cannot break them.</figcaption>
+    </figure>
+
+    <div class="wrap cs-pair">
+      <figure class="cs-fig reveal">
+        <img src={`${shots}/home-demo.jpg`} alt="Interactive demo on dubidu.net: the Sintel scene with the dubidu RO button" width="1280" height="1122" loading="lazy">
+        <figcaption>The demo on the home page: visitors start the scene and switch between English and Romanian themselves.</figcaption>
+      </figure>
+      <figure class="cs-fig reveal" data-delay="1">
+        <img src={`${shots}/home-why.jpg`} alt="The Why dubidu section: on any platform, in real time, one click, 4 screens, the music stays, voices for every character" width="1280" height="944" loading="lazy">
+        <figcaption>The product promise, on a single screen.</figcaption>
+      </figure>
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">03 · The path</p></div>
+      <div class="cs-body">
+        <h2>Four versions, three changes of direction.</h2>
+        <p>I started with ChatGPT up to v0.7, then continued with Claude Code. Every experiment has a document with the date, the result and its limits. That way you can see why I dropped an idea, not just that I dropped it.</p>
+        <ol class="cs-steps">
+          {pivots.map(p => (
+            <li class="reveal">
+              <span class="cs-v">{p.v}</span>
+              <div>
+                <h3>{p.t}</h3>
+                <p>{p.d}</p>
+                <p class="cs-r">{p.r}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">04 · Architecture</p></div>
+      <div class="cs-body">
+        <h2>Three pieces. The sound never goes through the website.</h2>
+        <p>The web platform issues tickets and counts minutes. The sound travels directly between the extension and the voice server, over a secure WebSocket connection. If the web platform has a problem, a film that is already playing does not stop.</p>
+      </div>
+    </section>
+
+    <div class="wrap"><figure class="cs-arch reveal" aria-label="dubidu architecture diagram">
+      <svg viewBox="0 0 1000 420" role="img" aria-labelledby="arch-t">
+        <title id="arch-t">The Chrome extension asks dubidu.net for a ticket, then receives the voices directly from the Dubnow server</title>
+        <g class="a-box">
+          <rect x="20" y="40" width="290" height="340" rx="14"/>
+          <rect x="690" y="40" width="290" height="150" rx="14"/>
+          <rect x="690" y="230" width="290" height="150" rx="14"/>
+        </g>
+        <g class="a-head">
+          <text x="44" y="80">Chrome extension</text>
+          <text x="714" y="80">dubidu.net · Laravel</text>
+          <text x="714" y="270">Dubnow · voice server</text>
+        </g>
+        <g class="a-txt">
+          <text x="44" y="118">Reads the Romanian subtitles</text>
+          <text x="44" y="150">Captures the tab audio</text>
+          <text x="44" y="182">Removes the centre dialogue</text>
+          <text x="44" y="214">Requests lines 45 s ahead</text>
+          <text x="44" y="246">Plays them on the video clock</text>
+          <text x="44" y="278">Mixes the voice with the film</text>
+          <text x="714" y="112">Accounts, subscriptions, minutes</text>
+          <text x="714" y="140">Catalog, characters, voices</text>
+          <text x="714" y="168">Ed25519-signed tickets</text>
+          <text x="714" y="302">CPU synthesis, 31 languages</text>
+          <text x="714" y="330">Stateless, started on demand</text>
+          <text x="714" y="358">Several viewers per server</text>
+        </g>
+        <g class="a-line">
+          <path d="M310 110 H690"/>
+          <path d="M310 300 H690"/>
+        </g>
+        <g class="a-dot"><circle cx="310" cy="110" r="5"/><circle cx="690" cy="110" r="5"/><circle cx="310" cy="300" r="5"/><circle cx="690" cy="300" r="5"/></g>
+        <g class="a-lbl">
+          <text x="500" y="96" text-anchor="middle">HTTPS · account, ticket, lines with characters</text>
+          <text x="500" y="286" text-anchor="middle">WSS · lines sent, voices received</text>
+          <text x="500" y="330" text-anchor="middle" class="a-acc">the sound path</text>
+        </g>
+      </svg>
+    </figure></div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">05 · Components</p></div>
+      <div class="cs-body">
+        <h2>What I built, piece by piece.</h2>
+      </div>
+    </section>
+
+    <div class="wrap cs-parts">
+      {parts.map((p, i) => (
+        <section class="reveal" data-delay={String(i % 2)}>
+          <span class="cs-n">{p.n}</span>
+          <h3>{p.t}</h3>
+          <p>{p.d}</p>
+          <ul>{p.items.map(x => <li>{x}</li>)}</ul>
+          {p.href && <a class="go" href={p.href}><i></i><span>The Dubnow case study</span></a>}
+        </section>
+      ))}
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">06 · The catalog</p></div>
+      <div class="cs-body">
+        <h2>Every prepared film has a cast.</h2>
+        <p>For each film, a language model reads the lines and decides who is speaking, and the character's age and gender. Each character gets a voice from the palette, and a child's voice never goes to an adult. The annotations stay a draft until a person checks them.</p>
+        <p>Each film page says whether the film already has a dub on the platform, and how many lines and characters it has. The pages are built for the searches parents make in Romanian, such as "Epoca de gheață dublat în română" (Ice Age dubbed in Romanian).</p>
+      </div>
+    </section>
+
+    <div class="wrap cs-pair">
+      <figure class="cs-fig reveal">
+        <img src={`${shots}/catalog.jpg`} alt="The dubidu catalog: films and cartoons dubbed into Romanian, with filters by platform, age and genre" width="1440" height="1100" loading="lazy">
+        <figcaption>The catalog: 693 titles, with filters by platform, age, genre and language.</figcaption>
+      </figure>
+      <figure class="cs-fig reveal" data-delay="1">
+        <img src={`${shots}/film.jpg`} alt="The Ice Age film page: 536 lines, 19 characters with their own voice" width="1440" height="1100" loading="lazy">
+        <figcaption>A film page: 536 lines and 19 characters, each with its own voice.</figcaption>
+      </figure>
+    </div>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">07 · For parents</p></div>
+      <div class="cs-body">
+        <h2>A guide: which film should your child watch tonight.</h2>
+        <p>The parent enters the child's age, what the child likes and which platforms they have accounts on. They get matching films, with the IMDb rating and whether the film is already available in Romanian. The answers are not saved to the account. The same data produces lists by age and by theme, for search.</p>
+      </div>
+    </section>
+
+    <figure class="wrap cs-fig reveal">
+      <img src={`${shots}/kids.jpg`} alt="The Which film should your child watch guide, with age, platforms, genres and lists by age and theme" width="1440" height="1100" loading="lazy">
+      <figcaption>dubidu.net/filme-copii: the parents' filter and the lists generated from the catalog.</figcaption>
+    </figure>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">08 · The voice engine</p></div>
+      <div class="cs-body">
+        <h2>The same scene, in any language, generated on the spot.</h2>
+        <p>Dubnow has <a class="link" href="/en/projects/dubnow/">its own case study</a>, with a demo where you type any text. On the investor page, the visitor chooses a language. The server synthesises every line of the Sintel scene, and the page shows the time measured in the visitor's own browser. Nothing is pre-recorded. The demo shows that the same product can enter another country without changing the extension, the payments or the servers.</p>
+      </div>
+    </section>
+
+    <div class="wrap cs-pair">
+      <figure class="cs-fig reveal">
+        <img src={`${shots}/inv-demo.jpg`} alt="Live demo: the same scene in 18 languages, generated by Dubnow on a CPU server" width="1440" height="818" loading="lazy">
+        <figcaption>The live demo: 18 languages, with the time to the first line measured on every click.</figcaption>
+      </figure>
+      <figure class="cs-fig reveal" data-delay="1">
+        <img src={`${shots}/inv-tech.jpg`} alt="The technology: 31 languages, 0.35x real time on CPU, also runs in the browser, casting by character, actor voices, servers on demand" width="1120" height="467" loading="lazy">
+        <figcaption>The engine's numbers, each labelled "measured" or "estimate".</figcaption>
+      </figure>
+    </div>
+
+    <section class="cs-night">
+      <div class="wrap">
+        <p class="label">09 · Metrics</p>
+        <h2>What I measured and what I estimated.</h2>
+        <p class="cs-note">Every number has its label. The product has not launched yet, so there are no subscriber or revenue numbers yet.</p>
+        <ul class="cs-metrics">
+          {metrics.map(([v, l, tag]) => (
+            <li class="reveal">
+              <b>{v}</b>
+              <span>{l}</span>
+              <em class={tag === 'estimate' ? 'est' : undefined}>{tag}</em>
+            </li>
+          ))}
+        </ul>
+        <h3 class="cs-sub">How much code</h3>
+        <dl class="cs-build">
+          {build.map(([v, l]) => <div><dd>{v}</dd><dt>{l}</dt></div>)}
+        </dl>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">10 · Business model</p></div>
+      <div class="cs-body">
+        <h2>You pay for what you watch.</h2>
+        <p>Three plans based on hours of dubbing per month, from €5.99, with no minimum term. The first hour is free. Prices are read from the admin panel, so the website, the account and the investor page always show the same numbers.</p>
+        <p>Synthesis runs on ordinary processors, not graphics cards. That makes a dubbed hour cost very little. For me, this is the number that matters most in the whole project.</p>
+      </div>
+    </section>
+
+    <figure class="wrap cs-fig reveal">
+      <img src={`${shots}/home-plans.jpg`} alt="The dubidu plans: Start €5.99, Familie €9.99, Maxi €14.99 per month" width="1280" height="1214" loading="lazy">
+      <figcaption>The plans: the calculator at the top recommends a plan based on how many films the family watches per month.</figcaption>
+    </figure>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">11 · What I learned</p></div>
+      <div class="cs-body">
+        <h2>Four things I take with me to the next project.</h2>
+        <div class="cs-lessons">
+          {lessons.map(([t, d]) => <div class="reveal"><h3>{t}</h3><p>{d}</p></div>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap cs-sec">
+      <div class="cs-side"><p class="label">12 · What comes next</p></div>
+      <div class="cs-body">
+        <h2>Launch on 1 December 2026.</h2>
+        <ul class="cs-next">
+          <li><b>Actor voices.</b> Romanian actors record lines in Dubnow Studio, under contract, so the voices are ours.</li>
+          <li><b>Dubnow in the browser.</b> Synthesis on the user's graphics card, with almost no server cost.</li>
+          <li><b>Other browsers.</b> Edge and Opera use the same engine as Chrome, so they can be added cheaply. Firefox and Safari do not yet allow capturing tab audio.</li>
+          <li><b>Other countries.</b> Bulgaria, Greece, Hungary, Poland and other countries where children's films also come with subtitles.</li>
+        </ul>
+        <p class="small muted">Limits I state openly: dubidu depends on the subtitles the platform shows in the browser, and in beta I have tested it only on Netflix and YouTube, in Chrome.</p>
+      </div>
+    </section>
+
+    <section class="wrap"><div class="cs-end">
+      <h2>Do you have a product idea you want to take all the way?</h2>
+      <p class="lead">I work as a developer or as a technical cofounder. Write to me and we will see if it is a fit.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary btn-lg" href="/en/cofounder/">Looking for a technical cofounder</a>
+        <a class="btn btn-lg" href="/en/#contact">Write to me</a>
+      </div>
+    </div></section>
+  </article>
+  <script>import '../../../scripts/numbers.js';</script>
+</Layout>

@@ -1,0 +1,119 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of ticsapp and ticsapp-ext, the code, tics.ro and tics.ro/barometru.
+// The four counters at the top are refreshed live from tics.ro/api/public-stats by numbers.js.
+const cs = {
+  title: 'TICS Radar: case study | Andrei Năstase',
+  description: 'How I built TICS Radar: a neutral ticket price comparison that tracks 20 ticketing platforms in Romania, matches the same event across them and shows the final price, fees included.',
+  path: '/en/projects/tics/',
+  shots: '/shots/tics',
+  label: 'Case study · 2026',
+  h1: 'TICS Radar: the same concert, on several ticket sites. Which one is actually the cheapest?',
+  lead: 'TICS tracks the ticketing platforms in Romania, recognises the same event on each of them and shows the final price, fees included. It does not sell tickets and takes no commission.',
+  summary: ['The same concert is sold on several platforms, with different fees, often shown only in the cart.', 'A system that tracks 20 platforms, recognises the same event on each one and shows the final price. Plus the TICS Barometer, a public report on the ticket market.', 'Live on tics.ro, with events tracked in hundreds of towns. The browser extension is waiting to be published in the stores.'],
+  facts: [
+    ['Role', 'Founder. Product, design, code, data'],
+    ['Period', 'June - October 2026'],
+    ['Status', 'Live on tics.ro'],
+    ['Platforms', 'Website, admin panel, Chrome extension in testing'],
+  ],
+  links: [{ href: 'https://tics.ro', text: 'tics.ro' }, { href: 'https://tics.ro/barometru', text: 'TICS Barometer' }],
+  hero: { src: 'home.jpg', alt: 'TICS Radar home page: the best ticket price, with the live monitor of the platforms', domain: 'tics.ro' },
+  top: [
+    { value: 20, stat: 'platforms', label: 'ticketing platforms tracked' },
+    { value: 4813, stat: 'liveEvents', label: 'events on sale now' },
+    { value: 506, stat: 'cities', label: 'towns with events' },
+    { value: 391, label: 'backend commits, in four months' },
+  ],
+  topNote: 'The first three figures are read live from tics.ro when you open the page. The values in the code are those from 5 November 2026.',
+  blocks: [
+    {
+      label: '01 · The problem', h2: 'The price on the poster is not the price you pay.',
+      ps: [
+        'In Romania, tickets to the same concert are often sold on several platforms at once. Each has its own fees: a platform fee, a processing fee, sometimes shown only in the cart. To find out where it is cheaper, you open four sites and go all the way to checkout on each.',
+        'On 5 November 2026, the TICS Barometer showed that <strong>two thirds of tickets carry a fee, on average +6.5%</strong> above the base price. For organisers, the same lack of transparency means they do not know how the market around them is selling.',
+      ],
+    },
+    {
+      label: '02 · What it does', h2: 'One place for each event, with all the prices side by side.',
+      ps: [
+        'An event page puts the tickets from each platform side by side: the base price, the platform fee, the processing fee and the total. It shows which categories still have seats and how the price moved over the last 30 days.',
+        'For organisers and artists there is Radar Pro: alerts, price history and a monthly report. For the press, the TICS Barometer, a public report on the ticket market.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'events.jpg', alt: 'TICS event list with filters by type, city and genre', cap: 'All events, with filters by type, city and genre and a personalised recommendation.' },
+      { src: 'metodologie.jpg', alt: 'The methodology page of the TICS Barometer', cap: 'The methodology is public: sources, formulas and what TICS cannot measure.' },
+    ] },
+    {
+      type: 'flow', label: '03 · How it works', h2: 'From a platform page to the compared price.',
+      ps: ['Everything runs on a task scheduler, with Redis queues monitored in Horizon. Each step is a separate command, with its own pace.'],
+      nodes: [
+        { t: 'Discovery', items: ['Sitemaps read every hour', 'Lists and APIs for platforms without a sitemap', 'Respects robots.txt, at most 2 requests at a time'] },
+        { t: 'Extraction', items: ['JSON-LD structured data, with HTML as a fallback', '17 dedicated extractors', 'Selectors editable from the admin, no deploy needed'] },
+        { t: 'Matching', items: ['The same event, recognised across platforms', 'Score on title, venue, date, artist and city', 'Audit of suspicious merges'], accent: true },
+        { t: 'Prices', items: ['Updated every 4 hours, 30 days ahead', 'Fees found all the way to the cart', 'History and hourly alerts'] },
+        { t: 'Market', items: ['Daily snapshot at 23:50', 'Occupancy from seat maps', 'The public Barometer'] },
+      ],
+      foot: 'Steps 1-4 run continuously. The daily snapshot feeds the Barometer and the Radar Pro reports.',
+    },
+    {
+      label: '04 · The hard part', h2: 'How do you know two pages are the same concert?',
+      ps: [
+        'Titles differ from one platform to another (“Concert X - Tour 2026” versus “X live”), and times can be written differently. The algorithm looks for candidates one day either side and gives them a weighted score: title 30%, venue 22%, date and time 20%, artist 15%, city 13%. Above 0.75, the two pages become one event.',
+        'The first version wrongly merged different shows in the same venue on the same evening. Now a match on venue and date counts only if the titles share a word of at least four letters that is not a place name. A separate command regularly checks merges that look suspicious.',
+      ],
+    },
+    {
+      type: 'parts', label: '05 · Components', h2: 'What I built, piece by piece.',
+      items: [
+        { t: 'The public website', d: 'Laravel and Blade, with Tailwind and Alpine. Fast and easy to index.', items: ['Event, artist, venue and city pages', 'Comparison across platforms, with fees shown separately', '30-day price chart', 'Calendar, full-text search in PostgreSQL', 'Seven sitemaps, Event structured data, IndexNow'] },
+        { t: 'The data engine', d: '32 commands and a scheduler that runs anywhere from every 15 minutes to once a week.', items: ['Extractors for each platform', 'Normalisation of Romanian dates, cities and addresses', 'Cross-platform matching and deduplication', 'Images converted to WebP ahead of time', 'Detection of finished events'] },
+        { t: 'Radar Pro', d: 'Subscription for organisers, agencies and artists, paid through Stripe.', items: ['Price and stock alerts, checked every hour', 'Monthly report by email', 'Artist mode, with social media data', 'Market analysis dashboard', 'Promoting an event in the results'] },
+        { t: 'The admin panel', d: 'Filament 4, with 12 resources and 9 dedicated pages.', items: ['Platforms, with their editable selectors', 'Duplicate events to check by hand', 'Opportunities and sales reports', 'Venue statistics', 'Settings for seven external services, with a connection test'] },
+      ],
+    },
+    {
+      label: '06 · The Barometer', h2: 'A market report anyone can quote.',
+      ps: ['The daily data produces the TICS Barometer: the median ticket price, how much the fees add, how full the venues are and how many events have sold out. The page is made for journalists, with big numbers and the methodology one click away.'],
+    },
+    { type: 'pair', items: [
+      { src: 'barometru.jpg', alt: 'TICS Barometer: a ticket to an event in Romania usually costs 100 RON', cap: 'The Barometer, 5 November 2026: the median ticket costs 100 RON.' },
+      { src: 'barometru-2.jpg', alt: 'TICS Barometer: how much we have tracked so far and the price distribution', cap: 'What the data covers: events tracked, days of history, prices recorded.' },
+    ] },
+    {
+      type: 'metrics', label: '07 · Metrics', h2: 'What the data shows.',
+      note: 'The market figures come from tics.ro and the Barometer, on 5 November 2026, and change daily. The code figures are counted in the repo.',
+      items: [
+        ['20', 'ticketing platforms tracked', 'from the site'],
+        ['555,967', 'seats tracked in venue seat maps', 'from the site'],
+        ['100 RON', 'median ticket price, fees included', 'Barometer'],
+        ['+6.5%', 'average fee, on the two thirds of tickets that carry a fee', 'Barometer'],
+        ['42%', 'average venue occupancy, where the platform publishes the seat map', 'Barometer'],
+        ['0.75', 'score threshold above which two pages become the same event', 'in code'],
+        ['100 / 15 min', 'events refreshed by the extraction queue', 'in code'],
+        ['0.53 → 0', 'visual shift of the list (CLS), after I reserved the grid space', 'measured'],
+      ],
+      build: [['38', 'data models'], ['67', 'migrations'], ['32', 'scheduled commands'], ['51', 'services'], ['127', 'Blade templates'], ['74', 'tests']],
+    },
+    {
+      type: 'lessons', label: '08 · What I learned', h2: 'Four things I take with me.',
+      items: [
+        ['Other people’s data changes without warning', 'One platform changes its page, another sends invalid JSON. That is why the selectors live in the database, editable from the admin, and every extractor has a fallback.'],
+        ['A comparison is fair only if it sees the whole price', 'Without the fees from the cart, the comparison would have been on the base price, which is exactly what the buyer already sees.'],
+        ['Wrong merges cost more than missed ones', 'Two shows merged into one display false prices. I chose a strict threshold and a list to check by hand.'],
+        ['Say what you cannot measure', 'The artist plan states clearly what public data cannot show: revenue or the buyer profile. The Barometer methodology does the same.'],
+      ],
+    },
+    {
+      label: '09 · Where it is now', h2: 'The site is live. The extension is waiting to be published.',
+      ps: [
+        'The Chrome extension shows the comparison directly on the page of the platform you are buying from. It has 26 source files and covers 14 ticketing domains, but on 5 November 2026 it was not yet published in the stores.',
+        'TICS is backed by Tixello, my ticketing platform. Organisers who want to sell directly reach Tixello from the page for organisers.',
+      ],
+    },
+  ],
+};
+---
+<CaseStudy cs={cs} lang="en" />

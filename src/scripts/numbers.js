@@ -1,3 +1,4 @@
+import { pick, locale } from './lang.js';
 const STATS_URL = 'https://tics.ro/api/public-stats';
 const DURATION = 1400;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -5,7 +6,7 @@ const cells = [...document.querySelectorAll('[data-count]')];
 
 const show = (el, value) => {
   const dec = +el.dataset.dec;
-  const text = value.toLocaleString('ro-RO', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  const text = value.toLocaleString(locale, { minimumFractionDigits: dec, maximumFractionDigits: dec });
   el.textContent = `${el.dataset.prefix}${text}${el.dataset.suffix}`;
 };
 

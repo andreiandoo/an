@@ -1,0 +1,110 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history of andreiandoo/emud, the code, docs/ and a-n.ro (sitemap and pages).
+// The shop catalogue is pilot-scale; no sales, API customers or data licences are claimed.
+const cs = {
+  title: 'eMUD: case study | Andrei Năstase',
+  description: 'How I built eMUD: a 4x4 and off-road parts shop that starts from the customer’s car, a technical fitment catalogue, a paid API and the national register of car repair shops in Romania.',
+  path: '/en/projects/emud/',
+  shots: '/shots/emud',
+  label: 'Case study · 2026',
+  h1: 'eMUD: the off-road parts shop that first asks what car you drive.',
+  lead: 'An online shop for 4x4 parts and gear, with goods shipped directly by suppliers. You choose your car, by make and model or by chassis number (VIN), and the shop shows you only what fits. The same application grew a technical catalogue with an API and a register of car repair shops in Romania.',
+  summary: ['With off-road parts, the customer wants to know whether the part fits their car before paying.', 'A shop that starts from the customer’s car, a technical catalogue with a paid API and the national register of 12,974 repair shops.', 'Live on a-n.ro, built in three weeks, with 807 automated tests. The project is for sale.'],
+  facts: [
+    ['Role', 'Founder. Product, design, code, data'],
+    ['Period', 'August - September 2026'],
+    ['Status', 'Live on a-n.ro. The project is for sale'],
+    ['Stack', 'Laravel 12, Livewire 4, PostgreSQL, Redis'],
+  ],
+  links: [{ href: 'https://a-n.ro', text: 'a-n.ro' }, { href: 'https://a-n.ro/service-auto', text: 'Repair shop directory' }],
+  hero: { src: 'home.jpg', alt: 'eMUD home page: for the places where the tarmac ends, with the car selector', domain: 'a-n.ro' },
+  top: [
+    { value: 375, label: 'commits in three weeks' },
+    { value: 807, label: 'automated tests' },
+    { value: 105, label: 'data models' },
+    { value: 12974, label: 'car repair shops in the directory' },
+  ],
+  topNote: 'Counted in the repo and on a-n.ro, on 5 November 2026.',
+  blocks: [
+    {
+      label: '01 · The problem', h2: '“Does it fit my car?”',
+      ps: [
+        'With off-road parts, the question is not only how much it costs, but whether it fits. A snorkel for a Duster does not go on a Jimny, and a suspension differs from one generation to the next. The customer wants a clear answer before paying.',
+        'On the other side, a shop that ships directly from suppliers receives product files in different formats, with stock and prices that change several times a day. To answer the first question, you first have to put the supplier files in order.',
+      ],
+    },
+    {
+      label: '02 · What it does', h2: 'Your car is the filter.',
+      ps: [
+        'The customer picks their car from the make, model, generation, engine cascade or enters the VIN. Each product then gets a verdict: fits, does not fit or needs checking. In the account, “My garage” holds several cars, with technical data and reminders for the roadworthiness test (ITP), car insurance (RCA), oil and timing belt.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'collections.jpg', alt: 'eMUD collections by car model, with the catalogue figures', cap: 'Collections by car model: 11,764 collections, 863 makes, 10,901 models.' },
+      { src: 'home-m.jpg', w: 780, h: 1688, alt: 'eMUD on a phone: the car selector', cap: 'On a phone: search still starts from the car, the VIN or a part code.' },
+    ] },
+    {
+      type: 'flow', label: '03 · The architecture', h2: 'No source writes directly into the catalogue.',
+      ps: ['The basic rule of the catalogue: any information first comes in as a raw record, with its source, and reaches the final tables only after normalisation, matching and validation. Each source also has its own usage rights, so licensed data never reaches the public API.'],
+      nodes: [
+        { t: 'Sources', items: ['Supplier files, over HTTP or SFTP', 'Vehicle data: NHTSA, EEA, Wikidata', 'ECB exchange rates'] },
+        { t: 'Raw records', items: ['Kept with source and date', 'Normalisation and matching', 'Conflicts sent for review'] },
+        { t: 'Canonical catalogue', items: ['The technical part, separate from the product on sale', 'Fitment rules, not rows per VIN', 'OE codes, equivalents, replacements'], accent: true },
+        { t: 'Shop and API', items: ['Best offer by final cost', 'Selling price with markup and VAT', 'API v1 with the sources in every response'] },
+      ],
+      foot: 'Supplier stock updates every 15 minutes, prices every hour, and the full catalogue every night at 02:10.',
+    },
+    {
+      type: 'parts', label: '04 · Components', h2: 'Four products in a single application.',
+      items: [
+        { t: 'The shop', d: '25 Livewire components for visitors and 11 for the account.', items: ['Car selector and VIN search', 'Cart, checkout, payment with Stripe or NETOPIA', 'Shipping labels and tracking through FAN Courier', 'My garage, with reminders for each car', 'Guides and pages optimised for search'] },
+        { t: 'The technical catalogue', d: 'Explorer, quality panel and conflict queue, all in the admin.', items: ['Sources, imports and raw records', 'Matching supplier products to parts', 'Unresolved relations, to check by hand', 'Rights model for each source', 'Separate demo data, with the DEMO- prefix'] },
+        { t: 'The paid API', d: 'The catalogue, sold as a service through RapidAPI.', items: ['Make, model, generation, vehicle', 'VIN and part codes, up to 50 per request', 'Change feed with a cursor', 'Keys, monthly quotas, four subscription tiers', 'Published OpenAPI contract'] },
+        { t: 'The repair shop register', d: 'All car workshops in Romania, from public sources.', items: ['RAR authorisations, companies from ONRC, OpenStreetMap', 'Deduplication with a score on candidate pairs', 'Normalisation of Romanian addresses', 'Rule-based service classifier', 'Off-road capability score'] },
+      ],
+    },
+    {
+      label: '05 · The national register', h2: 'On the first run, all 64 automatic merges were wrong.',
+      ps: [
+        'The register starts from three public sources. RAR, the Romanian Automotive Register, provided about 13,000 repair shop authorisations, ONRC, the national trade register, 105,010 companies with a car repair activity code, and OpenStreetMap around 1,800 workshops. The same shop appears several times, with names and addresses written differently.',
+        'On the first national run, the system automatically merged 64 pairs. All of them were wrong: two different companies at the same address. I added a simple rule, <strong>two different tax codes mean two repair shops</strong>, and an automatic merge happens only when there is no doubt. The rest go into a review queue.',
+        'Also on the first production import, 282 roadworthiness test (ITP) stations did not get in: the tests ran on SQLite, which does not check column length, and PostgreSQL does. I widened the columns and learned to test on the same database as in production.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'service.jpg', alt: 'The car repair shops in Romania directory on eMUD, with 12974 repair shops', cap: 'The public directory: 12,974 repair shops, search by city, specialty and car type.' },
+      { src: 'service-city.jpg', alt: 'Car repair shops in Adjud on eMUD', cap: 'A city page, one of more than 15,000 pages in the sitemap.' },
+    ] },
+    {
+      type: 'metrics', label: '06 · Metrics', h2: 'What I counted.',
+      note: 'Measured in the repo, in the project documents and on a-n.ro. The shop is at pilot scale, so I do not publish sales figures.',
+      items: [
+        ['375', 'commits, between 24 August and 12 September 2026', 'git'],
+        ['182', 'commits in a single day: the catalogue platform and the API', 'git'],
+        ['807', 'automated tests, plus 724 checks in the repair shop module alone', 'measured'],
+        ['105,010', 'car repair companies from ONRC, analysed on the first run', 'measured'],
+        ['15,040', 'repair shop pages in the sitemap', 'from the site'],
+        ['76%', 'of RAR coordinates, only at town level', 'measured'],
+      ],
+      build: [['105', 'data models'], ['95', 'Livewire components'], ['39', 'commands'], ['18', 'queued jobs'], ['128', 'routes'], ['~77k', 'lines of code']],
+    },
+    {
+      type: 'lessons', label: '07 · What I learned', h2: 'What I take with me.',
+      items: [
+        ['The part, the product and the offer are three things', 'The technical part is one thing, the product you sell is another, the supplier’s offer is a third. Mix them and you can no longer change supplier without breaking the catalogue.'],
+        ['A wrong automatic merge is worse than a duplicate', 'A duplicate can be seen and fixed. Two companies merged silently lose real data.'],
+        ['Test on the production database', 'SQLite hid column limits that PostgreSQL enforces. Tests now run on PostgreSQL, in CI too.'],
+        ['Suppliers must fail loudly', 'A supplier file that goes quiet is more dangerous than one that throws an error. Now every sync reports when it does not receive what it expected.'],
+      ],
+    },
+    {
+      label: '08 · For sale', h2: 'The project is looking for a new owner.',
+      ps: ['eMUD is a complete base for a car parts shop built on fitment: shop, technical catalogue, API and repair shop register, with tests and documentation. If you are interested, write to me.'],
+    },
+  ],
+  end: { h2: 'Want to take over eMUD, or do you have a similar project?', p: 'Write to me and I will send you the technical details and what the admin panel looks like.' },
+};
+---
+<CaseStudy cs={cs} lang="en" />

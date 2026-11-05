@@ -1,0 +1,113 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+// Figures checked on 5 Nov 2026: git history and code of the ePAS repo (Tixello runs on it), and the public counter
+// on tixello.com. Code counts cover the whole repo, marketplaces included. The public counter is cumulative and was not
+// split by tenant, so it may include AmBilet and orders imported from AmBilet's previous site.
+const cs = {
+  title: 'Tixello: case study | Andrei Năstase',
+  description: 'How I built Tixello: a ticketing platform for organisers, with payments, seating maps, entry scanning, e-Factura and marketplaces on the same code. 410,444 tickets sold.',
+  path: '/en/projects/tixello/',
+  shots: '/shots/tixello',
+  label: 'Case study · 2025-2026',
+  h1: 'Tixello: the ticketing platform my marketplaces also run on.',
+  lead: 'A SaaS for event organisers: they put their event online, sell tickets on their own site or on marketplaces, scan at the entrance and get paid, with invoices issued automatically. Underneath it is ePAS, the platform that AmBilet, bilete.online and Viaqui also run on.',
+  summary: [
+    'A small or mid-sized organiser pays high commissions and works with separate tools for sales, entry, invoicing and marketing.',
+    'A single platform, with an organiser panel, payments, seating maps, scanning, e-Factura and integrations. All the code also serves the marketplaces.',
+    '410,444 tickets and €5.2M processed, according to the public counter on tixello.com. The commission starts at 1%.',
+  ],
+  facts: [
+    ['Role', 'Founder. Product, architecture, code'],
+    ['Period', 'October 2025 - present'],
+    ['Status', 'Live on tixello.com'],
+    ['Stack', 'Laravel 12, Filament 4, Livewire, PostgreSQL, Redis'],
+  ],
+  links: [{ href: 'https://tixello.com/ro/', text: 'tixello.com' }, { href: 'https://tixello.com/ro/functionalitati/', text: 'Features' }],
+  hero: { src: 'home.jpg', alt: 'Tixello home page: Everything you need. At the right price.', domain: 'tixello.com' },
+  top: [
+    { value: 410444, label: 'tickets sold through the platform' },
+    { value: 107255, label: 'customers who bought' },
+    { value: 5016, label: 'events' },
+    { value: 5.2, dec: 1, prefix: '€', suffix: 'M', label: 'processed' },
+  ],
+  topNote: 'The public counter on tixello.com, cumulative, read on 5 November 2026. I did not split it by organiser or by marketplace.',
+  blocks: [
+    {
+      label: '01 · The problem', h2: 'The organiser pays a lot and works in five places.',
+      ps: [
+        'An organiser of concerts, theatre or stand-up needs several things at once: the event page, ticket sales, the venue map, entry scanning, invoices, the report for the record label or the venue. They usually get them from different suppliers and pay a commission to each.',
+        'I started from the AmBilet experience: I already had a ticket marketplace and knew what organisers ask for. I built a platform that does all of this in one place, with a commission that starts at 1% and no fixed costs.',
+      ],
+    },
+    {
+      label: '02 · What it does', h2: 'From the event created to the money received.',
+      ps: [
+        'The organiser creates the event, the ticket types and, if they have one, the venue map, drawn in the seating editor. They sell on their own site, through a widget, or on the connected marketplaces. At the entrance, the team scans tickets from a phone. After the event they see the sales, the attendees and the settlement.',
+        'Besides tickets, the platform has discount codes, affiliates, gift cards, newsletters, sales at the door (POS), cashless payments at festivals and integrations with marketing and CRM tools.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'features.jpg', alt: 'The Tixello features page', cap: 'The features, grouped by category, from ticketing to analytics.' },
+      { src: 'pricing.jpg', alt: 'The Tixello pricing page: you pay only when you sell', cap: 'The price: no subscription, a commission only when a ticket is sold.' },
+    ] },
+    {
+      type: 'flow', label: '03 · The architecture', h2: 'A single codebase, several kinds of customers.',
+      ps: ['ePAS is a single Laravel application with five Filament panels: admin, organiser, marketplace, operator and seller. Each organiser is a separate tenant in the same database, and every row is filtered by the tenant it belongs to.'],
+      nodes: [
+        { t: 'Organisers', items: ['Panel with 66 sections', 'Events, orders, customers, seating maps', 'Invoices, reports, team'] },
+        { t: 'The ePAS core', items: ['Tickets, orders, payments, settlements', 'Seat holds in Redis, with expiry', 'Queues for emails, invoices, balances'], accent: true },
+        { t: 'Payments and tax', items: ['Stripe, Netopia, PayU, EuPlatesc', 'e-Factura (Romania’s national e-invoicing system) to ANAF (the Romanian tax authority)', 'VAT on the date of sale'] },
+        { t: 'Sales channels', items: ['Widget on the organiser’s site', 'Marketplaces: AmBilet, bilete.online, Viaqui', 'API and 21 integrations'] },
+      ],
+      foot: 'The marketplaces are separate sites that talk to ePAS through an API with their own key. A new module is switched on only for the tenant that uses it.',
+    },
+    {
+      type: 'parts', label: '04 · Components', h2: 'What I built.',
+      items: [
+        { t: 'The organiser panel', d: 'Everything an organiser does, from creation to settlement.', items: ['Events, tickets, dynamic pricing', 'Seating map editor, with SVG import', 'Discount codes, affiliates, group bookings', 'Points, badges and rewards for customers', 'Blog, pages and newsletters'] },
+        { t: 'At the entrance and at the event', d: 'What happens on the day of the event.', items: ['Web scanning app, made for iPhone', 'Sales at the door (POS)', 'Cashless and NFC payments at festivals', 'Mobile app for customers and organisers'] },
+        { t: 'Money and tax', d: 'The part that has to add up to the last cent.', items: ['Four payment processors, behind the same interface', 'Invoices and e-Factura, with a test adapter', 'Company lookup by CUI (company tax ID) at ANAF', 'Organiser balance recalculated after every sale or refund'] },
+        { t: 'Integrations', d: '21 connectors, each switched on only on request.', items: ['HubSpot, Salesforce, Zapier, Slack', 'GA4, Google Ads, TikTok Ads, Meta CAPI', 'WhatsApp, SMS, Zoom, Google Sheets', 'Public API for developers'] },
+      ],
+    },
+    {
+      label: '05 · The organiser’s money', h2: 'Three calculations for the same settlement.',
+      ps: [
+        'In summer 2026 I did a full audit of the settlements. I found three different ways of calculating how much an organiser receives: a breakdown saved at the moment of sale, a calculation redone on request and a reporting service. Most of the time they gave the same figure. But not every time.',
+        'The fix was a single source of truth: <strong>the organiser’s balance is recalculated in a queue after every sale, refund or adjustment</strong>, and reports read only that balance. When it is someone else’s money, two calculations that “usually” match mean a problem.',
+      ],
+    },
+    { type: 'fig', src: 'organisers.jpg', alt: 'The Tixello page for organisers: Sell everything at every event', cap: 'The page for organisers: concerts, conferences, workshops, parties, sport.' },
+    {
+      type: 'metrics', label: '06 · Metrics', h2: 'What I counted.',
+      note: 'The sales counter is the public one on tixello.com. The code figures are counted across the whole ePAS repo, so they also include the marketplace part.',
+      items: [
+        ['410,444', 'tickets sold, cumulative', 'from the site'],
+        ['€5.21M', 'processed through the platform (27.8 million RON)', 'from the site'],
+        ['6,521', 'commits, since 28 October 2025', 'git'],
+        ['230', 'Filament panel sections, across four panels', 'in code'],
+        ['843', 'database migrations', 'in code'],
+        ['4', 'payment processors and 21 integrations', 'in code'],
+      ],
+      build: [['544', 'data models'], ['843', 'migrations'], ['230', 'Filament resources'], ['5', 'panels'], ['58', 'test files'], ['~557k', 'lines of PHP in app/']],
+      buildNote: 'Counted on 5 November 2026, across the whole repo, marketplace code included.',
+    },
+    {
+      type: 'lessons', label: '07 · What I learned', h2: 'What I take with me.',
+      items: [
+        ['Money needs a single source', 'Any figure about money is calculated in one place. The rest of the application only reads it.'],
+        ['Change the database only by adding', 'On a live platform, migrations add columns and do not delete or rename them. I use text instead of enum types, so a new value does not need a risky migration.'],
+        ['Small details stop the queue at the entrance', 'QR codes now get a white margin. Without it, some scanners could not read tickets on phones with a dark theme.'],
+        ['A shared platform makes a new marketplace cheap', 'bilete.online and Viaqui started on payments, tickets and a panel that already existed. I built only what was new for them.'],
+      ],
+    },
+    {
+      label: '08 · Further', h2: 'The marketplaces built on Tixello.',
+      ps: ['<a class="link" href="/en/projects/ambilet/">AmBilet</a>, the ticket marketplace, moved from WordPress to ePAS. <a class="link" href="/en/projects/bilete-online/">bilete.online</a>, attractions in Romania. <a class="link" href="/en/projects/viaqui/">Viaqui</a>, the same idea for all of Europe.'],
+    },
+  ],
+  end: { h2: 'Do you need a platform with payments and many customers?', p: 'I build SaaS products and marketplaces, with payments, invoicing and panels for every role. Write to me and we will see if it fits.' },
+};
+---
+<CaseStudy cs={cs} lang="en" />

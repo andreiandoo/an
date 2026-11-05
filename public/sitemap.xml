@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://andreinastase.ro/</loc></url>
-  <url><loc>https://andreinastase.ro/servicii/</loc></url>
-  <url><loc>https://andreinastase.ro/cofondator/</loc></url>
-  <url><loc>https://andreinastase.ro/domenii/</loc></url>
-  <url><loc>https://andreinastase.ro/proiecte/dubidu/</loc></url>
-  <url><loc>https://andreinastase.ro/proiecte/dubnow/</loc></url>
-  <url><loc>https://andreinastase.ro/proiecte/tics/</loc></url>
-  <url><loc>https://andreinastase.ro/proiecte/bilete-online/</loc></url>
-  <url><loc>https://andreinastase.ro/proiecte/viaqui/</loc></url>
-  <url><loc>https://andreinastase.ro/proiecte/emud/</loc></url>
-  <url><loc>https://andreinastase.ro/proiecte/sportiv-educat/</loc></url>
-  <url><loc>https://andreinastase.ro/proiecte/edustart/</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url><loc>https://andreinastase.ro/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/"/></url>
+  <url><loc>https://andreinastase.ro/en/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/"/></url>
+  <url><loc>https://andreinastase.ro/audit-aplicatii-ai/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/audit-aplicatii-ai/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/ai-app-audit/"/></url>
+  <url><loc>https://andreinastase.ro/en/ai-app-audit/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/audit-aplicatii-ai/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/ai-app-audit/"/></url>
+  <url><loc>https://andreinastase.ro/cofondator/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/cofondator/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/cofounder/"/></url>
+  <url><loc>https://andreinastase.ro/en/cofounder/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/cofondator/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/cofounder/"/></url>
+  <url><loc>https://andreinastase.ro/domenii/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/domenii/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/domains/"/></url>
+  <url><loc>https://andreinastase.ro/en/domains/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/domenii/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/domains/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/ambilet/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/ambilet/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/ambilet/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/ambilet/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/ambilet/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/ambilet/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/bilete-online/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/bilete-online/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/bilete-online/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/bilete-online/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/bilete-online/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/bilete-online/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/dubidu/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/dubidu/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/dubidu/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/dubidu/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/dubidu/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/dubidu/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/dubnow/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/dubnow/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/dubnow/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/dubnow/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/dubnow/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/dubnow/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/edustart/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/edustart/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/edustart/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/edustart/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/edustart/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/edustart/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/emud/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/emud/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/emud/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/emud/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/emud/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/emud/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/sportiv-educat/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/sportiv-educat/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/sportiv-educat/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/sportiv-educat/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/sportiv-educat/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/sportiv-educat/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/tics/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/tics/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/tics/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/tics/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/tics/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/tics/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/tixello/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/tixello/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/tixello/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/tixello/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/tixello/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/tixello/"/></url>
+  <url><loc>https://andreinastase.ro/proiecte/viaqui/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/viaqui/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/viaqui/"/></url>
+  <url><loc>https://andreinastase.ro/en/projects/viaqui/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/proiecte/viaqui/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/projects/viaqui/"/></url>
+  <url><loc>https://andreinastase.ro/servicii/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/servicii/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/services/"/></url>
+  <url><loc>https://andreinastase.ro/en/services/</loc><xhtml:link rel="alternate" hreflang="ro" href="https://andreinastase.ro/servicii/"/><xhtml:link rel="alternate" hreflang="en" href="https://andreinastase.ro/en/services/"/></url>
 </urlset>

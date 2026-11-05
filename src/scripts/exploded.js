@@ -1,3 +1,4 @@
+import { pick, locale } from './lang.js';
 const section = document.getElementById('explodat');
 const canUse = () => {
   if (!section || matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
@@ -6,8 +7,10 @@ const canUse = () => {
 
 const TRAY_W = 3.5, TRAY_H = 7.2, GAP = 2.05;
 const CALLS = [
-  ['Ecrane', 'Formulare', 'Butoane'], ['Roluri', 'Parole', 'Drepturi'], ['Calcule', 'Fluxuri', 'Validări'],
-  ['Tabele', 'Backup', 'Căutare'], ['Carduri', 'Facturi', 'Abonamente'], ['Emailuri', 'SMS', 'Programări'],
+  ...pick({
+    ro: [['Ecrane', 'Formulare', 'Butoane'], ['Roluri', 'Parole', 'Drepturi'], ['Calcule', 'Fluxuri', 'Validări'], ['Tabele', 'Backup', 'Căutare'], ['Carduri', 'Facturi', 'Abonamente'], ['Emailuri', 'SMS', 'Programări']],
+    en: [['Screens', 'Forms', 'Buttons'], ['Roles', 'Passwords', 'Permissions'], ['Calculations', 'Flows', 'Validation'], ['Tables', 'Backup', 'Search'], ['Cards', 'Invoices', 'Subscriptions'], ['Emails', 'SMS', 'Bookings']],
+  }),
 ];
 const COLORS = ['#7c4dff', '#14b8a6', '#ff4a1c', '#3b82f6', '#22c55e', '#ec4899'];
 const clamp = n => Math.min(1, Math.max(0, n));

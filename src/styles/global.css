@@ -58,6 +58,8 @@ h3 { font-weight: 500; font-size: 18px; line-height: 1.3; letter-spacing: -.01em
 .nav a[aria-current="page"] { border-bottom: 1px solid currentColor; }
 .nav .cta { background: var(--accent); border: 1px solid var(--accent); color: #fff; padding: 9px 18px; border-radius: 999px; font-weight: 500; }
 .nav .cta:hover { background: var(--ink); border-color: var(--ink); }
+.nav .lang { font-family: var(--mono, "Geist Mono Variable", monospace); font-size: 14px; letter-spacing: .04em; border: 1px solid currentColor; border-radius: 999px; padding: 4px 10px; opacity: .8; }
+.nav .lang:hover { opacity: 1; }
 .nav-toggle { display: none; background: none; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 16px; }
 
 /* buttons */

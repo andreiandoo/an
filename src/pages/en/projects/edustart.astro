@@ -1,0 +1,110 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+// Client project for Teach for Romania. Figures checked on 5 Nov 2026 in the local copy (theme, plugins, dev database
+// structure of 17 Sep 2026; no git history) and on dev.edu-start.ro, where the new platform runs in production. No pupil or teacher data is shown or counted
+// beyond reference data; usage figures are not published.
+const cs = {
+  title: 'Edu-Start: case study | Andrei Năstase',
+  description: 'How I rebuilt Edu-Start for Teach for Romania: assessing pupils’ social-emotional skills, reading and maths, with reports by pupil, class and cohort and an integration with an external partner.',
+  path: '/en/projects/edustart/',
+  shots: '/shots/edustart',
+  back: { href: '/en/#clienti', text: '← Client work' },
+  label: 'Case study · Client: Teach for Romania · 2025-2026',
+  h1: 'Edu-Start: teachers measure how pupils progress, not just what grades they get.',
+  lead: 'A platform for Teach for Romania teachers in vulnerable schools. It assesses pupils in three areas, social-emotional skills (SEL), reading (LIT) and maths (NUM), at the start, middle and end of the year. Reports show progress by pupil, class and cohort of teachers.',
+  summary: ['The old platform measured only social-emotional skills. The programme also needed reading and maths, in the same place.', 'An SEL, LIT and NUM assessment platform, with questionnaires editable from the admin, reports by pupil, class and cohort, and an integration with an external partner.', 'In production on dev.edu-start.ro, for Teach for Romania teachers.'],
+  facts: [
+    ['Client', 'Teach for Romania'],
+    ['Role', 'Full rebuild: platform, site, integration'],
+    ['Period', '2025 - 2026'],
+    ['Status', 'In production, on dev.edu-start.ro'],
+  ],
+  links: [{ href: 'https://dev.edu-start.ro', text: 'dev.edu-start.ro' }],
+  hero: { src: 'home.jpg', alt: 'The Edu-Start site: we share opinions and experiences from education', domain: 'dev.edu-start.ro' },
+  top: [
+    { value: 3, label: 'areas assessed: SEL, LIT, NUM' },
+    { value: 3, label: 'moments a year: T0, Ti, T1' },
+    { value: 18056, label: 'schools in the imported register' },
+    { value: 41, label: 'thousand lines of code written for the project' },
+  ],
+  topNote: 'Counted in the project code and in the test database structure, on 5 November 2026. The schools come from the national register, imported from CSV.',
+  blocks: [
+    {
+      label: '01 · The problem', h2: 'What the grade book does not show.',
+      ps: [
+        'Teach for Romania sends teachers to schools in vulnerable communities. There, a child’s progress does not show only in grades: it matters whether they manage their emotions, whether they understand what they read, whether they cope with simple calculations.',
+        'The old Edu-Start platform measured only the social-emotional side. The programme needed all three areas in the same place, with reports a tutor can use for a whole cohort of teachers.',
+      ],
+    },
+    {
+      label: '02 · What it does', h2: 'Assessment at the start, middle and end of the year.',
+      ps: [
+        'The teacher creates the class, adds the pupils and fills in the SEL and LIT questionnaires at each stage: T0 at the start, Ti in the middle, T1 at the end. Answers are saved automatically as a draft, with the completion percentage, and scores are calculated by chapter. Maths results (NUM) come in automatically from an external partner.',
+        'Tutors see all the classes of the teachers they coordinate. Teach for Romania administrators switch modules on and off for each cohort and export the data.',
+      ],
+    },
+    { type: 'fig', src: 'lit.jpg', alt: 'The LIT - Literacy (reading) page on the new Edu-Start site', cap: 'The page about the reading assessment (LIT): comprehension and accuracy, measured between stages.' },
+    {
+      type: 'flow', label: '03 · How the data flows', h2: 'From the school register to the cohort report.',
+      nodes: [
+        { t: 'Register', items: ['42 counties, 7,467 localities', '18,056 schools, with SIIIR code', 'CSV import, from the admin'] },
+        { t: 'People and classes', items: ['Teachers, tutors, mentors', 'Cohorts and classes', 'Pupils added by the teacher'] },
+        { t: 'Assessments', items: ['SEL and LIT questionnaires by stage', 'Automatic saving as a draft', 'Score by chapter'], accent: true },
+        { t: 'Reports', items: ['By pupil, class, teacher, cohort', 'Charts with Chart.js', 'PDF and CSV export'] },
+      ],
+      foot: 'NUM results come in separately, from the external partner, through signed webhooks.',
+    },
+    {
+      label: '04 · The main decision', h2: 'Questionnaires are content, not code.',
+      ps: [
+        'Each assessment tool is a WordPress post, with its structure described in ACF fields: chapters, questions, options, scores. There are versions by level, for example for early primary, upper primary and lower secondary, and by stage.',
+        'The Teach for Romania team can change a question or add a new tool without a developer. Answers are stored as JSON, with scores by chapter and the completion percentage, so old reports stay valid even after the questionnaire changes.',
+      ],
+    },
+    {
+      type: 'flow', label: '05 · The partner integration', h2: 'Built to survive network failures.',
+      ps: ['The maths assessment happens on a partner’s platform. Edu-Start sends it the teachers, cohorts and pupils and receives the results back. Neither side may lose data if the other is down.'],
+      nodes: [
+        { t: 'Outbox queue', items: ['Message table with retries', 'Protection against duplicates', 'Batches of 25, every 2 minutes'] },
+        { t: 'Opaque identities', items: ['26-character keys, not internal IDs', 'Resolution in both directions', 'Backfill for old data'], accent: true },
+        { t: 'Webhooks', items: ['Signed with HMAC-SHA256', 'Rejected after 5 minutes', 'Every call logged, with status'] },
+        { t: 'Authentication', items: ['OAuth2, client credentials', '9 REST routes', 'Health check'] },
+      ],
+      foot: 'The partner never receives the pupils’ internal IDs, only opaque keys, generated once.',
+    },
+    {
+      type: 'parts', label: '06 · Components', h2: 'What I built.',
+      items: [
+        { t: 'The teacher dashboard', d: 'An application inside the WordPress theme, with its own routes.', items: ['Classes, pupils, assessments', 'SEL and LIT forms with prefill and progress', 'Profile with schools chosen by county, town, school', 'In-page notifications', 'Pupil report, with SEL and LIT tabs'] },
+        { t: 'The tutor and admin dashboard', d: '39 views and 22 dashboard partials.', items: ['Cohorts, with modules switched on one by one or in bulk', 'Schools, teachers, tutors, pupils', 'Reports and analysis by cohort', 'CSV exports', 'User documentation'] },
+        { t: 'The locations plugin', d: 'Reference data and school structure.', items: ['Counties, localities on three levels, schools', 'CSV import, with SIIIR code and region', 'Roles: teacher, tutor, alumni, non-teach', 'Classes, pupils, cohorts'] },
+        { t: 'The marketing site', d: 'In the same theme, with editable page blocks.', items: ['Pages for SEL, LIT and NUM', 'Pages for teachers, schools and programmes', 'Blog', 'Built on Tailwind, Alpine.js and Flowbite'] },
+      ],
+    },
+    {
+      type: 'metrics', label: '07 · Metrics', h2: 'What I counted.',
+      note: 'The project has no git history in the copy I have, so I do not publish a commit count. I do not publish usage figures, and I do not count or show pupil data.',
+      items: [
+        ['18,056', 'schools in the imported register', 'measured'],
+        ['7,467', 'localities, on three levels: county, town or commune, village', 'measured'],
+        ['42', 'AJAX actions for the dashboard', 'in code'],
+        ['9', 'REST routes for the partner integration', 'in code'],
+        ['5 min', 'the window in which a signed webhook is accepted', 'in code'],
+        ['~41k', 'lines of PHP and JavaScript written for the project', 'measured'],
+      ],
+      build: [['115', 'PHP files in the theme'], ['32k', 'lines in the theme'], ['18', 'files in the locations plugin'], ['13', 'files in the integration plugin'], ['9', 'custom tables'], ['39', 'dashboard views']],
+    },
+    {
+      type: 'lessons', label: '08 · What I learned', h2: 'What I take with me.',
+      items: [
+        ['Put the tools in the client’s hands', 'With questionnaires editable from the admin, changing a tool no longer needs a developer. The programme changes from one year to the next, and the platform keeps up without a new project.'],
+        ['An integration must assume the partner goes down', 'The retry queue and the opaque keys made the integration boring, which is exactly what it should be.'],
+        ['Protect real data in development too', 'The local copy has a plugin that blocks every email and only logs it, so nobody receives a test message.'],
+      ],
+    },
+  ],
+  end: { h2: 'Working on an education programme that needs data?', p: 'I build assessment and reporting platforms, with safe integrations between partners. Write to me and we will see if it fits.' },
+};
+---
+<CaseStudy cs={cs} lang="en" />

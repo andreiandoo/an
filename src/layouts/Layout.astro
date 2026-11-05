@@ -3,34 +3,40 @@ import '@fontsource-variable/geist';
 import '@fontsource-variable/geist-mono';
 import '../styles/global.css';
 
-const { title, description, path = '/', cta = '/#contact', ctaLabel = 'Apel gratuit', theme = '' } = Astro.props;
-const canonical = new URL(path, 'https://andreinastase.ro').href;
-const nav = [
-  ['/#proiecte', 'Ce am construit'],
-  ['/servicii/', 'Servicii'],
-  ['/cofondator/', 'Cofondator', true],
-  ['/#despre', 'Cine sunt'],
-];
+import { ui, alternate } from '../i18n.js';
+
+const { title, description, path = '/', lang = 'ro', cta, ctaLabel, theme = '', image } = Astro.props;
+const t = ui[lang];
+const other = alternate(path, lang);
+const [ro, en] = lang === 'en' ? [other, path] : [path, other];
+const site = 'https://andreinastase.ro';
+const canonical = new URL(path, site).href;
+const ogImage = new URL(image ?? '/andrei.jpg', site).href;
+const nav = t.nav;
 const person = JSON.stringify({
   '@context': 'https://schema.org', '@type': 'Person', name: 'Andrei Năstase', url: 'https://andreinastase.ro',
-  image: 'https://andreinastase.ro/andrei.jpg', jobTitle: 'Senior full-stack developer',
+  image: 'https://andreinastase.ro/andrei.jpg', jobTitle: t.jobTitle,
   sameAs: ['https://linkedin.com/in/andreinastase', 'https://github.com/andreiandoo'],
 });
 ---
 <!doctype html>
-<html lang="ro">
+<html lang={lang}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{title}</title>
   <meta name="description" content={description}>
   <link rel="canonical" href={canonical}>
+  <link rel="alternate" hreflang="ro" href={new URL(ro, site).href}>
+  <link rel="alternate" hreflang="en" href={new URL(en, site).href}>
+  <link rel="alternate" hreflang="x-default" href={new URL(ro, site).href}>
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
   <meta property="og:type" content="website">
   <meta property="og:url" content={canonical}>
-  <meta property="og:image" content="https://andreinastase.ro/andrei.jpg">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content={ogImage}>
+  <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'ro_RO'}>
+  <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'}>
   <meta name="theme-color" content="#f4f4f3">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <script is:inline>document.documentElement.classList.add('js')</script>
@@ -40,12 +46,13 @@ const person = JSON.stringify({
   <header class="site-header">
     <div class="wrap">
       <div class="brand-box">
-        <a class="brand" href="/" aria-label="Andrei Năstase, pagina principală"><span class="brand-name">Andrei Năstase</span><i class="brand-dot"></i></a>
+        <a class="brand" href={t.home} aria-label={t.brandLabel}><span class="brand-name">Andrei Năstase</span><i class="brand-dot"></i></a>
       </div>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Meniu</button>
-      <nav class="nav" id="nav" aria-label="Principal">
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav" data-open={t.close} data-closed={t.menu}>{t.menu}</button>
+      <nav class="nav" id="nav" aria-label={t.navLabel}>
         {nav.map(([href, label, hot]) => <a href={href} class={hot ? 'hot' : undefined} aria-current={path === href ? 'page' : undefined}>{label}</a>)}
-        <a class="cta" href={cta}>{ctaLabel}</a>
+        <a class="lang" href={other} hreflang={lang === 'en' ? 'ro' : 'en'} lang={lang === 'en' ? 'ro' : 'en'} aria-label={t.switchLabel}>{t.switchText}</a>
+        <a class="cta" href={cta ?? t.cta[0]}>{ctaLabel ?? t.cta[1]}</a>
       </nav>
     </div>
   </header>
@@ -53,10 +60,8 @@ const person = JSON.stringify({
   <footer class="site-footer">
     <div class="wrap">
       <span>© {new Date().getFullYear()} Andrei Năstase</span>
-      <nav aria-label="Subsol">
-        <a href="/servicii/">Servicii</a>
-        <a href="/cofondator/">Cofondator</a>
-        <a href="/domenii/">Domenii de vânzare</a>
+      <nav aria-label={t.footLabel}>
+        {t.foot.map(([href, label]) => <a href={href}>{label}</a>)}
         <a href="mailto:salut@andreinastase.ro">salut@andreinastase.ro</a>
       </nav>
       <ul class="social">

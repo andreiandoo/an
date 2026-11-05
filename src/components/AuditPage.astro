@@ -1,0 +1,258 @@
+---
+// Landing page for the free audit of apps built with AI tools: /audit-aplicatii-ai/ and /en/ai-app-audit/.
+// The form posts to /contact.php with field names it already knows (nume, email, telefon, link, interes, stadiu, problema).
+import Layout from '../layouts/Layout.astro';
+
+const { lang = 'ro' } = Astro.props;
+const check = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
+const arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const icons = [
+  '<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/>',
+  '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
+  '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20c-.5-2.6-2-4.4-4-5.1"/>',
+  '<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19M6.5 15h4"/>',
+  '<path d="M8 6l-6 6 6 6M16 6l6 6-6 6M14 4l-4 16"/>',
+  '<rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/>',
+];
+
+const T = {
+  ro: {
+    path: '/audit-aplicatii-ai/',
+    title: 'Audit gratuit pentru aplicații făcute cu AI | Andrei Năstase',
+    description: 'Ați făcut o aplicație cu Lovable, Bolt, Cursor sau ChatGPT? Vă spun gratuit ce e solid, ce trebuie refăcut și cât costă să ajungă la clienți: securitate, date, conturi, plăți, cod.',
+    kicker: 'Audit gratuit · Lovable, Bolt, Cursor, v0, Replit, ChatGPT',
+    h1: 'Ați făcut aplicația cu AI. Vă spun gratuit dacă e gata pentru clienți.',
+    lead: 'Mă uit la cod, la date, la conturi și la plăți. Apoi vă spun pe înțeles ce e solid, ce trebuie refăcut și cât ar costa să ajungă în producție. Auditul nu vă obligă la nimic.',
+    cta: 'Cereți auditul', cta2: 'Ce verific',
+    proof: ['<strong>17 ani</strong> de software, frontend, backend și mobil', '<strong>10 produse proprii</strong>, cu plăți, conturi și date reale', 'Lucrez zilnic cu agenți AI, deci <strong>știu unde greșesc</strong>', 'Răspuns în cel mult <strong>o zi lucrătoare</strong>'],
+    riskH: 'Unde se blochează de obicei',
+    riskP: 'Uneltele AI scriu repede cod care merge în demonstrație. Problemele apar când intră oameni reali, cu date reale. Acestea sunt cele pe care le caut primele.',
+    risks: [
+      ['Chei la vedere', 'Cheile pentru baza de date, plăți sau AI ajung în codul care rulează în browser, unde le poate citi oricine.'],
+      ['Date care nu sunt ale tale', 'Lipsesc regulile de acces, iar un utilizator logat poate citi sau modifica datele altora.'],
+      ['Merge pentru unul, nu pentru o sută', 'Pagini care cer toată baza de date deodată, fără paginare, fără cache, fără indexuri.'],
+      ['Fiecare schimbare strică altceva', 'Cod generat în straturi, fără teste, pe care nici omul, nici AI-ul nu-l mai înțeleg complet.'],
+      ['Plăți și emailuri doar în test', 'Webhook-uri neverificate, plăți care nu se confirmă, emailuri care ajung în spam.'],
+      ['Fără plasă de siguranță', 'Fără backup, fără jurnal de erori, fără mediu de test separat de cel cu clienții.'],
+    ],
+    checkH: 'Ce verific', checkP: 'Șase zone, în ordinea în care pot face cel mai mult rău.',
+    checks: [
+      ['Securitate', 'Chei și parole, reguli de acces, autentificare, ce se vede din browser.'],
+      ['Date', 'Structura bazei de date, backup, ce se pierde dacă pică ceva, GDPR.'],
+      ['Conturi și roluri', 'Cine poate vedea și face fiecare lucru, invitații, resetarea parolei.'],
+      ['Plăți și integrări', 'Stripe sau alt procesator, webhook-uri, emailuri, servicii externe.'],
+      ['Cod și structură', 'Dacă poate fi continuat de un programator, ce trebuie rescris și ce rămâne.'],
+      ['Găzduire și costuri', 'Unde rulează, cât costă lunar la 10 și la 1.000 de utilizatori, ce se întâmplă la un vârf de trafic.'],
+    ],
+    getH: 'Ce primiți',
+    get: ['Un raport scris, pe înțeles, fără jargon inutil.', 'Ce e solid și rămâne așa cum e.', 'Ce trebuie reparat înainte de clienți, în ordinea riscului.', 'Ce poate aștepta după lansare.', 'O estimare de timp și cost pentru drumul până la producție.', 'Un apel de 30 de minute în care vă explic raportul.'],
+    getNote: 'Dacă vreți să duc eu aplicația mai departe, primiți un preț fix. Dacă nu, raportul rămâne al vostru și îl poate folosi orice programator.',
+    howH: 'Cum decurge',
+    how: [
+      ['Îmi scrieți', 'Linkul aplicației și ce ar trebui să facă. Câteva rânduri ajung.'],
+      ['Îmi dați acces de citire', 'O invitație în repo, pe GitHub sau GitLab, doar cu drept de citire. Sau îmi arătați aplicația într-un apel.'],
+      ['Primiți raportul', 'Vi-l explic într-un apel și vă răspund la întrebări. Decideți după aceea, fără grabă.'],
+    ],
+    safe: 'Nu-mi trimiteți parole sau chei API pe email sau prin formular. Invitați-mă doar cu drept de citire și scoateți-mi accesul după audit. Dacă vreți, semnez un acord de confidențialitate înainte să mă uit la cod.',
+    faqH: 'Întrebări',
+    faq: [
+      ['De ce e gratuit?', 'E primul pas, la fel ca apelul gratuit pentru celelalte proiecte. Dacă după audit vreți să continuăm, primiți un preț fix. Dacă nu, ne oprim acolo.'],
+      ['Ce unelte și tehnologii?', 'Lovable, Bolt, Cursor, v0, Replit, ChatGPT, Claude sau cod scris de un freelancer. Pe partea tehnică: React, Vue, Supabase, Node.js, PHP și Laravel, MySQL și PostgreSQL.'],
+      ['Trebuie să refac totul?', 'Nu neapărat. Scopul auditului e să păstrăm ce merge și să refacem doar ce e riscant.'],
+      ['Cât costă reparațiile?', 'Depinde de ce găsesc. Vedeți estimarea în raport, înainte să hotărâți ceva. Modificările mici pornesc de la 150 €.'],
+    ],
+    formH: 'Cereți auditul', formP: 'Scrieți-mi unde e aplicația și ce s-a blocat. Vă răspund în cel mult o zi lucrătoare.',
+    subject: 'Audit aplicație AI',
+    f: { name: 'Nume', namePh: 'ex: Elena Radu', email: 'Email', emailPh: 'ex: elena@firma.ro', phone: 'Telefon', opt: '(opțional)', phonePh: 'ex: 07xx xxx xxx', link: 'Linkul aplicației sau al repo-ului', linkPh: 'ex: https://aplicatia-mea.lovable.app', tool: 'Cu ce ați făcut-o', tools: ['Lovable', 'Bolt', 'Cursor', 'Altceva'], stage: 'Unde e acum', stages: ['Doar prototip', 'O folosesc câțiva oameni', 'Are clienți care plătesc'], problem: 'Ce s-a blocat sau ce vă îngrijorează?', problemPh: 'ex: Merge, dar nu știu dacă datele clienților sunt în siguranță. Vrem să lansăm luna viitoare.', send: 'Trimite', done: 'Mulțumesc. Vă răspund în cel mult o zi lucrătoare.', note: 'Folosesc datele doar ca să vă contactez despre acest audit.' },
+  },
+  en: {
+    path: '/en/ai-app-audit/',
+    title: 'Free audit for apps built with AI | Andrei Năstase',
+    description: 'Built an app with Lovable, Bolt, Cursor or ChatGPT? I will tell you for free what is solid, what needs rebuilding and what it costs to get it in front of customers: security, data, accounts, payments, code.',
+    kicker: 'Free audit · Lovable, Bolt, Cursor, v0, Replit, ChatGPT',
+    h1: 'You built the app with AI. I will tell you for free if it is ready for customers.',
+    lead: 'I look at the code, the data, the accounts and the payments. Then I tell you in plain words what is solid, what needs rebuilding and what it would cost to take it to production. The audit does not commit you to anything.',
+    cta: 'Ask for the audit', cta2: 'What I check',
+    proof: ['<strong>17 years</strong> of software: frontend, backend and mobile', '<strong>10 products of my own</strong>, with real payments, accounts and data', 'I work with AI agents every day, so <strong>I know where they slip</strong>', 'Reply within <strong>one working day</strong>'],
+    riskH: 'Where these apps usually get stuck',
+    riskP: 'AI tools write code that works in a demo, fast. The problems show up when real people arrive with real data. These are the ones I look for first.',
+    risks: [
+      ['Keys in plain sight', 'Keys for the database, payments or AI end up in the code that runs in the browser, where anyone can read them.'],
+      ['Data that is not yours', 'Access rules are missing, so a signed-in user can read or change other people’s data.'],
+      ['Works for one, not for a hundred', 'Pages that load the whole database at once, with no paging, no cache and no indexes.'],
+      ['Every change breaks something else', 'Code generated in layers, with no tests, that neither the person nor the AI fully understands any more.'],
+      ['Payments and emails only in test', 'Unverified webhooks, payments that never confirm, emails that land in spam.'],
+      ['No safety net', 'No backups, no error log, no test environment separate from the one customers use.'],
+    ],
+    checkH: 'What I check', checkP: 'Six areas, in the order in which they can do the most harm.',
+    checks: [
+      ['Security', 'Keys and passwords, access rules, sign-in, what is visible from the browser.'],
+      ['Data', 'Database structure, backups, what is lost if something fails, GDPR.'],
+      ['Accounts and roles', 'Who can see and do what, invitations, password reset.'],
+      ['Payments and integrations', 'Stripe or another processor, webhooks, emails, outside services.'],
+      ['Code and structure', 'Whether a developer can carry it on, what needs rewriting and what stays.'],
+      ['Hosting and costs', 'Where it runs, what it costs per month at 10 and at 1,000 users, what happens at a traffic peak.'],
+    ],
+    getH: 'What you get',
+    get: ['A written report in plain words, without needless jargon.', 'What is solid and stays as it is.', 'What must be fixed before customers arrive, in order of risk.', 'What can wait until after launch.', 'An estimate of time and cost to reach production.', 'A 30-minute call where I walk you through the report.'],
+    getNote: 'If you want me to take the app further, you get a fixed price. If not, the report is yours and any developer can use it.',
+    howH: 'How it works',
+    how: [
+      ['You write to me', 'The link to the app and what it should do. A few lines are enough.'],
+      ['You give me read access', 'An invitation to the repository on GitHub or GitLab, read-only. Or you show me the app on a call.'],
+      ['You get the report', 'I walk you through it on a call and answer your questions. You decide afterwards, with no rush.'],
+    ],
+    safe: 'Please do not send me passwords or API keys by email or through the form. Invite me with read-only access and remove it after the audit. If you want, I sign a non-disclosure agreement before I look at the code.',
+    faqH: 'Questions',
+    faq: [
+      ['Why is it free?', 'It is the first step, just like the free call for my other projects. If you want to continue after the audit, you get a fixed price. If not, we stop there.'],
+      ['Which tools and technologies?', 'Lovable, Bolt, Cursor, v0, Replit, ChatGPT, Claude, or code written by a freelancer. On the technical side: React, Vue, Supabase, Node.js, PHP and Laravel, MySQL and PostgreSQL.'],
+      ['Do I have to rebuild everything?', 'Not necessarily. The point of the audit is to keep what works and rebuild only what is risky.'],
+      ['How much do the fixes cost?', 'It depends on what I find. You see the estimate in the report before you decide anything. Small changes start at €150.'],
+    ],
+    formH: 'Ask for the audit', formP: 'Tell me where the app is and what got stuck. I reply within one working day.',
+    subject: 'AI app audit (EN)',
+    f: { name: 'Name', namePh: 'e.g. Elena Radu', email: 'Email', emailPh: 'e.g. elena@company.com', phone: 'Phone', opt: '(optional)', phonePh: 'e.g. +40 7xx xxx xxx', link: 'Link to the app or the repository', linkPh: 'e.g. https://my-app.lovable.app', tool: 'What you built it with', tools: ['Lovable', 'Bolt', 'Cursor', 'Something else'], stage: 'Where it is now', stages: ['Only a prototype', 'A few people use it', 'It has paying customers'], problem: 'What got stuck, or what worries you?', problemPh: 'e.g. It works, but I am not sure customer data is safe. We want to launch next month.', send: 'Send', done: 'Thank you. I will reply within one working day.', note: 'I use your details only to contact you about this audit.' },
+  },
+}[lang];
+const f = T.f;
+---
+<Layout title={T.title} description={T.description} path={T.path} lang={lang} cta="#audit" ctaLabel={T.cta}>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="label in">{T.kicker}</p>
+        <h1 class="in">{T.h1}</h1>
+        <p class="lead in">{T.lead}</p>
+        <div class="btn-row in">
+          <a class="btn btn-primary btn-lg" href="#audit">{T.cta}<Fragment set:html={arrow} /></a>
+          <a class="btn btn-lg" href="#verific">{T.cta2}</a>
+        </div>
+      </div>
+      <ul class="proof in">
+        {T.proof.map(p => <li><Fragment set:html={check} /><span set:html={p} /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section bg-2">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>{T.riskH}</h2>
+        <p>{T.riskP}</p>
+      </div>
+      <ol class="au-risks">
+        {T.risks.map(([t, d], i) => <li class="reveal" data-delay={String(i % 3)}><span class="au-n">{String(i + 1).padStart(2, '0')}</span><h3>{t}</h3><p>{d}</p></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="verific">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>{T.checkH}</h2>
+        <p>{T.checkP}</p>
+      </div>
+      <div class="services au-checks">
+        {T.checks.map(([t, d], i) => (
+          <div class="service reveal" data-delay={String(i % 3)}>
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[i]} /></div>
+            <h3>{t}</h3>
+            <p>{d}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-2">
+    <div class="wrap au-two">
+      <div class="reveal">
+        <h2>{T.getH}</h2>
+        <ul class="au-get">{T.get.map(g => <li><Fragment set:html={check} /><span>{g}</span></li>)}</ul>
+        <p class="au-note">{T.getNote}</p>
+      </div>
+      <div class="reveal" data-delay="1">
+        <h2>{T.howH}</h2>
+        <ol class="au-how">{T.how.map(([t, d], i) => <li><span class="au-n">{String(i + 1).padStart(2, '0')}</span><div><h3>{t}</h3><p>{d}</p></div></li>)}</ol>
+        <p class="au-safe">{T.safe}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap au-faq">
+      <h2 class="reveal">{T.faqH}</h2>
+      {T.faq.map(([q, a]) => <details class="reveal"><summary>{q}</summary><p>{a}</p></details>)}
+    </div>
+  </section>
+
+  <section class="section bg-2" id="audit">
+    <div class="wrap contact">
+      <div class="reveal">
+        <h2>{T.formH}</h2>
+        <p class="lead" style="margin-top:1rem">{T.formP}</p>
+        <p class="au-safe">{T.safe}</p>
+      </div>
+      <div class="form-panel reveal" data-delay="1">
+        <form class="form" data-mail="salut@andreinastase.ro" data-endpoint="/contact.php" data-subject={T.subject}>
+          <label class="hp">Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          <div class="form-row">
+            <label class="field"><span>{f.name}</span><input type="text" name="nume" id="a-nume" placeholder={f.namePh} autocomplete="name" required></label>
+            <label class="field"><span>{f.email}</span><input type="email" name="email" id="a-email" placeholder={f.emailPh} autocomplete="email" required></label>
+          </div>
+          <div class="form-row">
+            <label class="field"><span>{f.phone} <em>{f.opt}</em></span><input type="tel" name="telefon" id="a-telefon" placeholder={f.phonePh} autocomplete="tel"></label>
+            <label class="field"><span>{f.link}</span><input type="text" name="link" id="a-link" placeholder={f.linkPh} required></label>
+          </div>
+          <div class="field"><span>{f.tool}</span>
+            <div class="choices">
+              {f.tools.map((t, i) => <label><input type="radio" name="interes" value={`Audit AI: ${t}`} checked={i === 0}><span>{t}</span></label>)}
+            </div>
+          </div>
+          <div class="field"><span>{f.stage}</span>
+            <div class="choices">
+              {f.stages.map((t, i) => <label><input type="radio" name="stadiu" value={t} checked={i === 0}><span>{t}</span></label>)}
+            </div>
+          </div>
+          <label class="field"><span>{f.problem}</span><textarea name="problema" id="a-problema" placeholder={f.problemPh} rows="4" required></textarea></label>
+          <div class="form-done" hidden>{f.done}</div>
+          <button class="btn btn-primary btn-lg" type="submit">{f.send}<Fragment set:html={arrow} /></button>
+          <p class="form-note">{f.note}</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .au-risks { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+  .au-risks li { padding: 24px 24px 28px 0; border-bottom: 1px solid var(--line); }
+  .au-risks li:not(:nth-child(3n + 1)) { padding-left: 24px; border-left: 1px solid var(--line); }
+  .au-risks h3, .au-how h3 { font-size: 19px; margin: 8px 0 6px; }
+  .au-risks p, .au-how p { color: var(--muted); line-height: 1.55; margin: 0; }
+  .au-n { font: 400 13px/1.5 var(--mono); letter-spacing: .05em; color: var(--accent); }
+  .au-two { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 80px); }
+  .au-two h2 { margin-bottom: 20px; }
+  .au-get { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .au-get li { display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; }
+  .au-get :global(svg) { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--accent); }
+  .au-note { margin-top: 20px; color: var(--muted); }
+  .au-how { list-style: none; padding: 0; margin: 0; display: grid; gap: 22px; }
+  .au-how li { display: flex; gap: 16px; }
+  .au-how h3 { margin-top: 0; }
+  .au-safe { margin-top: 24px; padding: 16px 18px; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; font-size: 15px; line-height: 1.55; }
+  .au-faq { max-width: 820px; }
+  .au-faq h2 { margin-bottom: 16px; }
+  .au-faq details { border-bottom: 1px solid var(--line); }
+  .au-faq summary { cursor: pointer; padding: 18px 0; font-size: 19px; font-weight: 500; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  .au-faq summary::-webkit-details-marker { display: none; }
+  .au-faq summary::after { content: '+'; font: 400 22px/1 var(--mono); color: var(--accent); }
+  .au-faq details[open] summary::after { content: '−'; }
+  .au-faq details p { margin: 0 0 20px; color: var(--muted); line-height: 1.6; max-width: 70ch; }
+  @media (max-width: 900px) {
+    .au-risks { grid-template-columns: 1fr; }
+    .au-risks li, .au-risks li:not(:nth-child(3n + 1)) { padding: 20px 0; border-left: 0; }
+    .au-two { grid-template-columns: 1fr; }
+  }
+</style>
