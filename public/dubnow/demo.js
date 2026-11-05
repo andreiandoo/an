@@ -18,13 +18,14 @@ ort.env.wasm.numThreads = crossOriginIsolated ? Math.min(navigator.hardwareConcu
 
 const form = document.getElementById('tts');
 const $ = sel => form.querySelector(sel);
-const text = form.elements.text, lang = form.elements.lang;
+const text = form.elements.text, lang = form.elements.lang, from = form.elements.from;
 const samples = JSON.parse(form.dataset.samples);
 const loadBtn = $('[data-load]'), goBtn = $('button[type=submit]'), status = $('.tts-status'), audio = $('audio');
 const bar = $('.tts-bar'), engineEl = document.querySelector('[data-engine]');
 const times = Object.fromEntries([...form.querySelectorAll('[data-t]')].map(el => [el.dataset.t, el]));
+const translated = $('.tts-translated');
 let tts = null, ep = null, edited = false, busy = false;
-const styles = {};
+const styles = {}, translators = {};
 
 const say = (msg, kind = '') => { status.textContent = msg; status.dataset.kind = kind; };
 const secs = s => `${s.toLocaleString('ro-RO', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
@@ -33,8 +34,35 @@ const progress = f => { bar.hidden = f == null; bar.firstElementChild.style.widt
 count();
 
 text.addEventListener('input', () => { edited = true; count(); });
-// Until the visitor writes their own text, switching language swaps in a sample sentence in that language.
-lang.addEventListener('change', () => { if (!edited) { text.value = samples[lang.value] ?? ''; count(); } });
+// Until the visitor writes their own text, switching language swaps in a sample sentence in the language they write in.
+const resample = () => { if (!edited) { text.value = samples[from.value || lang.value] ?? ''; count(); } };
+lang.addEventListener('change', resample);
+from.addEventListener('change', resample);
+// Chrome's on-device Translator API (desktop Chrome 138+, Edge 148+). Elsewhere the visitor writes in the voice's language.
+if (!('Translator' in globalThis)) {
+  from.disabled = true;
+  from.title = 'Traducerea merge în Chrome și Edge pe calculator.';
+}
+
+// The text in the voice's language: translated in the browser when the visitor writes in another one.
+// Translator.create() needs the click's user activation when a language pack must be downloaded, so it runs first.
+async function inLanguage(value) {
+  if (!from.value || from.value === lang.value) return value;
+  const pair = { sourceLanguage: from.value, targetLanguage: lang.value };
+  const key = `${pair.sourceLanguage}>${pair.targetLanguage}`;
+  if (!translators[key]) {
+    say('Pregătesc traducerea în browser…', 'wait');
+    translators[key] = await Translator.create({ ...pair, monitor(m) {
+      m.addEventListener('downloadprogress', e => say(`Browserul descarcă pachetul de traducere: ${Math.round(e.loaded * 100)}%…`, 'wait'));
+    } }).catch(async e => {
+      throw new Error(await Translator.availability(pair).catch(() => '') === 'unavailable'
+        ? 'Browserul nu poate traduce între aceste limbi. Alege altă limbă.'
+        : `Traducerea n-a pornit. Apasă din nou Generează. (${e.message})`);
+    });
+  }
+  say('Traduc textul…', 'wait');
+  return translators[key].translate(value);
+}
 document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => {
   lang.value = b.dataset.lang;
   lang.dispatchEvent(new Event('change'));
@@ -141,13 +169,25 @@ form.addEventListener('submit', async e => {
   if (busy || !tts || !text.value.trim()) return;
   busy = true;
   goBtn.disabled = true;
+  let said;
+  try {
+    said = await inLanguage(text.value.trim());
+  } catch (err) {
+    console.error('[dubnow]', err);
+    say(err.message, 'err');
+    busy = false;
+    goBtn.disabled = false;
+    return;
+  }
+  translated.hidden = said === text.value.trim();
+  translated.querySelector('q').textContent = said;
   try {
     const voice = form.elements.voice.value;
     styles[voice] ??= await loadVoiceStyle([`${HF}/voice_styles/${voice}.json`]);
     say('Generez vocea pe calculatorul tău…', 'wait');
     await new Promise(r => setTimeout(r, 30)); // let the status paint before the main thread gets busy
     const t0 = performance.now();
-    const { wav } = await tts.call(text.value.trim(), lang.value, styles[voice], STEPS[ep], SPEED);
+    const { wav } = await tts.call(said, lang.value, styles[voice], STEPS[ep], SPEED);
     const spent = (performance.now() - t0) / 1000;
     const length = wav.length / tts.sampleRate;
     times.voice.textContent = secs(spent);

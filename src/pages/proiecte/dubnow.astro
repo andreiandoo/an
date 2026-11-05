@@ -29,6 +29,24 @@ const versus = [
   ['Voci noi', 'Clonare din câteva secunde de voce', 'Stiluri vocale; vocile de actori sunt în lucru'],
 ];
 
+// List prices read on the vendors' pricing pages on 2026-11-05 (USD per 1M characters, pay as you go).
+// Hour of speech = 40 320 characters (11.2 characters/s, our Romanian measurement).
+// Dubnow server: Hetzner AX42 at EUR 99/month (founder's order page), 16 threads = 4 jobs of 4 threads at RTF 0.347,
+// fully loaded all month: ~8 400 h of speech, so about EUR 0.29 (~$0.35) per 1M characters. An estimate, not a bill.
+const CHARS_PER_HOUR = 11.2 * 3600;
+const costs = [
+  { n: 'ElevenLabs v3 / Multilingual v2', usd: 80 },
+  { n: 'ElevenLabs Flash / Turbo', usd: 40 },
+  { n: 'OpenAI tts-1-hd', usd: 30 },
+  { n: 'Amazon Polly, voci generative', usd: 30 },
+  { n: 'Amazon Polly, voci neurale', usd: 16 },
+  { n: 'OpenAI tts-1', usd: 15 },
+  { n: 'Dubnow pe server cu procesor', usd: 0.35, us: true, est: true },
+  { n: 'Dubnow în browser', usd: 0, us: true },
+];
+const maxCost = Math.max(...costs.map(c => c.usd));
+const usd = v => v === 0 ? '0 $' : `${v.toLocaleString('ro-RO', { minimumFractionDigits: v < 1 ? 2 : 0, maximumFractionDigits: v < 0.1 ? 3 : 2 })} $`;
+
 const parts = [
   { name: 'Estimator vectorial', p: 64.0, mb: 257, d: 'Construiește sunetul în 5-16 pași. Aici se duce 90% din timp.' },
   { name: 'Vocoder', p: 25.3, mb: 101, d: 'Transformă reprezentarea internă în undă audio la 44,1 kHz.' },
@@ -104,6 +122,8 @@ const languages = [
   ['uk', 'Ucraineană', 'Українська', 'Привіт! Я Dubnow, і я можу прочитати вголос будь-який текст.'],
   ['vi', 'Vietnameză', 'Tiếng Việt', 'Xin chào! Tôi là Dubnow, và tôi có thể đọc to bất kỳ văn bản nào.'],
 ];
+// Languages Chrome's built-in Translator API lists (developer.chrome.com/docs/ai/translator-api, read 2026-11-05).
+const translatable = ['ar', 'bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'fi', 'fr', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'lt', 'nl', 'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'vi'];
 const samples = Object.fromEntries(languages.map(([c, , , s]) => [c, s]));
 const voices = [['F1', 'Femeie, caldă'], ['F3', 'Femeie, tânără'], ['M1', 'Bărbat, calm'], ['M3', 'Bărbat, grav']];
 const maxP = Math.max(...parts.map(x => x.p));
@@ -144,7 +164,14 @@ const maxP = Math.max(...parts.map(x => x.p));
           </label>
           <div class="tts-row">
             <label class="tts-field">
-              <span>Limba</span>
+              <span>Scriu în</span>
+              <select name="from">
+                <option value="" selected>Aceeași limbă ca vocea</option>
+                {languages.filter(([c]) => translatable.includes(c)).map(([c, ro]) => <option value={c}>{ro}, tradus</option>)}
+              </select>
+            </label>
+            <label class="tts-field">
+              <span>Vocea vorbește în</span>
               <select name="lang">
                 {languages.map(([c, ro, own]) => <option value={c} selected={c === 'ro'}>{ro}{own !== ro ? ` · ${own}` : ''}</option>)}
               </select>
@@ -157,6 +184,7 @@ const maxP = Math.max(...parts.map(x => x.p));
             <button class="btn btn-primary btn-lg" type="submit" hidden>Generează vocea</button>
           </div>
           <div class="tts-bar" hidden><i></i></div>
+          <p class="tts-translated" hidden><span>Tradus în browser:</span> <q></q></p>
           <p class="tts-status" role="status" aria-live="polite">Pornește modelul ca să generezi voce. Pe date mobile, descarcă-l pe Wi-Fi.</p>
           <audio controls hidden></audio>
           <dl class="tts-times">
@@ -166,7 +194,7 @@ const maxP = Math.max(...parts.map(x => x.p));
             <div><dt>Raport (RTF)</dt><dd data-t="rtf">-</dd></div>
           </dl>
         </form>
-        <p class="tts-note">Textul nu pleacă de pe calculatorul tău. Modelul rămâne salvat în browser, deci a doua vizită pornește fără descărcare. Pe placa video vocea vine mai repede decât timpul real; doar pe procesor, poate dura mai mult decât fraza. Vocile din demo sunt stilurile generice ale modelului; dubidu adaugă voci de personaje și, în curând, voci înregistrate cu actori.</p>
+        <p class="tts-note">Poți scrie într-o limbă și asculta în alta, de exemplu în română, cu vocea în rusă. Traducerea o face browserul, cu modelul de traducere inclus în Chrome 138+ și Edge 148+, pe calculator. La prima pereche de limbi, browserul își descarcă pachetul de traducere. Textul nu pleacă de pe calculatorul tău. Modelul rămâne salvat în browser, deci a doua vizită pornește fără descărcare. Pe placa video vocea vine mai repede decât timpul real; doar pe procesor, poate dura mai mult decât fraza. Vocile din demo sunt stilurile generice ale modelului; dubidu adaugă voci de personaje și, în curând, voci înregistrate cu actori.</p>
       </div>
     </section>
 
@@ -200,6 +228,22 @@ const maxP = Math.max(...parts.map(x => x.p));
       <div class="vs reveal" role="table" aria-label="Model mare în cloud față de Dubnow">
         <div class="vs-row vs-head" role="row"><span role="columnheader"></span><span role="columnheader">Model mare în cloud</span><span role="columnheader">Dubnow</span></div>
         {versus.map(([k, a, b]) => <div class="vs-row" role="row"><span role="rowheader">{k}</span><span role="cell">{a}</span><span role="cell">{b}</span></div>)}
+      </div>
+
+      <div class="cost reveal">
+        <h3 class="cs-sub">Cât costă vocea: un milion de caractere, cam 25 de ore de vorbire</h3>
+        <div class="cost-head" aria-hidden="true"><span>Model</span><span></span><span>1M caractere</span><span>O oră de vorbire</span></div>
+        <ul>
+          {costs.map(c => (
+            <li class={c.us ? 'is-us' : undefined}>
+              <span>{c.n}{c.est && <small> · estimare</small>}</span>
+              <i style={`--w:${c.usd / maxCost * 100}%`}></i>
+              <b>{usd(c.usd)}</b>
+              <b>{usd(Math.round(c.usd * CHARS_PER_HOUR / 1e6 * 1000) / 1000)}</b>
+            </li>
+          ))}
+        </ul>
+        <p class="cs-note small">Prețuri de listă, plată la consum, citite pe paginile de prețuri ale furnizorilor pe 5 noiembrie 2026, fără reduceri de volum și fără nivelurile gratuite. OpenAI marchează tts-1 ca învechit. O oră de vorbire înseamnă 40.320 de caractere, ritmul măsurat de noi în română. Dubnow pe server e o estimare: un server Hetzner cu 16 fire, 99 € pe lună, ocupat tot timpul, la viteza măsurată pe 4 fire. În browser, sinteza rulează pe calculatorul vizitatorului, deci nu ne costă nimic pe oră.</p>
       </div>
     </div>
 
