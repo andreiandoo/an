@@ -6,7 +6,7 @@ export const products = [
   { name: 'Dreams Atlas', file: 'dreamsatlas', tag: 'AI', url: 'https://dreamsatlas.com', stat: '3,22M afișări' },
   { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com', cs: '/proiecte/viaqui/', stat: '113.093 atracții' },
   { name: 'e-test.ro', file: 'e-test', tag: 'Educație', url: 'https://e-test.ro' },
-  { name: 'dubidu', file: 'dubidu', tag: 'Dublaj AI', url: 'https://dubidu.net', cs: '/proiecte/dubidu/', stat: 'Studiu de caz' },
+  { name: 'dubidu', file: 'dubidu', tag: 'Dublaj AI', url: 'https://dubidu.net', cs: '/proiecte/dubidu/', stat: 'Studiu de caz', sale: '/de-vanzare/dubidu/' },
   { name: 'EZ', file: 'ez', tag: 'Date construcții', url: 'https://e-z.ro', cs: '/proiecte/ez/', stat: '101.942 lucrări', sale: '/de-vanzare/ez/' },
   { name: 'eMUD', file: 'emud', tag: 'Piese auto', url: 'https://a-n.ro', cs: '/proiecte/emud/', stat: 'Studiu de caz', sale: '/de-vanzare/emud/' },
   { name: 'ePAS', file: 'epas', tag: 'Prototip', url: 'https://epas.ro' },
@@ -17,7 +17,7 @@ export const inWork = [
   { name: 'Route-a-Roo', file: 'routearoo', status: 'În lucru', text: 'Planificare de turnee pentru artiști: rute, săli, organizare.' },
   { name: 'Actoria', file: 'actoria', status: 'În lucru', text: 'Leagă actorii de directorii de casting și casele de producție.' },
   { name: 'CineSunt', file: 'cinesunt', status: 'În lucru', text: 'Platformă de autocunoaștere.' },
-  { name: 'Bine.ro', file: 'bine', url: 'https://bine.ro', status: 'De vânzare', text: 'Cumperi online, iar o parte din bani merge automat la o cauză.' },
+  { name: 'Bine.ro', file: 'bine', url: 'https://bine.ro', status: 'Domeniul e de vânzare', text: 'Cumperi online, iar o parte din bani merge automat la o cauză.' },
 ];
 
 export const roles = [

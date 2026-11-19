@@ -17,14 +17,16 @@ const price = p.price ? (en ? `€${num(p.price, lang)}` : `${num(p.price, lang)
 const L = en
   ? { back: '← Projects for sale', sale: 'For sale', priceNone: 'Price on request', priceNote: 'indicative, negotiable', live: 'See it live', case: 'Read the case study', inv: 'Buyers’ page',
       numbers: 'The figures', includes: 'What you get', fit: 'Who it suits', honest: 'Said up front', honestH: 'What you are not buying.', screens: 'What it looks like',
-      invH: 'Everything else is on the buyers’ page.', invP: 'Live figures from the production database, screenshots of every account screen, plan prices and a revenue calculator, the technical and legal details, the risks and the transaction terms. The page has a password, which I send by email.', invBtn: 'Open e-z.ro/investors',
+      invH: 'Everything else is on the buyers’ page.', invP: 'Live figures from the production database, screenshots of every account screen, plan prices and a revenue calculator, the technical and legal details, the risks and the transaction terms. The page has a password, which I send by email.', invBtn: 'Open',
       steps: 'How the sale works', stepsH: 'Four steps, no intermediary.', other: 'Other projects for sale', domains: 'Domains for sale', domainsHref: '/en/domains/', withDomain: 'domain included', noDomain: 'without the domain' }
   : { back: '← Proiecte de vânzare', sale: 'De vânzare', priceNone: 'Preț la cerere', priceNote: 'orientativ, negociabil', live: 'Vezi site-ul live', case: 'Citește studiul de caz', inv: 'Pagina pentru cumpărători',
       numbers: 'Cifrele', includes: 'Ce primești', fit: 'Cui i se potrivește', honest: 'Spus de la început', honestH: 'Ce nu cumperi.', screens: 'Cum arată',
-      invH: 'Restul e pe pagina pentru cumpărători.', invP: 'Cifrele live din baza de producție, capturi din fiecare ecran al contului, prețurile planurilor și un calculator de venit, detaliile tehnice și juridice, riscurile și termenii tranzacției. Pagina are parolă, pe care ți-o trimit pe email.', invBtn: 'Deschide e-z.ro/investors',
+      invH: 'Restul e pe pagina pentru cumpărători.', invP: 'Cifrele live din baza de producție, capturi din fiecare ecran al contului, prețurile planurilor și un calculator de venit, detaliile tehnice și juridice, riscurile și termenii tranzacției. Pagina are parolă, pe care ți-o trimit pe email.', invBtn: 'Deschide',
       steps: 'Cum decurge vânzarea', stepsH: 'Patru pași, fără intermediar.', other: 'Alte proiecte de vânzare', domains: 'Domenii de vânzare', domainsHref: '/domenii/', withDomain: 'cu domeniu', noDomain: 'fără domeniu' };
 const others = forSale.filter(x => x.slug !== slug);
 const shot = src => `${p.shots}/${src}`;
+const invHost = p.investors ? p.investors.replace(/^https?:\/\//, '') : '';
+const size = (src, w, h) => (w ? { width: w, height: h } : ['judete.jpg', 'collections.jpg', 'service.jpg'].includes(src) ? { width: 1440, height: 1000 } : { width: 1600, height: 962 });
 ---
 <Layout title={t.title} description={t.description} path={`${base}${p.slug}/`} lang={lang} image={p.img} cta={mail} ctaLabel={t.ask}>
   <article class="cs sale">
@@ -53,7 +55,7 @@ const shot = src => `${p.shots}/${src}`;
 
     <figure class="wrap cs-hero-shot reveal">
       <div class="browser"><span><i></i><i></i><i></i></span><b>{p.domain}</b></div>
-      <img src={p.img} alt={`${p.name}: ${t.line}`} width="1440" height={p.slug === 'emud' ? 900 : 1000}>
+      <img src={p.img} alt={`${p.name}: ${t.line}`} width={p.imgW ?? 1440} height={p.imgH ?? (p.slug === 'emud' ? 900 : 1000)}>
     </figure>
 
     <section class="wrap cs-top is-compact" aria-label={L.numbers}>
@@ -90,9 +92,9 @@ const shot = src => `${p.shots}/${src}`;
         </section>
         <div class={`wrap sale-gallery${t.phone ? ' has-phone' : ''}`}>
           <div class="cs-pair">
-            {t.gallery.map(([src, cap], i) => (
+            {t.gallery.map(([src, cap, gw, gh], i) => (
               <figure class="cs-fig reveal" data-delay={String(i % 2)}>
-                <img src={shot(src)} alt={cap} {...(['judete.jpg', 'collections.jpg', 'service.jpg'].includes(src) ? { width: 1440, height: 1000 } : { width: 1600, height: 962 })} loading="lazy">
+                <img src={shot(src)} alt={cap} {...size(src, gw, gh)} loading="lazy">
                 <figcaption>{cap}</figcaption>
               </figure>
             ))}
@@ -129,12 +131,12 @@ const shot = src => `${p.shots}/${src}`;
       <section class="wrap sale-inv reveal">
         <div>
           <p class="label kick">{L.inv}</p>
-          <h2>{L.invH}</h2>
-          <p>{L.invP}</p>
+          <h2>{t.invH ?? L.invH}</h2>
+          <p>{t.invP ?? L.invP}</p>
         </div>
         <div class="btn-row">
           <a class="btn btn-primary btn-lg" href={mail}>{t.ask}</a>
-          <a class="btn btn-lg" href={p.investors} target="_blank" rel="noopener">{L.invBtn}</a>
+          <a class="btn btn-lg" href={p.investors} target="_blank" rel="noopener">{L.invBtn} {invHost}</a>
         </div>
       </section>
     )}

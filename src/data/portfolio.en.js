@@ -9,7 +9,7 @@ export const products = [
   { name: 'Dreams Atlas', file: 'dreamsatlas', tag: 'AI', url: 'https://dreamsatlas.com', stat: '3.22M impressions' },
   { name: 'Viaqui', file: 'viaqui', tag: 'Travel', url: 'https://viaqui.com', cs: '/en/projects/viaqui/', stat: '113,093 attractions' },
   { name: 'e-test.ro', file: 'e-test', tag: 'Education', url: 'https://e-test.ro' },
-  { name: 'dubidu', file: 'dubidu', tag: 'AI dubbing', url: 'https://dubidu.net', cs: '/en/projects/dubidu/', stat: 'Case study' },
+  { name: 'dubidu', file: 'dubidu', tag: 'AI dubbing', url: 'https://dubidu.net', cs: '/en/projects/dubidu/', stat: 'Case study', sale: '/en/for-sale/dubidu/' },
   { name: 'EZ', file: 'ez', tag: 'Construction data', url: 'https://e-z.ro', cs: '/en/projects/ez/', stat: '101,942 projects', sale: '/en/for-sale/ez/' },
   { name: 'eMUD', file: 'emud', tag: 'Car parts', url: 'https://a-n.ro', cs: '/en/projects/emud/', stat: 'Case study', sale: '/en/for-sale/emud/' },
   { name: 'ePAS', file: 'epas', tag: 'Prototype', url: 'https://epas.ro' },
@@ -20,7 +20,7 @@ export const inWork = [
   { name: 'Route-a-Roo', file: 'routearoo', status: 'In progress', text: 'Tour planning for artists: routes, venues, logistics.' },
   { name: 'Actoria', file: 'actoria', status: 'In progress', text: 'Connects actors with casting directors and production companies.' },
   { name: 'CineSunt', file: 'cinesunt', status: 'In progress', text: 'A self-discovery platform.' },
-  { name: 'Bine.ro', file: 'bine', url: 'https://bine.ro', status: 'For sale', text: 'You shop online, and part of the money goes automatically to a cause.' },
+  { name: 'Bine.ro', file: 'bine', url: 'https://bine.ro', status: 'Domain for sale', text: 'You shop online, and part of the money goes automatically to a cause.' },
 ];
 
 export const roles = [

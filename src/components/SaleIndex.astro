@@ -36,7 +36,7 @@ const T = en
       return (
         <li class="fs-item reveal">
           <a class="fs-shot" href={`${base}${p.slug}/`} aria-label={`${T.lp}: ${p.name}`}>
-            <img src={p.img} alt="" width="1440" height={p.slug === 'emud' ? 900 : 1000} loading="lazy">
+            <img src={p.img} alt="" width={p.imgW ?? 1440} height={p.imgH ?? (p.slug === 'emud' ? 900 : 1000)} loading="lazy">
           </a>
           <div class="fs-body">
             <p class="fs-meta"><span>{t.tag}</span><em>{p.domain} · {p.withDomain ? T.withDomain : T.noDomain}</em></p>

@@ -7,7 +7,7 @@ export const cases = [
   { slug: 'ambilet', kind: 'own', img: '/shots/ambilet/home.jpg', years: '2025-2026',
     ro: { name: 'AmBilet', line: 'Marketplace de bilete mutat de pe WordPress pe Tixello, fără să-și piardă clienții.', fact: '7.777 de bilete mutate' },
     en: { name: 'AmBilet', line: 'Ticket marketplace moved from WordPress to Tixello without losing its customers.', fact: '7,777 tickets migrated' } },
-  { slug: 'dubidu', kind: 'own', img: '/shots/dubidu/home-hero.jpg', years: '2026',
+  { slug: 'dubidu', kind: 'own', sale: true, img: '/shots/dubidu/home-hero.jpg', years: '2026',
     ro: { name: 'dubidu', line: 'Filme dublate în română, în timp real, pentru copiii care nu citesc încă subtitrarea.', fact: 'Extensie, platformă, motor de voce' },
     en: { name: 'dubidu', line: 'Films dubbed into Romanian in real time, for children who cannot read subtitles yet.', fact: 'Extension, platform, voice engine' } },
   { slug: 'dubnow', kind: 'own', img: '/shots/dubidu/inv-tech.jpg', years: '2026',
