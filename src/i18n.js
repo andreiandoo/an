@@ -7,6 +7,7 @@ export const pairs = [
   ['/domenii/', '/en/domains/'],
   ['/proiecte/', '/en/projects/'],
   ['/audit-aplicatii-ai/', '/en/ai-app-audit/'],
+  ['/de-vanzare/', '/en/for-sale/'],
 ];
 
 export function alternate(path, lang) {
@@ -15,6 +16,8 @@ export function alternate(path, lang) {
   if (hit) return hit[1 - i];
   if (lang === 'en' && path.startsWith('/en/projects/')) return path.replace('/en/projects/', '/proiecte/');
   if (lang !== 'en' && path.startsWith('/proiecte/')) return path.replace('/proiecte/', '/en/projects/');
+  if (lang === 'en' && path.startsWith('/en/for-sale/')) return path.replace('/en/for-sale/', '/de-vanzare/');
+  if (lang !== 'en' && path.startsWith('/de-vanzare/')) return path.replace('/de-vanzare/', '/en/for-sale/');
   return lang === 'en' ? '/' : '/en/';
 }
 
@@ -28,7 +31,7 @@ export const ui = {
     cta: ['/#contact', 'Apel gratuit'],
     menu: 'Meniu', close: 'Închide', brandLabel: 'Andrei Năstase, pagina principală', navLabel: 'Principal', footLabel: 'Subsol',
     switchLabel: 'English version', switchText: 'EN',
-    foot: [['/proiecte/', 'Proiecte'], ['/servicii/', 'Servicii'], ['/audit-aplicatii-ai/', 'Audit aplicații AI'], ['/cofondator/', 'Cofondator'], ['/domenii/', 'Domenii de vânzare']],
+    foot: [['/proiecte/', 'Proiecte'], ['/servicii/', 'Servicii'], ['/audit-aplicatii-ai/', 'Audit aplicații AI'], ['/cofondator/', 'Cofondator'], ['/de-vanzare/', 'Proiecte de vânzare'], ['/domenii/', 'Domenii de vânzare']],
     jobTitle: 'Senior full-stack developer',
   },
   en: {
@@ -37,7 +40,7 @@ export const ui = {
     cta: ['/en/#contact', 'Free call'],
     menu: 'Menu', close: 'Close', brandLabel: 'Andrei Năstase, home page', navLabel: 'Main', footLabel: 'Footer',
     switchLabel: 'Versiunea în română', switchText: 'RO',
-    foot: [['/en/projects/', 'Projects'], ['/en/services/', 'Services'], ['/en/ai-app-audit/', 'AI app audit'], ['/en/cofounder/', 'Co-founder'], ['/en/domains/', 'Domains for sale']],
+    foot: [['/en/projects/', 'Projects'], ['/en/services/', 'Services'], ['/en/ai-app-audit/', 'AI app audit'], ['/en/cofounder/', 'Co-founder'], ['/en/for-sale/', 'Projects for sale'], ['/en/domains/', 'Domains for sale']],
     jobTitle: 'Senior full-stack developer',
   },
 };

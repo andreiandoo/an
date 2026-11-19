@@ -1,0 +1,115 @@
+---
+import CaseStudy from '../../components/CaseStudy.astro';
+
+// Figures checked on 19 Nov 2026: e-z.ro/date/cifre.json (production database), the repo, docs/ and DECIZII.md.
+// No paying customers yet; account screenshots come from the demo account with invented data.
+const cs = {
+  title: 'EZ: studiu de caz | Andrei Năstase',
+  description: 'Cum am construit EZ (e-z.ro): autorizațiile de construire și licitațiile din sute de primării, adunate zilnic și transformate în fișe pentru agenții de vânzări.',
+  path: '/proiecte/ez/',
+  shots: '/shots/ez',
+  label: 'Studiu de caz · 2026',
+  h1: 'EZ: află primul ce se construiește, din listele a sute de primării.',
+  lead: 'O platformă B2B care citește în fiecare dimineață autorizațiile de construire, certificatele de urbanism și licitațiile de lucrări. Fiecare devine o fișă pentru agentul de vânzări: ce se construiește, unde, cine e beneficiarul și ce materiale trebuie vândute.',
+  summary: [
+    'Cine vinde ferestre, acoperișuri sau betoane vrea să afle de o lucrare înaintea concurenței. Informația e publică, dar împrăștiată pe sute de site-uri de primărie, în formate diferite.',
+    'Colectoare pentru 491 de primării și SEAP, fișe cu necesarul de materiale pe 11 meserii, cont cu CRM și trasee, plus o aplicație pentru agenți.',
+    'Live pe e-z.ro din 17 noiembrie 2026, cu 101.942 de lucrări. Încă fără clienți plătitori. <a class="link" href="/de-vanzare/ez/">Proiectul e de vânzare</a>.',
+  ],
+  facts: [
+    ['Rol', 'Fondator. Produs, date, cod, design'],
+    ['Perioadă', 'Noiembrie 2026'],
+    ['Stare', 'Live pe e-z.ro. De vânzare'],
+    ['Stack', 'Python, FastAPI, PostgreSQL 16'],
+  ],
+  links: [{ href: 'https://e-z.ro', text: 'e-z.ro' }, { href: 'https://e-z.ro/judete', text: 'Acoperirea pe județe' }],
+  hero: { src: 'home.jpg', alt: 'Pagina principală EZ: Află primul ce se construiește', domain: 'e-z.ro' },
+  top: [
+    { value: 101942, label: 'lucrări în baza de date' },
+    { value: 491, label: 'primării, din 3.181' },
+    { value: 380635, label: 'firme din construcții' },
+    { value: 43, label: 'colectoare dedicate' },
+  ],
+  topCompact: true,
+  topNote: 'De pe e-z.ro/date/cifre.json, calculate din baza de producție, pe 19 noiembrie 2026.',
+  blocks: [
+    {
+      label: '01 · Problema', h2: 'Informația e publică. Doar că e în 3.181 de locuri.',
+      ps: [
+        'Pentru fiecare autorizație de construire se cumpără ferestre, izolație, instalații, betoane. Cine le vinde vrea să afle primul. Legea obligă primăriile să publice listele de autorizații și de certificate de urbanism, dar fiecare o face altfel: tabel pe site, PDF scanat, Excel, o aplicație de căutare sau deloc.',
+        'Serviciile existente trimit lista o dată pe lună sau acoperă doar orașele mari. Iar o listă de adrese nu spune ce trebuie vândut și când.',
+      ],
+    },
+    {
+      label: '02 · Ce face', h2: 'De la lista primăriei la agentul din teren.',
+      ps: [
+        'Clientul își alege județele și meseria. În fiecare dimineață primește lucrările noi, pe email sau pe WhatsApp. Fișa spune ce se construiește, unde, cine e beneficiarul și în ce stadiu e lucrarea. Pentru 11 meserii arată și materialele estimate și luna în care meseria intră pe șantier. Un certificat de urbanism se leagă de autorizația care vine după el, așa că afli de o casă cu 6–18 luni înainte de șantier.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'fisa.jpg', w: 1600, h: 962, alt: 'Fișa unei lucrări în contul EZ', cap: 'Fișa lucrării, din contul demo: stadiul pe linia timpului și materialele de vândut acum. Datele sunt inventate.' },
+      { src: 'crm.jpg', w: 1600, h: 962, alt: 'CRM-ul pe etape în contul EZ', cap: 'CRM pe etape: nouă, contactată, ofertă, câștigată, pierdută. Tot din contul demo.' },
+    ] },
+    {
+      type: 'flow', label: '03 · Arhitectura', h2: 'Fiecare primărie publică altfel. Toate ajung în aceeași formă.',
+      ps: ['Am scris colectoarele pe tipuri de platformă, nu pe oraș. Multe primării folosesc aceiași furnizori de site, așa că un adaptor acoperă zeci de primării, iar o sursă nouă înseamnă o linie de configurare. Orașele mari, cu portaluri proprii, au colectoare dedicate.'],
+      nodes: [
+        { t: 'Surse', items: ['Site-uri de primărie: tabele, PDF, Excel, Word', 'Platformele de primărie folosite des', 'SEAP, ANAF, datele deschise ONRC', 'Panouri de șantier fotografiate de agenți'] },
+        { t: 'Extragere', items: ['OCR local pentru PDF-urile scanate', 'Parser pe rânduri pentru listele fără tabel', 'CNP-urile șterse la fiecare colectare'] },
+        { t: 'Lucrarea', items: ['Normalizare, deduplicare, geocodare', 'Clasificare pe tip și pe 11 meserii', 'Certificatul legat de autorizație', 'Beneficiarul legat de firma din ONRC'], accent: true },
+        { t: 'Clientul', items: ['Alerte pe email și WhatsApp', 'Cont cu CRM, trasee, depozite, echipe', 'Aplicația agenților', 'API și export Excel'] },
+      ],
+      foot: 'Colectarea pornește în fiecare dimineață la 05:00, după backup-ul de la 04:30. Un supraveghetor semnalează primăriile care au încetat să publice.',
+    },
+    {
+      type: 'parts', label: '04 · Componente', h2: 'Patru produse într-o singură aplicație.',
+      items: [
+        { t: 'Colectarea', d: 'Descoperire automată pe toate cele 3.181 de primării, plus o trecere mai adâncă în fiecare săptămână.', items: ['43 de colectoare dedicate, 4 adaptoare de platformă', 'OCR cu Tesseract în Docker, fără servicii plătite', 'Licitații SEAP cu stadiu și câștigător', 'Comparație cu statisticile INS'] },
+        { t: 'Fișa și contul', d: 'Pentru meseriașul din oraș și pentru distribuitorul cu 50 de agenți.', items: ['Necesarul estimat pe 11 meserii', 'Scor de prioritate pe lucrare', 'CRM pe etape, trasee, depozite', 'Echipe pe teritorii și rapoarte pentru director'] },
+        { t: 'Aplicația agenților', d: 'Aplicație web instalabilă pe telefon.', items: ['Traseul zilei, deschis în Google Maps', '„Lângă mine” și „Am fost”', 'Panoul de șantier fotografiat devine lucrare nouă'] },
+        { t: 'Site și vânzare', d: 'Site public făcut pentru căutările din Google.', items: ['Pagini pe 11 meserii, 41 de județe și fiecare primărie', 'Planuri cu prețuri publice, Stripe, probă de 7 zile', 'Conturi demo pe date inventate', 'Raport lunar gratuit pe județ'] },
+      ],
+    },
+    {
+      label: '05 · Datele personale', h2: 'La prima rulare, numele unor oameni au devenit nume de comune.',
+      ps: [
+        'La prima colectare din listele Consiliului Județean Cluj, parserul a luat coloana cu beneficiarii drept „localitate”. Câteva nume de persoane fizice au ajuns, în baza locală, denumiri de comune. În alte aproape 170 de cazuri, regula care păstra firma din câmpul beneficiar a reținut și numele persoanei, din formulări ca „Nume Prenume și SC X SRL”.',
+        'Datele n-au plecat de pe calculatorul local. Le-am șters și am corectat cele 172 de câmpuri. Apoi am pus trei reguli permanente: <strong>o localitate se acceptă doar dacă se potrivește cu una oficială</strong>, din câmpul beneficiar rămâne doar partea care e firmă, iar verificarea datelor personale rulează la fiecare colectare.',
+        'Tot din prima zi am decis să nu ocolesc protecțiile anti-bot. Brașovul și Oradea își pun listele în spatele Cloudflare Turnstile. Pentru ele, și pentru primăriile care nu publică nimic, cererile pe Legea 544 sunt generate și gata de trimis.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'harta.jpg', w: 1600, h: 962, alt: 'Harta lucrărilor în contul EZ', cap: 'Harta lucrărilor, cu depozitele clientului. Din contul demo, cu date inventate.' },
+      { src: 'judete.jpg', alt: 'Harta publică a județelor pe e-z.ro', cap: 'Pagina publică e-z.ro/judete: primăriile din care vin datele.' },
+    ] },
+    {
+      type: 'metrics', label: '06 · Metrici', h2: 'Ce am numărat.',
+      note: 'Din baza de producție și din repo, pe 19 noiembrie 2026. Acoperirea e măsurată față de statisticile INS, nu estimată.',
+      items: [
+        ['101.942', 'lucrări: 41.710 autorizații, 59.191 certificate de urbanism, 1.041 de licitații', 'măsurat'],
+        ['491', 'primării din 3.181, cu acte din ultimele 12 luni', 'măsurat'],
+        ['~22%', 'din autorizațiile pentru clădiri din țară, ianuarie - septembrie 2026, față de INS', 'măsurat'],
+        ['380.635', 'firme din construcții, 239.695 dintre ele cu telefon', 'măsurat'],
+        ['40', 'de județe din 42, cu cel puțin o primărie acoperită', 'măsurat'],
+        ['1–3 luni', 'întârzierea cu care primăriile publică actele', 'măsurat'],
+      ],
+      build: [['41.845', 'linii de cod'], ['43', 'colectoare dedicate'], ['4', 'adaptoare de platformă'], ['3.181', 'primării verificate automat'], ['42', 'documente tehnice'], ['72', 'decizii motivate']],
+    },
+    {
+      type: 'lessons', label: '07 · Ce am învățat', h2: 'Ce iau cu mine.',
+      items: [
+        ['Prospețimea se spune cinstit', 'Primăriile publică actele cu 1–3 luni întârziere. „Afli primul” înseamnă înaintea concurenței, nu în ziua emiterii, iar fișa arată ambele date.'],
+        ['Adaptoare pe platforme, nu colectoare pe oraș', 'Zeci de primării folosesc același furnizor de site. Un adaptor bun valorează cât zeci de colectoare scrise de mână.'],
+        ['O cifră, o singură definiție', 'Cifrele apar pe site, în admin, în anunțuri și pe pagina pentru cumpărători. Le calculează un singur modul, cu definiția lângă fiecare, ca două pagini să nu spună lucruri diferite.'],
+        ['Datele personale se filtrează la intrare', 'O greșeală de parser a pus nume de oameni în câmpuri care ar fi ajuns publice. Verificarea rulează acum la fiecare colectare, nu la final.'],
+      ],
+    },
+    {
+      label: '08 · De vânzare', h2: 'EZ caută un proprietar.',
+      ps: ['Vând codul, baza de date, domeniul e-z.ro și brandul. Se potrivește unei firme care are deja agenți de vânzări în construcții sau clienți care cumpără date despre firme. Ce primești, cui i se potrivește și ce nu e gata încă sunt pe <a class="link" href="/de-vanzare/ez/">pagina de vânzare</a>.'],
+    },
+  ],
+  end: { h2: 'Vrei să preiei EZ sau ai un proiect asemănător?', p: 'Scrie-mi. Pentru EZ îți trimit parola pentru pagina cumpărătorilor, e-z.ro/investors.' },
+};
+---
+<CaseStudy cs={cs} />

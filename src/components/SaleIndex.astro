@@ -1,0 +1,106 @@
+---
+// Projects for sale: /de-vanzare/ and /en/for-sale/. One row per project from src/data/forsale.js.
+import Layout from '../layouts/Layout.astro';
+import { forSale, saleBase, saleMail } from '../data/forsale.js';
+import { num } from '../i18n.js';
+
+const { lang = 'ro' } = Astro.props;
+const en = lang === 'en';
+const base = saleBase[lang];
+const T = en
+  ? { title: 'Projects for sale | Andrei Năstase', description: 'Live products I built and now sell as assets: code, data and documentation, with an honest account of where each one stands.',
+      label: 'For sale', h1: 'Products that are built and live. Looking for an owner.',
+      lead: 'I build products and sell some of them. Each one below runs in production, with code, data, tests and documentation. For a company that already has customers in the field, it saves 6–12 months of building from scratch.',
+      lp: 'Details for buyers', cs: 'Case study', inv: 'Buyers’ page', live: 'Live site', withDomain: 'domain included', noDomain: 'without the domain',
+      why: 'Why I sell', whyP: 'I like building the first version: the problem, the data, the product that works. A company that already sells in that market takes it further faster than I can on my own, and my time is worth more on the next product.',
+      domains: 'Looking only for a name?', domainsP: 'I also sell short .ro and .com domains, directly, from €800.', domainsHref: '/en/domains/', domainsBtn: 'Domains for sale',
+      ask: 'Write to me', subject: 'Projects for sale' }
+  : { title: 'Proiecte de vânzare | Andrei Năstase', description: 'Produse live construite de mine, pe care le vând ca active: cod, date și documentație, cu tot ce trebuie să știi despre unde e fiecare.',
+      label: 'De vânzare', h1: 'Produse construite și live. Le caut un proprietar.',
+      lead: 'Construiesc produse și pe unele le vând. Fiecare dintre cele de mai jos rulează în producție, cu cod, date, teste și documentație. Pentru o firmă care are deja clienți în domeniu, înseamnă 6–12 luni de construcție de la zero economisite.',
+      lp: 'Detalii pentru cumpărători', cs: 'Studiu de caz', inv: 'Pagina pentru cumpărători', live: 'Site-ul live', withDomain: 'cu domeniu', noDomain: 'fără domeniu',
+      why: 'De ce vând', whyP: 'Îmi place să construiesc prima versiune: problema, datele, produsul care merge. O firmă care vinde deja pe piața aceea îl duce mai departe mai repede decât pot eu singur, iar timpul meu valorează mai mult pe produsul următor.',
+      domains: 'Cauți doar un nume?', domainsP: 'Vând și domenii .ro și .com scurte, direct, de la 800 €.', domainsHref: '/domenii/', domainsBtn: 'Domenii de vânzare',
+      ask: 'Scrie-mi', subject: 'Proiecte de vânzare' };
+---
+<Layout title={T.title} description={T.description} path={base} lang={lang} image={forSale[0].img}>
+  <section class="wrap fs-head">
+    <p class="label kick">{T.label} · {forSale.length}</p>
+    <h1>{T.h1}</h1>
+    <p class="lead">{T.lead}</p>
+  </section>
+
+  <ul class="wrap fs-list">
+    {forSale.map(p => {
+      const t = p[lang];
+      return (
+        <li class="fs-item reveal">
+          <a class="fs-shot" href={`${base}${p.slug}/`} aria-label={`${T.lp}: ${p.name}`}>
+            <img src={p.img} alt="" width="1440" height={p.slug === 'emud' ? 900 : 1000} loading="lazy">
+          </a>
+          <div class="fs-body">
+            <p class="fs-meta"><span>{t.tag}</span><em>{p.domain} · {p.withDomain ? T.withDomain : T.noDomain}</em></p>
+            <h2><a href={`${base}${p.slug}/`}>{p.name}</a></h2>
+            <p class="fs-line">{t.line}</p>
+            <dl class="fs-nums">
+              {t.numbers.slice(0, 3).map(m => <div><dd>{(m.prefix ?? '') + num(m.value, lang) + (m.suffix ?? '')}</dd><dt>{m.label}</dt></div>)}
+            </dl>
+            <p class="fs-deal"><b>{t.deal}.</b> {t.status}</p>
+            <div class="btn-row">
+              <a class="btn btn-primary" href={`${base}${p.slug}/`}>{T.lp}</a>
+              <a class="btn" href={en ? `/en/projects/${p.slug}/` : `/proiecte/${p.slug}/`}>{T.cs}</a>
+              {p.investors
+                ? <a class="btn" href={p.investors} target="_blank" rel="noopener">{T.inv}</a>
+                : <a class="btn" href={p.url} target="_blank" rel="noopener">{T.live}</a>}
+            </div>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+
+  <section class="wrap fs-foot">
+    <div>
+      <h2>{T.why}</h2>
+      <p>{T.whyP}</p>
+      <div class="btn-row"><a class="btn btn-primary btn-lg" href={saleMail(T.subject)}>{T.ask}</a></div>
+    </div>
+    <div>
+      <h2>{T.domains}</h2>
+      <p>{T.domainsP}</p>
+      <div class="btn-row"><a class="btn btn-lg" href={T.domainsHref}>{T.domainsBtn}</a></div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .fs-head { padding-top: clamp(120px, 16vh, 180px); max-width: 980px; display: grid; gap: 16px; }
+  .fs-head h1 { max-width: 22ch; }
+  .fs-list { margin-top: clamp(40px, 7vh, 72px); display: grid; gap: clamp(48px, 8vh, 88px); }
+  .fs-item { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(24px, 4vw, 56px); align-items: center; padding-top: clamp(24px, 4vh, 40px); border-top: 1px solid var(--ink); }
+  .fs-shot { display: block; aspect-ratio: 1440 / 1000; overflow: hidden; border-radius: 14px; border: 1px solid var(--line); background: #0b0b10; }
+  .fs-shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform .5s ease; }
+  .fs-shot:hover img { transform: scale(1.03); }
+  .fs-body { display: grid; gap: 14px; }
+  .fs-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; font: 400 13px/1.5 var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .fs-meta em { font-style: normal; color: var(--accent); }
+  .fs-body h2 { font-size: clamp(34px, 4vw, 56px); letter-spacing: -.04em; line-height: 1; }
+  .fs-body h2 a:hover { color: var(--accent); }
+  .fs-line { color: #333; }
+  .fs-nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .fs-nums div { padding: 12px 12px 0 0; }
+  .fs-nums dd { margin: 0; font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -.03em; line-height: 1.1; }
+  .fs-nums dt { margin-top: 4px; font-size: 14px; color: var(--muted); line-height: 1.35; }
+  .fs-deal { font-size: 16px; color: var(--muted); }
+  .fs-deal b { font-weight: 500; color: var(--ink); }
+  .fs-foot { margin: clamp(80px, 12vh, 140px) auto clamp(64px, 10vh, 110px); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .fs-foot > div { display: grid; gap: 14px; align-content: start; padding: clamp(22px, 3vw, 36px); border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+  .fs-foot p { color: #444; max-width: 52ch; }
+  @media (max-width: 900px) {
+    .fs-item, .fs-foot { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .fs-nums { grid-template-columns: 1fr; }
+    .fs-nums div { display: flex; gap: 12px; align-items: baseline; padding: 10px 0 0; }
+  }
+</style>

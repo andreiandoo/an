@@ -23,6 +23,7 @@
 .cs-top b { font-weight: 400; font-size: clamp(44px, 6vw, 84px); line-height: 1; letter-spacing: -.04em; }
 .cs-top span { color: var(--muted); font-size: 16px; max-width: 22ch; }
 .cs-top p { margin-top: 18px; }
+.cs-top.is-compact b { font-size: clamp(36px, 4.6vw, 66px); }
 
 .cs-sec { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: 24px; margin-top: clamp(72px, 11vh, 128px); }
 .cs-side .label { position: sticky; top: calc(var(--hh) + 16px); }

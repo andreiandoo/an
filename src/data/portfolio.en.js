@@ -10,7 +10,8 @@ export const products = [
   { name: 'Viaqui', file: 'viaqui', tag: 'Travel', url: 'https://viaqui.com', cs: '/en/projects/viaqui/', stat: '113,093 attractions' },
   { name: 'e-test.ro', file: 'e-test', tag: 'Education', url: 'https://e-test.ro' },
   { name: 'dubidu', file: 'dubidu', tag: 'AI dubbing', url: 'https://dubidu.net', cs: '/en/projects/dubidu/', stat: 'Case study' },
-  { name: 'eMUD', file: 'emud', tag: 'For sale', url: 'https://a-n.ro', cs: '/en/projects/emud/', stat: 'Case study' },
+  { name: 'EZ', file: 'ez', tag: 'Construction data', url: 'https://e-z.ro', cs: '/en/projects/ez/', stat: '101,942 projects', sale: '/en/for-sale/ez/' },
+  { name: 'eMUD', file: 'emud', tag: 'Car parts', url: 'https://a-n.ro', cs: '/en/projects/emud/', stat: 'Case study', sale: '/en/for-sale/emud/' },
   { name: 'ePAS', file: 'epas', tag: 'Prototype', url: 'https://epas.ro' },
 ];
 
@@ -108,6 +109,14 @@ export const numbers = [
     metrics: [
       { value: 113093, label: 'attractions' },
       { value: 51, label: 'countries' },
+    ],
+  },
+  {
+    name: 'EZ', url: 'https://e-z.ro', note: 'From the production database, on 19 November 2026.',
+    metrics: [
+      { value: 101942, label: 'construction projects' },
+      { value: 491, label: 'town halls' },
+      { value: 380635, label: 'companies' },
     ],
   },
   {

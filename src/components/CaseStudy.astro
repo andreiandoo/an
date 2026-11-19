@@ -40,7 +40,7 @@ const shot = (src) => (src.startsWith('/') ? src : `${cs.shots}/${src}`);
     )}
 
     {cs.top && (
-      <section class="wrap cs-top" aria-label={w.short}>
+      <section class={`wrap cs-top${cs.topCompact ? ' is-compact' : ''}`} aria-label={w.short}>
         <ul>
           {cs.top.map(m => (
             <li class="reveal">

@@ -1,0 +1,115 @@
+---
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+// Figures checked on 19 Nov 2026: e-z.ro/date/cifre.json (production database), the repo, docs/ and DECIZII.md.
+// No paying customers yet; account screenshots come from the demo account with invented data.
+const cs = {
+  title: 'EZ: case study | Andrei Năstase',
+  description: 'How I built EZ (e-z.ro): building permits and public tenders from hundreds of Romanian town halls, collected every day and turned into leads for sales reps.',
+  path: '/en/projects/ez/',
+  shots: '/shots/ez',
+  label: 'Case study · 2026',
+  h1: 'EZ: be the first to know what is being built, from the lists of hundreds of town halls.',
+  lead: 'A B2B platform that reads building permits, planning certificates and construction tenders every morning. Each one becomes a lead for a sales rep: what is being built, where, who the owner is and which materials need to be sold.',
+  summary: [
+    'Anyone selling windows, roofs or concrete wants to hear about a project before the competition. The information is public, but scattered across hundreds of town hall websites, in different formats.',
+    'Collectors for 491 town halls and SEAP, the public procurement system; leads with the materials needed for 11 trades; an account with a CRM and routes; and an app for field reps.',
+    'Live on e-z.ro since 17 November 2026, with 101,942 projects. No paying customers yet. <a class="link" href="/en/for-sale/ez/">The project is for sale</a>.',
+  ],
+  facts: [
+    ['Role', 'Founder. Product, data, code, design'],
+    ['Period', 'November 2026'],
+    ['Status', 'Live on e-z.ro. For sale'],
+    ['Stack', 'Python, FastAPI, PostgreSQL 16'],
+  ],
+  links: [{ href: 'https://e-z.ro', text: 'e-z.ro' }, { href: 'https://e-z.ro/judete', text: 'Coverage by county' }],
+  hero: { src: 'home.jpg', alt: 'EZ home page: be the first to know what is being built', domain: 'e-z.ro' },
+  top: [
+    { value: 101942, label: 'projects in the database' },
+    { value: 491, label: 'town halls, out of 3,181' },
+    { value: 380635, label: 'construction companies' },
+    { value: 43, label: 'dedicated collectors' },
+  ],
+  topCompact: true,
+  topNote: 'From e-z.ro/date/cifre.json, computed from the production database, on 19 November 2026.',
+  blocks: [
+    {
+      label: '01 · The problem', h2: 'The information is public. It is just in 3,181 places.',
+      ps: [
+        'Every building permit means windows, insulation, plumbing and concrete to buy. Whoever sells them wants to know first. Romanian law requires town halls to publish their lists of building permits and planning certificates, but each one does it differently: a table on the website, a scanned PDF, an Excel file, a search app, or not at all.',
+        'Existing services send a list once a month or cover only the big cities. And a list of addresses does not tell you what to sell, or when.',
+      ],
+    },
+    {
+      label: '02 · What it does', h2: 'From the town hall list to the rep in the field.',
+      ps: [
+        'The customer picks counties and a trade. Every morning they get the new projects by email or WhatsApp. The lead says what is being built, where, who the owner is and what stage the project is at. For 11 trades it also shows the estimated materials and the month the trade comes on site. A planning certificate is linked to the permit that follows it, so you hear about a house 6–18 months before construction starts.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'fisa.jpg', w: 1600, h: 962, alt: 'A project lead in the EZ account', cap: 'A project lead, from the demo account: the stage on a timeline and the materials to sell now. The data is made up.' },
+      { src: 'crm.jpg', w: 1600, h: 962, alt: 'The stage-based CRM in the EZ account', cap: 'A CRM in stages: new, contacted, quoted, won, lost. Also from the demo account.' },
+    ] },
+    {
+      type: 'flow', label: '03 · Architecture', h2: 'Every town hall publishes differently. Everything ends up in the same shape.',
+      ps: ['I wrote the collectors per platform type, not per city. Many town halls use the same website vendors, so one adapter covers dozens of them and a new source is one line of configuration. Big cities with their own portals have dedicated collectors.'],
+      nodes: [
+        { t: 'Sources', items: ['Town hall sites: tables, PDF, Excel, Word', 'The common town hall platforms', 'SEAP, ANAF, ONRC open data', 'Site boards photographed by reps'] },
+        { t: 'Extraction', items: ['Local OCR for scanned PDFs', 'A line parser for lists without tables', 'Personal ID numbers deleted on every run'] },
+        { t: 'The project', items: ['Normalising, deduplicating, geocoding', 'Classified by type and by 11 trades', 'Certificate linked to permit', 'Owner linked to the company in ONRC'], accent: true },
+        { t: 'The customer', items: ['Email and WhatsApp alerts', 'Account with CRM, routes, depots, teams', 'The field app', 'API and Excel export'] },
+      ],
+      foot: 'Collection starts every morning at 05:00, after the 04:30 backup. A watcher flags the town halls that have stopped publishing.',
+    },
+    {
+      type: 'parts', label: '04 · Components', h2: 'Four products in one application.',
+      items: [
+        { t: 'Collection', d: 'Automatic discovery across all 3,181 town halls, plus a deeper pass every week.', items: ['43 dedicated collectors, 4 platform adapters', 'OCR with Tesseract in Docker, no paid services', 'SEAP tenders with stage and winner', 'Comparison with INS statistics'] },
+        { t: 'Lead and account', d: 'For the local tradesman and for the distributor with 50 reps.', items: ['Estimated materials for 11 trades', 'A priority score per project', 'CRM in stages, routes, depots', 'Teams by territory and reports for managers'] },
+        { t: 'The field app', d: 'A web app you install on the phone.', items: ['Today’s route, opened in Google Maps', '“Near me” and “Visited”', 'A photographed site board becomes a new project'] },
+        { t: 'Website and sales', d: 'A public site built for Google searches.', items: ['Pages for 11 trades, 41 counties and every town hall', 'Plans with public prices, Stripe, 7-day trial', 'Demo accounts on made-up data', 'A free monthly report per county'] },
+      ],
+    },
+    {
+      label: '05 · Personal data', h2: 'On the first run, some people’s names became village names.',
+      ps: [
+        'On the first collection from the Cluj County Council lists, the parser read the owners column as “locality”. A few private individuals’ names ended up as village names in the local database. In almost 170 other cases, the rule that kept the company from the owner field also kept the person’s name, from entries like “First Last and X Ltd”.',
+        'The data never left the local machine. I deleted it and fixed the 172 fields. Then I added three permanent rules: <strong>a locality is accepted only if it matches an official one</strong>, only the company part of the owner field is kept, and the personal data check runs on every collection.',
+        'From day one I also decided not to get around anti-bot protection. Brașov and Oradea put their lists behind Cloudflare Turnstile. For them, and for the town halls that publish nothing, freedom of information requests are generated and ready to send.',
+      ],
+    },
+    { type: 'pair', items: [
+      { src: 'harta.jpg', w: 1600, h: 962, alt: 'The project map in the EZ account', cap: 'The project map, with the customer’s depots. From the demo account, with made-up data.' },
+      { src: 'judete.jpg', alt: 'The public county map on e-z.ro', cap: 'The public page e-z.ro/judete: the town halls the data comes from.' },
+    ] },
+    {
+      type: 'metrics', label: '06 · Metrics', h2: 'What I counted.',
+      note: 'From the production database and the repo, on 19 November 2026. Coverage is measured against INS, the national statistics institute, not estimated.',
+      items: [
+        ['101,942', 'projects: 41,710 permits, 59,191 planning certificates, 1,041 tenders', 'measured'],
+        ['491', 'town halls out of 3,181, with documents from the last 12 months', 'measured'],
+        ['~22%', 'of the building permits issued nationally, January - September 2026, compared with INS', 'measured'],
+        ['380,635', 'construction companies, 239,695 of them with a phone number', 'measured'],
+        ['40', 'of 42 counties with at least one town hall covered', 'measured'],
+        ['1–3 months', 'the delay with which town halls publish their documents', 'measured'],
+      ],
+      build: [['41,845', 'lines of code'], ['43', 'dedicated collectors'], ['4', 'platform adapters'], ['3,181', 'town halls checked automatically'], ['42', 'technical documents'], ['72', 'reasoned decisions']],
+    },
+    {
+      type: 'lessons', label: '07 · What I learned', h2: 'What I take with me.',
+      items: [
+        ['Be honest about freshness', 'Town halls publish 1–3 months late. “Know first” means before the competition, not on the day of issue, and the lead shows both dates.'],
+        ['Adapters per platform, not collectors per city', 'Dozens of town halls use the same website vendor. One good adapter is worth dozens of hand-written collectors.'],
+        ['One figure, one definition', 'Figures appear on the site, in the admin, in ads and on the buyers’ page. One module computes them all, with the definition next to each, so two pages cannot disagree.'],
+        ['Filter personal data on the way in', 'A parser mistake put people’s names into fields that would have gone public. The check now runs on every collection, not at the end.'],
+      ],
+    },
+    {
+      label: '08 · For sale', h2: 'EZ is looking for an owner.',
+      ps: ['I am selling the code, the database, the e-z.ro domain and the brand. It suits a company that already has sales reps in construction, or customers who buy company data. What you get, who it suits and what is not ready yet are on the <a class="link" href="/en/for-sale/ez/">sales page</a>.'],
+    },
+  ],
+  end: { h2: 'Want to take over EZ, or working on something similar?', p: 'Write to me. For EZ, I will send you the password for the buyers’ page, e-z.ro/investors.' },
+};
+---
+<CaseStudy cs={cs} lang="en" />

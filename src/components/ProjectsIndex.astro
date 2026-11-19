@@ -18,6 +18,7 @@ const T = {
     lead: 'Fiecare studiu de caz arată problema, ce am construit, cifrele măsurate și ce aș face la fel data viitoare. Unde un proiect nu a ajuns încă unde voiam, scrie și asta.',
     own: 'Produse proprii', client: 'Pentru clienți', more: 'Alte produse, fără studiu de caz încă',
     allClients: 'Toate cele {n} de proiecte pentru clienți', read: 'Citește studiul de caz',
+    sale: 'De vânzare', saleBar: 'EZ și eMUD sunt de vânzare: cod, date și documentație, gata de preluat.', saleLink: 'Proiectele de vânzare', saleHref: '/de-vanzare/',
     endH: 'Vreți ceva asemănător?', endP: 'Spuneți-mi ce vreți să rezolvați. Vă spun sincer dacă merită construit.', cta: 'Programați apelul gratuit', contact: '/#contact', clients: '/#clienti',
   },
   en: {
@@ -28,6 +29,7 @@ const T = {
     lead: 'Each case study shows the problem, what I built, the measured figures and what I would do the same way next time. Where a project is not yet where I want it, the page says so.',
     own: 'My own products', client: 'Client work', more: 'Other products, no case study yet',
     allClients: 'All {n} client projects', read: 'Read the case study',
+    sale: 'For sale', saleBar: 'EZ and eMUD are for sale: code, data and documentation, ready to take over.', saleLink: 'Projects for sale', saleHref: '/en/for-sale/',
     endH: 'Want something similar?', endP: 'Tell me what you want to solve. I will tell you honestly whether it is worth building.', cta: 'Book the free call', contact: '/en/#contact', clients: '/en/#clienti',
   },
 }[lang];
@@ -39,6 +41,7 @@ const others = data.products.filter(p => !p.cs);
     <p class="label">{T.label} · {cases.length}</p>
     <h1>{T.h1}</h1>
     <p class="lead">{T.lead}</p>
+    <p class="px-sale"><span>{T.saleBar}</span> <a class="link" href={T.saleHref}>{T.saleLink} →</a></p>
   </section>
 
   {groups.map(([kind, title]) => (
@@ -49,7 +52,7 @@ const others = data.products.filter(p => !p.cs);
           <li class="reveal">
             <a href={`${base}${c.slug}/`}>
               <span class="px-shot"><img src={c.img} alt="" width="1440" height="1000" loading="lazy"></span>
-              <span class="px-meta"><span>{c.years}</span><em>{c[lang].fact}</em></span>
+              <span class="px-meta"><span>{c.years}{c.sale && <i class="px-tag">{T.sale}</i>}</span><em>{c[lang].fact}</em></span>
               <b>{c[lang].name}</b>
               <span class="px-line">{c[lang].line}</span>
               <span class="px-go" aria-hidden="true">{T.read} →</span>
@@ -86,6 +89,9 @@ const others = data.products.filter(p => !p.cs);
   .px-shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform .5s ease; }
   .px-grid a:hover .px-shot img { transform: scale(1.03); }
   .px-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 6px; font: 400 13px/1.5 var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .px-tag { font-style: normal; margin-left: 10px; padding: 1px 8px; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent); }
+  .px-sale { margin-top: 22px; padding: 14px 18px; border: 1px solid var(--accent); border-radius: 12px; font-size: 17px; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+  .px-sale a { color: var(--accent); }
   .px-meta em { font-style: normal; color: var(--accent); text-align: right; }
   .px-grid b { font-size: 22px; font-weight: 600; }
   .px-line { color: var(--muted); line-height: 1.5; }

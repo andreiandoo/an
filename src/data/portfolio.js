@@ -7,7 +7,8 @@ export const products = [
   { name: 'Viaqui', file: 'viaqui', tag: 'Turism', url: 'https://viaqui.com', cs: '/proiecte/viaqui/', stat: '113.093 atracții' },
   { name: 'e-test.ro', file: 'e-test', tag: 'Educație', url: 'https://e-test.ro' },
   { name: 'dubidu', file: 'dubidu', tag: 'Dublaj AI', url: 'https://dubidu.net', cs: '/proiecte/dubidu/', stat: 'Studiu de caz' },
-  { name: 'eMUD', file: 'emud', tag: 'De vânzare', url: 'https://a-n.ro', cs: '/proiecte/emud/', stat: 'Studiu de caz' },
+  { name: 'EZ', file: 'ez', tag: 'Date construcții', url: 'https://e-z.ro', cs: '/proiecte/ez/', stat: '101.942 lucrări', sale: '/de-vanzare/ez/' },
+  { name: 'eMUD', file: 'emud', tag: 'Piese auto', url: 'https://a-n.ro', cs: '/proiecte/emud/', stat: 'Studiu de caz', sale: '/de-vanzare/emud/' },
   { name: 'ePAS', file: 'epas', tag: 'Prototip', url: 'https://epas.ro' },
 ];
 
@@ -104,6 +105,14 @@ export const numbers = [
     metrics: [
       { value: 113093, label: 'atracții' },
       { value: 51, label: 'de țări' },
+    ],
+  },
+  {
+    name: 'EZ', url: 'https://e-z.ro', note: 'Din baza de producție, pe 19 noiembrie 2026.',
+    metrics: [
+      { value: 101942, label: 'lucrări de construcții' },
+      { value: 491, label: 'primării' },
+      { value: 380635, label: 'firme' },
     ],
   },
   {

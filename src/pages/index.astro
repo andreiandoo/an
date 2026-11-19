@@ -72,7 +72,7 @@ const ledgerHtml = `<ol class="ledger reveal" id="ledger"><li class="ledger-head
         {products.map(p => (
           <a class="item" href={p.cs ?? p.url} target={p.cs ? undefined : '_blank'} rel={p.cs ? undefined : 'noopener'}>
             <span class="frame"><img src={`/shots/${p.file}.jpg`} alt={`Site-ul ${p.name} pe telefon`} width="780" height={p.h ?? 6000} loading="lazy" draggable="false"></span>
-            <span class="cap"><span>{p.name}</span><span>{p.tag}</span>{p.stat && <em>{p.stat}</em>}</span>
+            <span class="cap"><span>{p.name}</span><span>{p.tag}</span>{p.stat && <em>{p.stat}</em>}{p.sale && <i class="cap-sale">De vânzare</i>}</span>
           </a>
         ))}
       </div>
@@ -162,6 +162,7 @@ const ledgerHtml = `<ol class="ledger reveal" id="ledger"><li class="ledger-head
   <section class="next-up" aria-labelledby="work-next">
     <div class="wrap">
       <h2 id="work-next">În lucru și de vânzare</h2>
+      <p class="next-sale"><a class="link" href="/de-vanzare/">Proiectele live pe care le vând: EZ și eMUD →</a></p>
       <div class="phones">
         {inWork.map(p => (
           <a class="phone" href={p.url} target={p.url && '_blank'} rel={p.url && 'noopener'}>
